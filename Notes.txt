@@ -1,0 +1,14 @@
+﻿## Accounts Service
+- Open Account
+- Get account
+- Get all accounts (for customer)
+- Complete Account Opening
+- Complete Account KYC
+- Set Account Status  - close, make dormant etc
+- update account balance
+
+## Payment Service
+- withdraw
+- deposit 
+- maintain history of transactions
+- Account to account transfer
