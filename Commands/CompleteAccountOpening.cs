@@ -1,7 +1,7 @@
 ﻿using System;
 using Convey.CQRS.Commands;
 
-namespace Convey.Test.Accounts.Commands
+namespace InBranchDashboard.Commands
 {
 
     public class CompleteAccountOpening : ICommand

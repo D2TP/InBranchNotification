@@ -1,7 +1,7 @@
-﻿using Convey.Test.Accounts.Domain;
-using Convey.Test.Accounts.Services;
+﻿using InBranchDashboard.Domain;
+using InBranchDashboard.Services;
 
-namespace Convey.Test.Accounts.Events
+namespace InBranchDashboard.Events
 {
     internal class AccountStatusChanged : IDomainEvent
     {     

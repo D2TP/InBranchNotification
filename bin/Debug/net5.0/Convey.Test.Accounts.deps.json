@@ -31,7 +31,7 @@
   },
   "targets": {
     ".NETCoreApp,Version=v5.0": {
-      "Convey.Test.Accounts/1.0.0": {
+      "InBranchDashboard/1.0.0": {
         "dependencies": {
           "Convey": "0.5.445",
           "Convey.Auth": "0.5.445",
@@ -339,10 +339,10 @@
           "WindowsBase": "4.0.0.0"
         },
         "runtime": {
-          "Convey.Test.Accounts.dll": {}
+          "InBranchDashboard.dll": {}
         },
         "compile": {
-          "Convey.Test.Accounts.dll": {}
+          "InBranchDashboard.dll": {}
         }
       },
       "ApacheThrift/0.13.0.1": {
@@ -5313,7 +5313,7 @@
     }
   },
   "libraries": {
-    "Convey.Test.Accounts/1.0.0": {
+    "InBranchDashboard/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

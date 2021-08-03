@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Convey.Test.Accounts.DTOs;
-using Convey.Test.Accounts.Events;
-using Convey.Test.Accounts.Exceptions;
-using Convey.Test.Accounts.Services;
+using InBranchDashboard.DTOs;
+using InBranchDashboard.Events;
+using InBranchDashboard.Exceptions;
+using InBranchDashboard.Services;
 using Convey.Types;
 
-namespace Convey.Test.Accounts.Domain
+namespace InBranchDashboard.Domain
 {
     public class Account : AggregateRoot 
     {

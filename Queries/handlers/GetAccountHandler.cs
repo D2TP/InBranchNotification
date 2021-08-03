@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 using Convey.Persistence.MongoDB;
-using Convey.Test.Accounts.Domain;
-using Convey.Test.Accounts.DTOs;
+using InBranchDashboard.Domain;
+using InBranchDashboard.DTOs;
 
-namespace Convey.Test.Accounts.Queries.handlers
+namespace InBranchDashboard.Queries.handlers
 {
    
 

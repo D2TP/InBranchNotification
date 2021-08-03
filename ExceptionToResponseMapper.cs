@@ -2,7 +2,7 @@
 using System.Net;
 using Convey.WebApi.Exceptions;
 
-namespace Convey.Test.Accounts
+namespace InBranchDashboard
 {
     public class ExceptionToResponseMapper : IExceptionToResponseMapper
     {

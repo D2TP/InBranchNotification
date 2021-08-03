@@ -1,5 +1,5 @@
 {
-  "FilePath": "/Users/petersonatoe/Projects/FBNQuest/InBranchDashboard/Convey.Test.Accounts.csproj",
+  "FilePath": "/Users/petersonatoe/Projects/FBNQuest/InBranchDashboard/InBranchDashboard.csproj",
   "Configuration": {
     "ConfigurationName": "MVC-3.0",
     "LanguageVersion": "5.0",
@@ -15616,7 +15616,7 @@
     ],
     "CSharpLanguageVersion": 900
   },
-  "RootNamespace": "Convey.Test.Accounts",
+  "RootNamespace": "InBranchDashboard",
   "Documents": [],
   "SerializationFormat": "0.2"
 }

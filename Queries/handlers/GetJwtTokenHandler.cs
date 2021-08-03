@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Convey.Auth;
 using Convey.CQRS.Queries;
 
-namespace Convey.Test.Accounts.Queries.handlers
+namespace InBranchDashboard.Queries.handlers
 {
   
     public class GetJwtTokenHandler : IQueryHandler<GetJwtToken, string>

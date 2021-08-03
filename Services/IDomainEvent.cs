@@ -1,4 +1,4 @@
-﻿namespace Convey.Test.Accounts.Services
+﻿namespace InBranchDashboard.Services
 {
     public interface IDomainEvent
     {

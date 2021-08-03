@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Convey.Test.Accounts.Domain
+namespace InBranchDashboard.Domain
 {
     public enum Status
     {

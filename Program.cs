@@ -16,11 +16,11 @@ using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.Prometheus;
 using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
-using Convey.Test.Accounts.Commands;
-using Convey.Test.Accounts.Domain;
-using Convey.Test.Accounts.Events.External;
-using Convey.Test.Accounts.DTOs;
-using Convey.Test.Accounts.Queries;
+using InBranchDashboard.Commands;
+using InBranchDashboard.Domain;
+using InBranchDashboard.Events.External;
+using InBranchDashboard.DTOs;
+using InBranchDashboard.Queries;
 using Convey.Tracing.Jaeger;
 using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
@@ -33,9 +33,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Convey.Auth;
-using Convey.Test.Accounts.Queries.handlers;
+using InBranchDashboard.Queries.handlers;
 
-namespace Convey.Test.Accounts
+namespace InBranchDashboard
 {
     public class Program
     {

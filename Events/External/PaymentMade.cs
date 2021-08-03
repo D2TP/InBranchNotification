@@ -2,7 +2,7 @@
 using Convey.CQRS.Events;
 using Convey.MessageBrokers;
 
-namespace Convey.Test.Accounts.Events.External
+namespace InBranchDashboard.Events.External
 { 
     [Message("payments")]
     public class PaymentMade : IEvent

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Convey.Test.Accounts.Domain;
+using InBranchDashboard.Domain;
 
-namespace Convey.Test.Accounts.Exceptions
+namespace InBranchDashboard.Exceptions
 {
     
 

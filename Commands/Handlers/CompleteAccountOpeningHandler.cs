@@ -4,12 +4,12 @@ using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Outbox;
 using Convey.Persistence.MongoDB;
-using Convey.Test.Accounts.Domain;
-using Convey.Test.Accounts.Events;
+using InBranchDashboard.Domain;
+using InBranchDashboard.Events;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 
-namespace Convey.Test.Accounts.Commands.Handlers
+namespace InBranchDashboard.Commands.Handlers
 {
     public class CompleteAccountOpeningHandler : ICommandHandler<CompleteAccountOpening>
     {

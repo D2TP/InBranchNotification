@@ -1,6 +1,6 @@
-﻿using Convey.Test.Accounts.Domain;
+﻿using InBranchDashboard.Domain;
 
-namespace Convey.Test.Accounts.Commands.Events
+namespace InBranchDashboard.Commands.Events
 {
     public class AccountCreated
     {

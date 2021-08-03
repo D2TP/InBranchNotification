@@ -6,13 +6,13 @@ using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
 using Convey.MessageBrokers.Outbox;
 using Convey.Persistence.MongoDB;
-using Convey.Test.Accounts.Commands.Events;
-using Convey.Test.Accounts.Domain;
-using Convey.Test.Accounts.Exceptions;
+using InBranchDashboard.Commands.Events;
+using InBranchDashboard.Domain;
+using InBranchDashboard.Exceptions;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 
-namespace Convey.Test.Accounts.Commands.Handlers
+namespace InBranchDashboard.Commands.Handlers
 {
     public class ChangeAccountStatusHandler : ICommandHandler<ChangeAccountStatus>
     {

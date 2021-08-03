@@ -2,7 +2,7 @@
   "version": 2,
   "dgSpecHash": "ZU7zIVZd8dOfrAMILJwiCr1XU+9cY6RE7mohJ/VxeVdZrHrmKtbZ7qVFcezrpTrxoznIQIEPJmJRGAJVqw2Bdw==",
   "success": true,
-  "projectFilePath": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/Convey.Test.Accounts/Convey.Test.Accounts.csproj",
+  "projectFilePath": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/InBranchDashboard/InBranchDashboard.csproj",
   "expectedPackageFiles": [
     "/Users/petersonatoe/.nuget/packages/apachethrift/0.13.0.1/apachethrift.0.13.0.1.nupkg.sha512",
     "/Users/petersonatoe/.nuget/packages/app.metrics/4.1.0/app.metrics.4.1.0.nupkg.sha512",

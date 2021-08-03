@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Queries;
-using Convey.Test.Accounts.Commands;
-using Convey.Test.Accounts.DTOs;
-using Convey.Test.Accounts.Queries;
+using InBranchDashboard.Commands;
+using InBranchDashboard.DTOs;
+using InBranchDashboard.Queries;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Convey.Test.Accounts.Controllers
+namespace InBranchDashboard.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

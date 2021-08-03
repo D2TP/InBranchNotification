@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 
-namespace Convey.Test.Accounts.Commands
+namespace InBranchDashboard.Commands
 {
     public class ChangeAccountStatus : ICommand
     {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
-using Convey.Test.Accounts.DTOs;
+using InBranchDashboard.DTOs;
 
-namespace Convey.Test.Accounts.Queries
+namespace InBranchDashboard.Queries
 {
     public class GetAccounts : IQuery<IEnumerable<AccountDto>>
     {

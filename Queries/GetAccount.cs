@@ -1,8 +1,8 @@
 ﻿using System;
 using Convey.CQRS.Queries;
-using Convey.Test.Accounts.DTOs;
+using InBranchDashboard.DTOs;
 
-namespace Convey.Test.Accounts.Queries
+namespace InBranchDashboard.Queries
 {
     public class GetAccount : IQuery<AccountDto>
     {

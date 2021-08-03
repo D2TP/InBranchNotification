@@ -11411,11 +11411,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/Convey.Test.Accounts/Convey.Test.Accounts.csproj",
-      "projectName": "Convey.Test.Accounts",
-      "projectPath": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/Convey.Test.Accounts/Convey.Test.Accounts.csproj",
+      "projectUniqueName": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/InBranchDashboard/InBranchDashboard.csproj",
+      "projectName": "InBranchDashboard",
+      "projectPath": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/InBranchDashboard/InBranchDashboard.csproj",
       "packagesPath": "/Users/petersonatoe/.nuget/packages/",
-      "outputPath": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/Convey.Test.Accounts/obj/",
+      "outputPath": "/Users/petersonatoe/Projects/FBNQuest/SimpleSampleMicroservice/src/InBranchDashboard/obj/",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Convey.Test.Accounts.Exceptions
+namespace InBranchDashboard.Exceptions
 {
     public abstract class DomainException : Exception
     {

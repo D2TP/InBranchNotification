@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Queries;
 
-namespace Convey.Test.Accounts.Queries.handlers
+namespace InBranchDashboard.Queries.handlers
 {
     public class GetJwtToken : IQuery<string>
     {

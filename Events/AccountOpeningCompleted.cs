@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Events;
-using Convey.Test.Accounts.Domain;
-using Convey.Test.Accounts.Services;
+using InBranchDashboard.Domain;
+using InBranchDashboard.Services;
 
-namespace Convey.Test.Accounts.Events
+namespace InBranchDashboard.Events
 {
     public class AccountOpeningCompleted : IDomainEvent
     {
