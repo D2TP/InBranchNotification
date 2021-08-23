@@ -1,0 +1,27 @@
+2021-08-21 18:05:29.019 -04:00 [INF] Prometheus integration is enabled.
+2021-08-21 18:05:29.272 -04:00 [INF] User profile is available. Using 'C:\Users\mpool\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-08-21 18:05:30.926 -04:00 [INF] Declaring a queue: 'in_branch_dashboard/payments.payment_made' with routing key: 'payment_made' for an exchange: 'payments'.
+2021-08-21 18:05:30.959 -04:00 [INF] Declaring a dead letter queue: 'dlx-in_branch_dashboard/payments.payment_made' for an exchange: 'dlx-orders'.
+2021-08-21 18:05:31.042 -04:00 [INF] Now listening on: http://localhost:5007
+2021-08-21 18:05:31.044 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-08-21 18:05:31.046 -04:00 [INF] Hosting environment: Development
+2021-08-21 18:05:31.049 -04:00 [INF] Content root path: C:\Users\mpool\source\repos\D2TP\InBranchDashboardAPI
+2021-08-21 18:05:33.064 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/ - -
+2021-08-21 18:05:33.267 -04:00 [INF] Executing endpoint ' HTTP: GET'
+2021-08-21 18:05:33.276 -04:00 [INF] Executed endpoint ' HTTP: GET'
+2021-08-21 18:05:33.284 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/ - - - 200 - - 225.1242ms
+2021-08-21 18:05:33.389 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/favicon.ico - -
+2021-08-21 18:05:33.439 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/favicon.ico - - - 404 0 - 49.6391ms
+2021-08-21 18:05:43.049 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/index.html - -
+2021-08-21 18:05:43.170 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/index.html - - - 200 - text/html;charset=utf-8 120.3262ms
+2021-08-21 18:05:43.193 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/swagger-ui.css - -
+2021-08-21 18:05:43.198 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/swagger-ui-bundle.js - -
+2021-08-21 18:05:43.206 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/swagger-ui-standalone-preset.js - -
+2021-08-21 18:05:43.278 -04:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2021-08-21 18:05:43.308 -04:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2021-08-21 18:05:43.327 -04:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2021-08-21 18:05:43.347 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/swagger-ui-standalone-preset.js - - - 200 311804 application/javascript 140.3538ms
+2021-08-21 18:05:43.347 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/swagger-ui.css - - - 200 142933 text/css 153.8632ms
+2021-08-21 18:05:43.347 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/swagger-ui-bundle.js - - - 200 986342 application/javascript 148.6433ms
+2021-08-21 18:05:43.544 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/v2/swagger.json - -
+2021-08-21 18:05:43.934 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/v2/swagger.json - - - 200 - application/json;charset=utf-8 389.9575ms

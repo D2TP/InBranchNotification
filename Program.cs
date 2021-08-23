@@ -34,6 +34,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Convey.Auth;
 using InBranchDashboard.Queries.handlers;
+using InBranchDashboard.Queries.ADLogin.queries;
 
 namespace InBranchDashboard
 {
@@ -93,6 +94,8 @@ namespace InBranchDashboard
                                             .Get("", ctx => ctx.Response.WriteAsync("Accounts Service"))
                                             .Get("ping", ctx => ctx.Response.WriteAsync("pong"))
                                             .Get<GetAccounts, IEnumerable<AccountDto>>("accounts/{customerId}")
+                                            //G. OMONI my attempt below, but not able top validate and  swagger result not valid
+                                            .Get<LoginWithAdQuery, bool>("accounts/{LoginDTO}")
                                             .Get<GetJwtToken, string >("login")
                                             .Get<GetAccount, AccountDto>("accounts/{customerId}/{accountNo}", auth: true)                                           
                                             .Post<CreateAccount>("accounts",
