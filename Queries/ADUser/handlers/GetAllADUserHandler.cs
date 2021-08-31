@@ -31,8 +31,8 @@ namespace InBranchDashboard.Queries.ADUser.handlers
         public async Task<List<ADCreateCommandDTO>> HandleAsync(GetAllADUserQuery query)
         {
              
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectADUserAndRoleName);
-            if (entity == null)
+            var entity = await _dbController.SQLFetchAsync(Sql.SelectAllADUserAndRoleName);
+            if (entity.Rows.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:ADUserController/GetAllADUsers-Get|| [GetAllADUserHandler][Handle]");

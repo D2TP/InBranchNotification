@@ -40,6 +40,14 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.1.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.1.1, )"
+            },
             "Convey": {
               "target": "Package",
               "version": "[0.5.445, )"
@@ -57,10 +65,6 @@
               "version": "[0.5.445, )"
             },
             "Convey.Discovery.Consul": {
-              "target": "Package",
-              "version": "[0.5.445, )"
-            },
-            "Convey.Docs.Swagger": {
               "target": "Package",
               "version": "[0.5.445, )"
             },
@@ -143,6 +147,14 @@
             "Oracle.ManagedDataAccess.Core": {
               "target": "Package",
               "version": "[3.21.3, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.1.5, )"
+            },
+            "System.Data.DataSetExtensions": {
+              "target": "Package",
+              "version": "[4.5.0, )"
             }
           },
           "imports": [

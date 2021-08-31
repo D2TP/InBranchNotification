@@ -13,5 +13,7 @@ namespace InBranchDashboard.DTOs
         public string LastNmae { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }
+
+        public int BranchId { get; set; }
     }
 }

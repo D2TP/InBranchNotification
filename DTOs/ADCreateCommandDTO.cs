@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InBranchDashboard.Domain;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace InBranchDashboard.DTOs
 {
     public class ADCreateCommandDTO
     {
+        [Display(Name = "ADUserId")]
+        public string id { get; set; }
         [Display(Name = "UserName")]
         public string user_name { get; set; }
         [Display(Name = "FirstName")]
@@ -16,12 +19,15 @@ namespace InBranchDashboard.DTOs
         public string last_name { get; set; }
         [Display(Name = "Role")]
         public string role_name { get; set; }
-        [Display(Name = "ADUserId")]
-        public int  id { get; set; }
+    
         [Display(Name = "Active")]
         public bool  active{ get; set; }
         [Display(Name = "EntryDate")]
         public DateTime  entry_date   { get; set; }
-
+        [Display(Name = "BranchName")]
+        public string branch_name { get; set; }
+        [Display(Name = "Email")]
+        public string email { get; set; }
+        public Role Roles { get; set; }
     }
 }

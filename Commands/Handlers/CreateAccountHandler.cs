@@ -14,17 +14,17 @@ namespace InBranchDashboard.Commands.Handlers
 
     public class CreateAccountHandler : ICommandHandler<CreateAccount>
     {
-        private readonly IMongoRepository<Account, Guid> _repository;
+        //private readonly IMongoRepository<Account, Guid> _repository;
         private readonly IBusPublisher _publisher;
         private readonly IMessageOutbox _outbox;       
         private readonly ILogger<CreateAccountHandler> _logger;
         private readonly ITracer _tracer;
 
-        public CreateAccountHandler(IMongoRepository<Account, Guid> repository, IBusPublisher publisher,
+        public CreateAccountHandler(  IBusPublisher publisher,
             IMessageOutbox outbox, ITracer tracer,
             ILogger<CreateAccountHandler> logger)
         {
-            _repository = repository;
+          //  _repository = repository;
             _publisher = publisher;
             _outbox = outbox;
             _tracer = tracer;
@@ -33,25 +33,25 @@ namespace InBranchDashboard.Commands.Handlers
 
         public async Task HandleAsync(CreateAccount command)
         {
-            var exists = await _repository.ExistsAsync(o => o.AccountNo == command.AccountNo);
-            if (exists)
-            {
-                throw new InvalidOperationException($"Account with given no: {command.AccountNo} for {command.CustomerId} already exists!");
-            }           
+            //var exists = await _repository.ExistsAsync(o => o.AccountNo == command.AccountNo);
+            //if (exists)
+            //{
+            //    throw new InvalidOperationException($"Account with given no: {command.AccountNo} for {command.CustomerId} already exists!");
+            //}           
          
-            var account = new Account(command.AccountId,command.CustomerId, command.AccountNo, DateTime.Now );
-            await _repository.AddAsync(account);
+            //var account = new Account(command.AccountId,command.CustomerId, command.AccountNo, DateTime.Now );
+            //await _repository.AddAsync(account);
 
-            _logger.LogInformation($"Created an Account with no: {command.AccountNo}, customer: {command.CustomerId}.");
-            var spanContext = _tracer.ActiveSpan.Context.ToString();
-            var @event = new AccountCreated(account);
-            if (_outbox.Enabled)
-            {
-                await _outbox.SendAsync(@event, spanContext: spanContext);
-                return;
-            }
+            //_logger.LogInformation($"Created an Account with no: {command.AccountNo}, customer: {command.CustomerId}.");
+            //var spanContext = _tracer.ActiveSpan.Context.ToString();
+            //var @event = new AccountCreated(account);
+            //if (_outbox.Enabled)
+            //{
+            //    await _outbox.SendAsync(@event, spanContext: spanContext);
+            //    return;
+            //}
 
-            await _publisher.PublishAsync(@event, spanContext: spanContext);
+            //await _publisher.PublishAsync(@event, spanContext: spanContext);
         }
     }
 }

@@ -9,10 +9,11 @@ namespace InBranchDashboard.Exceptions
     {
         public string ErrorDescription { get; set; }
         public int ErrorCode { get; set; }
-        public HandleGeneralException(int errorCode, string error)
+        public HandleGeneralException(int errorCode, string error) : base( errorCode.ToString()+":"+ error)
         {
             ErrorDescription = error;
             ErrorCode = errorCode;
         }
+         
     }
 }

@@ -1,58 +1,53 @@
-﻿using System;
+﻿using Convey.CQRS.Commands;
+using Convey.CQRS.Queries;
+using InBranchDashboard.DTOs;
+using InBranchDashboard.Queries.ADLogin.queries;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Convey.CQRS.Commands;
-using Convey.CQRS.Queries;
-using InBranchDashboard.Commands;
-using InBranchDashboard.DTOs;
-using InBranchDashboard.Queries;
-using Microsoft.AspNetCore.Mvc;
 
 namespace InBranchDashboard.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AccountsController : ControllerBase
+    public class AccountsController : Controller
     {
-        private readonly ICommandDispatcher _commandDispatcher;
+        //private readonly ICommandDispatcher _commandDispatcher;
         private readonly IQueryDispatcher _queryDispatcher;
-
-        public AccountsController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
+        private readonly ILogger<AccountsController> _logger;
+        public AccountsController(ILogger<AccountsController> logger,  IQueryDispatcher queryDispatcher)
         {
-            _commandDispatcher = commandDispatcher;
+         //   _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
+            _logger = logger;
         }
-
-        [HttpGet("{accountNo}")]
-        public async Task<ActionResult<AccountDto>> Get([FromRoute] GetAccount query)
+        [HttpPost("login")]
+        public async Task<ActionResult<ADUserDTO>> Login([FromBody] LoginWithAdQuery loginDto)
         {
-            var account = await _queryDispatcher.QueryAsync(query);
-            if (account is null)
+            //AD Login
+            var aDUserDTO = new ADUserDTO();
+            try
             {
-                return NotFound();
+                aDUserDTO = await _queryDispatcher.QueryAsync(loginDto);
+            }
+            catch (Exception ex)
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.Unauthorized)
+                {
+                    Content = new StringContent( ex.InnerException.Message),
+                    ReasonPhrase = ex.InnerException.Message
+                    
+                };
+
+                return StatusCode(StatusCodes.Status401Unauthorized, resp);
             }
 
-            return account;
-        }
+            return Ok(aDUserDTO);
 
-        [HttpPost]
-        public async Task<ActionResult> Post(CreateAccount command)
-        {
-            await _commandDispatcher.SendAsync(command);
-            return CreatedAtAction(nameof(Get), new { accountNo = command.AccountNo }, null);
-        }
-        [HttpPut]
-        public async Task<ActionResult> Put(CreateAccount command)
-        {
-            await _commandDispatcher.SendAsync(command);
-            return CreatedAtAction(nameof(Get), new { accountNo = command.AccountNo }, null);
-        }
-        [HttpDelete]
-        public async Task<ActionResult> Delete(CreateAccount command)
-        {
-            await _commandDispatcher.SendAsync(command);
-            return CreatedAtAction(nameof(Get), new { accountNo = command.AccountNo }, null);
         }
     }
 }

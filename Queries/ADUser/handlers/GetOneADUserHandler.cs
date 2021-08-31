@@ -32,7 +32,7 @@ namespace InBranchDashboard.Queries.ADUser.handlers
         {
             object[] param = { query.ADUserId };
             var entity = await _dbController.SQLFetchAsync(Sql.SelectADUserAndRoleName, param);
-            if (entity == null)
+            if (entity.Rows.Count ==0)
             {
                 _logger.LogError("Error: There is no user with {User Id} |Caller:ADUserController/GetAnDUsers-Get|| [CreateOneADUserHandler][Handle]", query.ADUserId);
                 throw new HandleGeneralException(404, "User does not exist");

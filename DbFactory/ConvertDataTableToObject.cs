@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.DbFactory
 {
-    public class ConvertDataTableToObject
+    public class ConvertDataTableToObject: IConvertDataTableToObject
     {
         public   List<T> ConvertDataTable<T>(DataTable dt)
         {

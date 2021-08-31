@@ -10,7 +10,7 @@ namespace InBranchDashboard.Domain
     {
         //  id,role_name,category_id
         [Display(Name = "RoleId")]
-        public int id { get; set; }
+        public string id { get; set; }
         [Display(Name = "RoleName")]
         public string role_name { get; set; }
         [Display(Name = "CategoryId")]

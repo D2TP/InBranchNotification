@@ -9,11 +9,11 @@ namespace InBranchDashboard.Queries.ADUser.queries
 {
     public class GetOneADUserQuery : IQuery<ADCreateCommandDTO>
     {
-        public GetOneADUserQuery(int aDUserId)
+        public GetOneADUserQuery(string aDUserId)
         {
             ADUserId = aDUserId;
         }
 
-        public int ADUserId { get; set; }
+        public string ADUserId { get; set; }
     }
 }

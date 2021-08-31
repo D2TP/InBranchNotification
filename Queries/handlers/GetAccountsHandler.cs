@@ -11,18 +11,20 @@ namespace InBranchDashboard.Queries.handlers
 {
     public class GetAccountsHandler : IQueryHandler<GetAccounts,IEnumerable <AccountDto>>    
     {
-        private readonly IMongoRepository<Account, Guid> _accountsRepository;
+       // private readonly IMongoRepository<Account, Guid> _accountsRepository;
 
-        public GetAccountsHandler(IMongoRepository<Account, Guid> accountsRepository)
+        public GetAccountsHandler()
         {
-            _accountsRepository = accountsRepository;
+          //  _accountsRepository = accountsRepository;
         }
 
         public async Task<IEnumerable<AccountDto>> HandleAsync(GetAccounts query)
         {
-            var accounts = await _accountsRepository.FindAsync(accts => accts.CustomerId == query.CustomerId);            
+            //var accounts = await _accountsRepository.FindAsync(accts => accts.CustomerId == query.CustomerId);            
 
-            return accounts?.Select(p => p.AsDto());
+            //return accounts?.Select(p => p.AsDto());
+
+            return null;
         }
 
     }
