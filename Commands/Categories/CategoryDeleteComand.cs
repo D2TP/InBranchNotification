@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Commands.Category
+namespace InBranchDashboard.Commands.Categories
 {
     public class CategoryDeleteComand : CategoryCommand, ICommand
     {

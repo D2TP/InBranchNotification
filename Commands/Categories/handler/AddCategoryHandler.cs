@@ -18,22 +18,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-namespace InBranchDashboard.Commands.Category.handler
+ 
+namespace InBranchDashboard.Commands.Categories.handler
 {
-    public class UpdateCategoryHandler : ICommandHandler<UpdateCategoryCommand>
+    public class AddCategoryHandler : ICommandHandler<CategoryCommand>
     {
 
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
         // private readonly IMapper _mapper;
-        private readonly ILogger<UpdateCategoryHandler> _logger;
+        private readonly ILogger<AddCategoryHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
         private readonly IBusPublisher _publisher;
         private readonly ITracer _tracer;
         private readonly IMessageOutbox _outbox;
 
-        public UpdateCategoryHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<UpdateCategoryHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher publisher)
+        public AddCategoryHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<AddCategoryHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher publisher)
         {
             _dbController = dbController;
             _systemSettings = new SystemSettings(memoryCache);
@@ -44,34 +44,30 @@ namespace InBranchDashboard.Commands.Category.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task HandleAsync(UpdateCategoryCommand command)
+        public async Task HandleAsync(CategoryCommand command)
         {
 
 
-            object[] param = { command.id };
+            command.id = Guid.NewGuid().ToString(); 
+             
 
-            var categorySearch = await _dbController.SQLFetchAsync(Sql.SelectOneCatigory, param);
-            if (categorySearch.Rows.Count == 0)
-            {
-                _logger.LogError("Error: Server returned no result |Caller:CategoriesController/DeleteCategory || [DeleteCategoryHandler][Handle]");
-                throw new HandleGeneralException(500, "The CategoryId not valid");
-            }
+
+            object[] param = { command.id, command.category_name };
             int entity;
             try
             {
-                object[] param1 = { command.category_name,command.id,  };
-                entity = await _dbController.SQLExecuteAsync(Sql.UpdateCatigory, param1);
+                entity = await _dbController.SQLExecuteAsync(Sql.InsertCatigory, param);
             }
             catch (Exception ex)
             {
 
-                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/UpdateCategory|| [UpdateCategoryHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/CreateCategory|| [AddCategoryHandler][Handle]", ex);
+                throw new HandleGeneralException(500, "Creation failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();
 
-            var @event = new GenericCreatedEvent(" Category Updated", command.id);
+            var @event = new GenericCreatedEvent("New Category created", command.id);
 
             if (_outbox.Enabled)
             {

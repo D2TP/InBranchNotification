@@ -2,17 +2,20 @@
 using Convey.CQRS.Commands;
 using Convey.CQRS.Queries;
 using InBranchDashboard.Commands.AdUser;
-using InBranchDashboard.Commands.Category;
-using InBranchDashboard.Commands.Category.handler;
+using InBranchDashboard.Commands.Categories;
+using InBranchDashboard.Commands.Categories.handler;
 using InBranchDashboard.Commands.UserRole;
+using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
-using InBranchDashboard.Queries.Category;
+using InBranchDashboard.Queries.Categories;
 using InBranchMgt.Commands.AdUser;
 using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,13 +39,13 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GetAllCatigories")]
-        public async Task<ActionResult<List<CategoryDTO>>> GetAllCatigories()
+        public async Task<ActionResult<List<CategoryDTO>>> GetAllCatigories([FromQuery] QueryStringParameters queryStringParameters)
         {
             //AD Login
-            var categoryDTO = new List<CategoryDTO>();
+            var categoryDTO = new PagedList<CategoryDTO>();
             try
             {
-                var categoryQueries = new CategoryQueries();
+                var categoryQueries = new CategoryQueries(queryStringParameters);
                 categoryDTO = await _queryDispatcher.QueryAsync(categoryQueries);
             }
             catch (Exception ex)
@@ -61,6 +64,17 @@ namespace InBranchDashboard.Controllers
                 _logger.LogError("Server Error occured while getting all ADUser||Caller:CategoriesController/GetAllCatigories  || [CategoryQueries][Handle] error:{error}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+            var metadata = new
+            {
+                categoryDTO.TotalCount,
+                categoryDTO.PageSize,
+                categoryDTO.CurrentPage,
+                categoryDTO.TotalPages,
+                categoryDTO.HasNext,
+                categoryDTO.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
 
             return Ok(categoryDTO);
 

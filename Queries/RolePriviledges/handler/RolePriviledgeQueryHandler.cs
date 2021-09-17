@@ -10,11 +10,13 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
+using InBranchDashboard.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ using System.Threading.Tasks;
 namespace InBranchDashboard.Queries.RolePriviledges.handler
 { 
 
-    public class RolePriviledgeQueryHandler : IQueryHandler<RolePriviledgeQueries, List<RolePriviledgeDTO>>
+    public class RolePriviledgeQueryHandler : IQueryHandler<RolePriviledgeQueries, PagedList<RolePriviledgeDTO>>
 {
 
         private readonly IDbController _dbController;
@@ -44,19 +46,25 @@ namespace InBranchDashboard.Queries.RolePriviledges.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<List<RolePriviledgeDTO>> HandleAsync(RolePriviledgeQueries query)
+        public async Task<PagedList<RolePriviledgeDTO>> HandleAsync(RolePriviledgeQueries query)
     {
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectRolePriviledge);
-            if (entity.Rows.Count == 0)
+            var entity =   _dbController.SQLFetchAsync(Sql.SelectRolePriviledge).Result.AsEnumerable().OrderBy(on => on.Field<string>("priviledge_name"))
+ .ToList();
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RolePriviledgeController/GetAllCatigories-Get|| [RolePriviledgeQueryHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<RolePriviledgeDTO> rolePriviledgeDTO = new List<RolePriviledgeDTO>();
-            rolePriviledgeDTO = _convertDataTableToObject.ConvertDataTable<RolePriviledgeDTO>(entity);
+            
+          var  _rolePriviledge = _convertDataTableToObject.ConvertDataRowList<RolePriviledgeDTO>(entity).AsQueryable();
 
-            return rolePriviledgeDTO;
+            
+            var rolePriviledge = PagedList<RolePriviledgeDTO>.ToPagedList(_rolePriviledge,
+               query._queryStringParameters.PageNumber,
+                query._queryStringParameters.PageSize);
+
+            return rolePriviledge;
         }
 }
 }

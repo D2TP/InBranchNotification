@@ -10,11 +10,13 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
+using InBranchDashboard.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ using System.Threading.Tasks;
 namespace InBranchDashboard.Queries.Permissions.handler
 { 
 
-    public class PermissionQueryHandler : IQueryHandler<PermissionQueries, List<Permission>>
+    public class PermissionQueryHandler : IQueryHandler<PermissionQueries, PagedList<Permission>>
 {
 
         private readonly IDbController _dbController;
@@ -44,19 +46,24 @@ namespace InBranchDashboard.Queries.Permissions.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<List<Permission>> HandleAsync(PermissionQueries query)
+        public async Task<PagedList<Permission>> HandleAsync(PermissionQueries query)
     {
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectPermission);
-            if (entity.Rows.Count == 0)
+            var entity =   _dbController.SQLFetchAsync(Sql.SelectPermission).Result.AsEnumerable().OrderBy(on => on.Field<string>("permission_name"))
+ .ToList(); 
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:PermissionController/GetAllCatigories-Get|| [PermissionQueryHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<Permission> Permission = new List<Permission>();
-            Permission = _convertDataTableToObject.ConvertDataTable<Permission>(entity);
+             
+            var _permission = _convertDataTableToObject.ConvertDataRowList<Permission>(entity).AsQueryable();
 
-            return Permission;
+            var permission = PagedList<Permission>.ToPagedList(_permission,
+              query._queryStringParameters.PageNumber,
+              query._queryStringParameters.PageSize);
+
+            return permission;
         }
 }
 }

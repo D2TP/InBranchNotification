@@ -3,17 +3,19 @@ using DbFactory;
 using InBranchDashboard.DbFactory;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Exceptions;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace InBranchDashboard.Queries.ADUser.handlers
 {
-    public class GetAllADUserHandler : IQueryHandler<GetAllADUserQuery, List<ADCreateCommandDTO>>
+    public class GetAllADUserHandler : IQueryHandler<GetAllADUserQuery, PagedList<ADUserBranchDTO>>
     {
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
@@ -28,20 +30,23 @@ namespace InBranchDashboard.Queries.ADUser.handlers
             _logger = logger;
             _convertDataTableToObject = convertDataTableToObject;
         }
-        public async Task<List<ADCreateCommandDTO>> HandleAsync(GetAllADUserQuery query)
+ 
+        public Task<PagedList<ADUserBranchDTO>> HandleAsync(GetAllADUserQuery query)
         {
-             
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectAllADUserAndRoleName);
-            if (entity.Rows.Count == 0)
+            var entity = _dbController.SQLFetchAsync(Sql.SelectADUserAndBranch).Result.AsEnumerable().OrderBy(on => on.Field<string>("user_name"))
+ .ToList();
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:ADUserController/GetAllADUsers-Get|| [GetAllADUserHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<ADCreateCommandDTO> aDCreateCommandDTO = new List<ADCreateCommandDTO>();
-            aDCreateCommandDTO = _convertDataTableToObject.ConvertDataTable<ADCreateCommandDTO>(entity);
-
-            return aDCreateCommandDTO;
+            var aDCreateCommandDTO = _convertDataTableToObject.ConvertDataRowList<ADUserBranchDTO>(entity).AsQueryable();
+            var pagelist = PagedList<ADUserBranchDTO>.ToPagedList(aDCreateCommandDTO,
+            query._aDUserParameters.PageNumber,
+            query._aDUserParameters.PageSize);
+             
+            return Task.FromResult(pagelist);
         }
     }
 }

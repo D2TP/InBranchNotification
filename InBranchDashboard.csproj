@@ -37,6 +37,7 @@
     <PackageReference Include="Convey.WebApi.CQRS" Version="0.5.445" />
     <PackageReference Include="Convey.WebApi.Security" Version="0.5.445" />
     <PackageReference Include="Convey.WebApi.Swagger" Version="0.5.445" />
+    <PackageReference Include="LightQuery" Version="2.1.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="3.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.7" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.3" />

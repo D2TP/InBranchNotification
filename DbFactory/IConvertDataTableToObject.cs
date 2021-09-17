@@ -7,5 +7,6 @@ namespace InBranchDashboard.DbFactory
     {
         List<T> ConvertDataTable<T>(DataTable dt);
         T GetItem<T>(DataRow dr);
+        List<T> ConvertDataRowList<T>(List<DataRow> dr);
     }
 }

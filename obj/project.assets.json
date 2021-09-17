@@ -1103,6 +1103,44 @@
           "lib/netstandard2.0/Jaeger.Senders.Thrift.dll": {}
         }
       },
+      "LightQuery/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "LightQuery.Client": "2.1.0",
+          "LightQuery.Shared": "2.1.0"
+        },
+        "compile": {
+          "lib/net5.0/LightQuery.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/LightQuery.dll": {}
+        }
+      },
+      "LightQuery.Client/2.1.0": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "11.0.2",
+          "System.Reactive": "4.3.2"
+        },
+        "compile": {
+          "lib/netstandard2.0/LightQuery.Client.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/LightQuery.Client.dll": {}
+        }
+      },
+      "LightQuery.Shared/2.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/LightQuery.Shared.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/LightQuery.Shared.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.Authentication.Certificate/5.0.2": {
         "type": "package",
         "dependencies": {
@@ -3714,6 +3752,18 @@
           }
         }
       },
+      "System.Reactive/4.3.2": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/_._": {}
+        },
+        "build": {
+          "buildTransitive/netcoreapp3.0/System.Reactive.targets": {}
+        }
+      },
       "System.Reflection/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -5641,6 +5691,52 @@
         "lib/netstandard2.0/Jaeger.Senders.Thrift.dll",
         "lib/netstandard2.0/Jaeger.Senders.Thrift.pdb",
         "lib/netstandard2.0/Jaeger.Senders.Thrift.xml"
+      ]
+    },
+    "LightQuery/2.1.0": {
+      "sha512": "uW+/4PhXJiDbrDXyZ33MXFmQJXOXRzV07Y+OH3v/4Tu8PU9E2JnrfAx8IgxSG7ODdLJ+BlnBUjtgBOBSxJHizw==",
+      "type": "package",
+      "path": "lightquery/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "gd_icon_256.png",
+        "lib/net461/LightQuery.dll",
+        "lib/net5.0/LightQuery.dll",
+        "lib/netcoreapp3.1/LightQuery.dll",
+        "lib/netstandard2.0/LightQuery.dll",
+        "lightquery.2.1.0.nupkg.sha512",
+        "lightquery.nuspec"
+      ]
+    },
+    "LightQuery.Client/2.1.0": {
+      "sha512": "wsYuyRULT6ixsGJTpSCuzr0gbl/8MGjskDQZkAg6C/jdaxSqxvIwe1MW4ATPpJZwCSmpgN7CPh/Xw7uUdKLCtQ==",
+      "type": "package",
+      "path": "lightquery.client/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "gd_icon_256.png",
+        "lib/net461/LightQuery.Client.dll",
+        "lib/netstandard2.0/LightQuery.Client.dll",
+        "lightquery.client.2.1.0.nupkg.sha512",
+        "lightquery.client.nuspec"
+      ]
+    },
+    "LightQuery.Shared/2.1.0": {
+      "sha512": "hi4uKOvCC9mCsrehWOyyMKyMAtE3KRm7axQ6+DfWsdbzicVo+uVQAKaJvDjfTDyy+/6APtsjOpdURn51YwQ1Xw==",
+      "type": "package",
+      "path": "lightquery.shared/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "gd_icon_256.png",
+        "lib/net461/LightQuery.Shared.dll",
+        "lib/net5.0/LightQuery.Shared.dll",
+        "lib/netcoreapp3.1/LightQuery.Shared.dll",
+        "lib/netstandard2.0/LightQuery.Shared.dll",
+        "lightquery.shared.2.1.0.nupkg.sha512",
+        "lightquery.shared.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Authentication.Certificate/5.0.2": {
@@ -10187,6 +10283,32 @@
         "version.txt"
       ]
     },
+    "System.Reactive/4.3.2": {
+      "sha512": "WhGkScPWxw2pp7UwRW8M1OvYZ3WUDPC2wJ0aiuaB4KRD3bt4wLkgHgYnOUu87WRhsurvv5LN0E63iWOEza2o8g==",
+      "type": "package",
+      "path": "system.reactive/4.3.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "build/netcoreapp3.0/System.Reactive.dll",
+        "build/netcoreapp3.0/System.Reactive.targets",
+        "build/netcoreapp3.0/System.Reactive.xml",
+        "buildTransitive/netcoreapp3.0/System.Reactive.targets",
+        "lib/net46/System.Reactive.dll",
+        "lib/net46/System.Reactive.xml",
+        "lib/netcoreapp3.0/_._",
+        "lib/netstandard2.0/System.Reactive.dll",
+        "lib/netstandard2.0/System.Reactive.xml",
+        "lib/uap10.0.16299/System.Reactive.dll",
+        "lib/uap10.0.16299/System.Reactive.pri",
+        "lib/uap10.0.16299/System.Reactive.xml",
+        "lib/uap10.0/System.Reactive.dll",
+        "lib/uap10.0/System.Reactive.pri",
+        "lib/uap10.0/System.Reactive.xml",
+        "system.reactive.4.3.2.nupkg.sha512",
+        "system.reactive.nuspec"
+      ]
+    },
     "System.Reflection/4.3.0": {
       "sha512": "KMiAFoW7MfJGa9nDFNcfu+FpEdiHpWgTcS2HdMpDvt9saK3y/G4GwprPyzqjFH9NTaGPQeWNHU+iDlDILj96aQ==",
       "type": "package",
@@ -12654,6 +12776,7 @@
       "Convey.WebApi.CQRS >= 0.5.445",
       "Convey.WebApi.Security >= 0.5.445",
       "Convey.WebApi.Swagger >= 0.5.445",
+      "LightQuery >= 2.1.0",
       "Microsoft.Data.SqlClient >= 3.0.0",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 5.0.7",
       "Oracle.ManagedDataAccess.Core >= 3.21.3",
@@ -12796,6 +12919,10 @@
             "target": "Package",
             "version": "[0.5.445, )"
           },
+          "LightQuery": {
+            "target": "Package",
+            "version": "[2.1.0, )"
+          },
           "Microsoft.Data.SqlClient": {
             "target": "Package",
             "version": "[3.0.0, )"
@@ -12835,7 +12962,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.206\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.207\\RuntimeIdentifierGraph.json"
       }
     }
   }

@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.DbFactory
 {
-    public class ConvertDataTableToObject: IConvertDataTableToObject
+
+
+    public class ConvertDataTableToObject : IConvertDataTableToObject
     {
-        public   List<T> ConvertDataTable<T>(DataTable dt)
+        public List<T> ConvertDataTable<T>(DataTable dt)
         {
             List<T> data = new List<T>();
             foreach (DataRow row in dt.Rows)
@@ -19,7 +21,7 @@ namespace InBranchDashboard.DbFactory
             }
             return data;
         }
-        public   T GetItem<T>(DataRow dr)
+        public T GetItem<T>(DataRow dr)
         {
             Type temp = typeof(T);
             T obj = Activator.CreateInstance<T>();
@@ -36,5 +38,18 @@ namespace InBranchDashboard.DbFactory
             }
             return obj;
         }
+
+
+        public List<T> ConvertDataRowList<T>(List<DataRow> dr)
+        {
+            List<T> data = new List<T>();
+            foreach (DataRow row in dr)
+            {
+                T item = GetItem<T>(row);
+                data.Add(item);
+            }
+            return data;
+        }
+
     }
 }

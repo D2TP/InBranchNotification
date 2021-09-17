@@ -10,12 +10,14 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
-using InBranchDashboard.Queries.Category;
+using InBranchDashboard.Helpers;
+using InBranchDashboard.Queries.Categories;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +25,7 @@ using System.Threading.Tasks;
 namespace InBranchDashboard.Queries.Branches.handler
 { 
 
-    public class BranchQueryHandler : IQueryHandler<BranchQueries, List<Branch>>
+    public class BranchQueryHandler : IQueryHandler<BranchQueries, PagedList<Branch>>
 {
 
         private readonly IDbController _dbController;
@@ -45,19 +47,25 @@ namespace InBranchDashboard.Queries.Branches.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<List<Branch>> HandleAsync(BranchQueries query)
+        public async Task<PagedList<Branch>> HandleAsync(BranchQueries query)
     {
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectBranches);
-            if (entity.Rows.Count == 0)
+           // var entity = await _dbController.SQLFetchAsync(Sql.SelectBranches);
+            var entity = _dbController.SQLFetchAsync(Sql.SelectBranches).Result.AsEnumerable().OrderBy(on => on.Field<string>("branch_name"))
+ .ToList();
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/GetAllCatigories-Get|| [CategoryQueryHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<Branch> branches = new List<Branch>();
-            branches = _convertDataTableToObject.ConvertDataTable<Branch>(entity);
+           
+            var branches = _convertDataTableToObject.ConvertDataRowList<Branch>(entity).AsQueryable();
+          var brancheItems = PagedList<Branch>.ToPagedList(branches,
+             query._queryStringParameters.PageNumber,
+             query._queryStringParameters.PageSize);
 
-            return branches;
+
+            return brancheItems;
         }
 }
 }

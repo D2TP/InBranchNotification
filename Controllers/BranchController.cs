@@ -7,6 +7,7 @@ using InBranchDashboard.Commands.Branches;
  
 using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.Branches;
 using InBranchMgt.Commands.AdUser;
@@ -14,6 +15,7 @@ using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +39,14 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
         [HttpGet("GetAllBranches")]
-        public async Task<ActionResult<List<Branch>>> GetAllBranches()
+        public async Task<ActionResult<List<Branch>>> GetAllBranches([FromQuery] QueryStringParameters queryStringParameters)
         {
-            //AD Login
-            var Branch = new List<Branch>();
+            var branch = new PagedList<Branch>();
             try
             {
-                var BranchQueries = new BranchQueries();
-                Branch = await _queryDispatcher.QueryAsync(BranchQueries);
+                var BranchQueries = new BranchQueries(queryStringParameters);
+                
+                branch = await _queryDispatcher.QueryAsync(BranchQueries);
             }
             catch (Exception ex)
             {
@@ -62,8 +64,17 @@ namespace InBranchDashboard.Controllers
                 _logger.LogError("Server Error occured while getting all ADUser||Caller:BranchsController/GetAllBranchs  || [BranchQueries][Handle] error:{error}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok(Branch);
+            var metadata = new
+            {
+                branch.TotalCount,
+                branch.PageSize,
+                branch.CurrentPage,
+                branch.TotalPages,
+                branch.HasNext,
+                branch.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(branch);
 
         }
 

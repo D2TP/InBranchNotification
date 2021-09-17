@@ -10,12 +10,14 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
-using InBranchDashboard.Queries.Category;
+using InBranchDashboard.Helpers;
+using InBranchDashboard.Queries.Categories;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +25,7 @@ using System.Threading.Tasks;
 namespace InBranchDashboard.Queries.Roles.handler
 { 
 
-    public class RoleQueryHandler : IQueryHandler<RoleQueries, List<Role>>
+    public class RoleQueryHandler : IQueryHandler<RoleQueries, PagedList<Role>>
 {
 
         private readonly IDbController _dbController;
@@ -45,17 +47,22 @@ namespace InBranchDashboard.Queries.Roles.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<List<Role>> HandleAsync(RoleQueries query)
+        public async Task<PagedList<Role>> HandleAsync(RoleQueries query)
     {
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectRoles);
-            if (entity.Rows.Count == 0)
+            var entity =   _dbController.SQLFetchAsync(Sql.SelectRoles).Result.AsEnumerable().OrderBy(on => on.Field<string>("role_name"))
+ .ToList(); ;
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RoleController/GetAllRoles-Get|| [RoleQueryHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<Role> role = new List<Role>();
-            role = _convertDataTableToObject.ConvertDataTable<Role>(entity);
+         
+          var  _role = _convertDataTableToObject.ConvertDataRowList<Role>(entity).AsQueryable();
+            var role = PagedList<Role>.ToPagedList(_role,
+            query._queryStringParameters.PageNumber,
+            query._queryStringParameters.PageSize);
+
 
             return role;
         }

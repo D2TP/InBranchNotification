@@ -19,7 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Queries.Category.handler
+namespace InBranchDashboard.Queries.Categories.handler
 {
     public class SingleCategorHandler : IQueryHandler<CategoryQuery, CategoryDTO>
     {

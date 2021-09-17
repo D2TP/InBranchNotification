@@ -6,6 +6,7 @@ using InBranchDashboard.Commands.Permissions;
 using InBranchDashboard.Commands.UserRole;
 using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.Permissions;
 using InBranchMgt.Commands.AdUser;
@@ -13,6 +14,7 @@ using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +39,14 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GetAllPermission")]
-        public async Task<ActionResult<List<Permission>>> GetAllPermission()
+        public async Task<ActionResult<List<Permission>>> GetAllPermission([FromQuery] QueryStringParameters queryStringParameters)
         {
             //AD Login
-            var PermissionDTO = new List<Permission>();
+            var permissions = new PagedList<Permission>();
             try
             {
-                var PermissionQueries = new PermissionQueries();
-                PermissionDTO = await _queryDispatcher.QueryAsync(PermissionQueries);
+                var PermissionQueries = new PermissionQueries(queryStringParameters);
+                permissions = await _queryDispatcher.QueryAsync(PermissionQueries);
             }
             catch (Exception ex)
             {
@@ -63,7 +65,17 @@ namespace InBranchDashboard.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return Ok(PermissionDTO);
+            var metadata = new
+            {
+                permissions.TotalCount,
+                permissions.PageSize,
+                permissions.CurrentPage,
+                permissions.TotalPages,
+                permissions.HasNext,
+                permissions.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(permissions);
 
         }
 

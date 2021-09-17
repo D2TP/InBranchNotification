@@ -6,6 +6,7 @@ using InBranchDashboard.Commands.Priviledges;
 using InBranchDashboard.Commands.UserRole;
 using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.Priviledges;
 using InBranchMgt.Commands.AdUser;
@@ -13,6 +14,7 @@ using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,14 +39,14 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GetAllPriviledge")]
-        public async Task<ActionResult<List<Priviledge>>> GetAllPriviledge()
+        public async Task<ActionResult<List<Priviledge>>> GetAllPriviledge([FromQuery] QueryStringParameters queryStringParameters)
         {
             //AD Login
-            var PriviledgeDTO = new List<Priviledge>();
+            var priviledges = new PagedList<Priviledge>();
             try
             {
-                var PriviledgeQueries = new PriviledgeQueries();
-                PriviledgeDTO = await _queryDispatcher.QueryAsync(PriviledgeQueries);
+                var priviledgeQueries = new PriviledgeQueries(queryStringParameters);
+                priviledges = await _queryDispatcher.QueryAsync(priviledgeQueries);
             }
             catch (Exception ex)
             {
@@ -62,8 +64,17 @@ namespace InBranchDashboard.Controllers
                 _logger.LogError("Server Error occured while getting all ADUser||Caller:PriviledgeController/GetAllPriviledge  || [PriviledgeQueries][Handle] error:{error}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-
-            return Ok(PriviledgeDTO);
+            var metadata = new
+            {
+                priviledges.TotalCount,
+                priviledges.PageSize,
+                priviledges.CurrentPage,
+                priviledges.TotalPages,
+                priviledges.HasNext,
+                priviledges.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(priviledges);
 
         }
 

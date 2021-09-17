@@ -123,14 +123,14 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GellAllRoleUserIsAssinged")]
-        public async Task<ActionResult<AdUserRoleListQuery>> GellAllRoleUserIsAssinged(string adUserid)
+        public async Task<ActionResult<AdUserRoleQuery>> GellAllRoleUserIsAssinged(string adUserid)
         {
             //AD Login
             var adUserRoleDTO = new List<AdUserRoleDTO>();
             try
             {
-                var adUserRoleListQuery = new AdUserRoleListQuery(adUserid);
-                adUserRoleDTO = await _queryDispatcher.QueryAsync(adUserRoleListQuery);
+                var adUserRoleQuery = new AdUserRoleQuery(adUserid);
+                adUserRoleDTO = await _queryDispatcher.QueryAsync(adUserRoleQuery);
             }
             catch (Exception ex)
             {

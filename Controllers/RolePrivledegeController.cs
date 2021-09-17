@@ -4,8 +4,9 @@ using Convey.CQRS.Queries;
 using InBranchDashboard.Commands.AdUser;
 using InBranchDashboard.Commands.RolePriviledges;
 using InBranchDashboard.Commands.UserRole;
-
+using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.RolePriviledges;
 using InBranchDashboard.Queries.Roles;
@@ -14,6 +15,7 @@ using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,13 +127,13 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GellAllRolePrivledege")]
-        public async Task<ActionResult<AdUserRoleListQuery>> GellAllRoleUserIsAssinged()
+        public async Task<ActionResult<AdUserRoleListQuery>> GellAllRoleUserIsAssinged([FromQuery] QueryStringParameters queryStringParameters)
         {
             //AD Login
-            var rolePriviledgeDTO = new List<RolePriviledgeDTO>();
+            var rolePriviledgeDTO = new PagedList<RolePriviledgeDTO>();
             try
             {
-                var rolePriviledgeQueries = new RolePriviledgeQueries();
+                var rolePriviledgeQueries = new RolePriviledgeQueries(queryStringParameters);
                  rolePriviledgeDTO = await _queryDispatcher.QueryAsync(rolePriviledgeQueries);
             }
             catch (Exception ex)
@@ -150,6 +152,18 @@ namespace InBranchDashboard.Controllers
                 _logger.LogError("Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+
+
+            var metadata = new
+            {
+                rolePriviledgeDTO.TotalCount,
+                rolePriviledgeDTO.PageSize,
+                rolePriviledgeDTO.CurrentPage,
+                rolePriviledgeDTO.TotalPages,
+                rolePriviledgeDTO.HasNext,
+                rolePriviledgeDTO.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(rolePriviledgeDTO);
 

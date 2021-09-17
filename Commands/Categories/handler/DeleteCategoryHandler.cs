@@ -18,22 +18,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
- 
-namespace InBranchDashboard.Commands.Category.handler
+
+
+namespace InBranchDashboard.Commands.Categories.handler
 {
-    public class AddCategoryHandler : ICommandHandler<CategoryCommand>
+    public class DeleteCategoryHandler: ICommandHandler<CategoryDeleteComand>
     {
 
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
         // private readonly IMapper _mapper;
-        private readonly ILogger<AddCategoryHandler> _logger;
+        private readonly ILogger<DeleteCategoryHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
         private readonly IBusPublisher _publisher;
         private readonly ITracer _tracer;
         private readonly IMessageOutbox _outbox;
 
-        public AddCategoryHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<AddCategoryHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher publisher)
+        public DeleteCategoryHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<DeleteCategoryHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher publisher)
         {
             _dbController = dbController;
             _systemSettings = new SystemSettings(memoryCache);
@@ -44,25 +45,29 @@ namespace InBranchDashboard.Commands.Category.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task HandleAsync(CategoryCommand command)
+        public async Task HandleAsync(CategoryDeleteComand command)
         {
 
 
-            command.id = Guid.NewGuid().ToString(); 
-             
+            object[] param = { command.id };
 
-
-            object[] param = { command.id, command.category_name };
+            var categorySearch = await _dbController.SQLFetchAsync(Sql.SelectOneCatigory, param);
+            if (categorySearch.Rows.Count == 0)
+            {
+                _logger.LogError("Error: Server returned no result |Caller:CategoriesController/DeleteCategory || [DeleteCategoryHandler][Handle]");
+                throw new HandleGeneralException(500, "The CategoryId not valid");
+            }
             int entity;
             try
             {
-                entity = await _dbController.SQLExecuteAsync(Sql.InsertCatigory, param);
+                 
+                entity = await _dbController.SQLExecuteAsync(Sql.DeletCategory, param);
             }
             catch (Exception ex)
             {
 
-                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/CreateCategory|| [AddCategoryHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Creation failed");
+                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/DeleteCategory|| [DeleteCategoryHandler][Handle]", ex);
+                throw new HandleGeneralException(500, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

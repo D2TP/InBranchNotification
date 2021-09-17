@@ -10,11 +10,13 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
+using InBranchDashboard.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ using System.Threading.Tasks;
 namespace InBranchDashboard.Queries.Regions.handler
 { 
 
-    public class RegionQueryHandler : IQueryHandler<RegionQueries, List<RegionDTO>>
+    public class RegionQueryHandler : IQueryHandler<RegionQueries, PagedList<RegionDTO>>
 {
 
         private readonly IDbController _dbController;
@@ -44,19 +46,23 @@ namespace InBranchDashboard.Queries.Regions.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<List<RegionDTO>> HandleAsync(RegionQueries query)
+        public async Task<PagedList<RegionDTO>> HandleAsync(RegionQueries query)
     {
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectRegion);
-            if (entity.Rows.Count == 0)
+            var entity =   _dbController.SQLFetchAsync(Sql.SelectRegion).Result.AsEnumerable().OrderBy(on => on.Field<string>("region_name"))
+ .ToList(); 
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/GetAllCatigories-Get|| [RegionQueryHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<RegionDTO> RegionDTO = new List<RegionDTO>();
-            RegionDTO = _convertDataTableToObject.ConvertDataTable<RegionDTO>(entity);
-
-            return RegionDTO;
+            
+          
+            var region = _convertDataTableToObject.ConvertDataRowList<RegionDTO>(entity).AsQueryable();
+            var regions = PagedList<RegionDTO>.ToPagedList(region,
+               query._queryStringParameters.PageNumber,
+                query._queryStringParameters.PageSize);
+            return regions;
         }
 }
 }

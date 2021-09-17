@@ -6,6 +6,7 @@ using InBranchDashboard.Commands.Roles;
 using InBranchDashboard.Commands.UserRole;
 using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.Roles;
 using InBranchMgt.Commands.AdUser;
@@ -13,6 +14,7 @@ using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,14 +38,14 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
         [HttpGet("GetAllRoles")]
-        public async Task<ActionResult<List<Role>>> GetAllRoles()
+        public async Task<ActionResult<List<Role>>> GetAllRoles([FromQuery] QueryStringParameters queryStringParameters)
         {
             //AD Login
-            var Role = new List<Role>();
+            var role = new PagedList<Role>();
             try
             {
-                var roleQueries = new RoleQueries();
-                Role = await _queryDispatcher.QueryAsync(roleQueries);
+                var roleQueries = new RoleQueries(queryStringParameters);
+                role = await _queryDispatcher.QueryAsync(roleQueries);
             }
             catch (Exception ex)
             {
@@ -62,7 +64,17 @@ namespace InBranchDashboard.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return Ok(Role);
+            var metadata = new
+            {
+                role.TotalCount,
+                role.PageSize,
+                role.CurrentPage,
+                role.TotalPages,
+                role.HasNext,
+                role.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(role);
 
         }
 

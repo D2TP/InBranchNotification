@@ -4,7 +4,9 @@ using Convey.CQRS.Queries;
 using InBranchDashboard.Commands.AdUser;
 using InBranchDashboard.Commands.Regions;
 using InBranchDashboard.Commands.UserRole;
+using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.Regions;
 using InBranchMgt.Commands.AdUser;
@@ -12,6 +14,7 @@ using InBranchMgt.Commands.AdUser.Handlers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,14 +39,14 @@ namespace InBranchDashboard.Controllers
 
 
         [HttpGet("GetAllRegion")]
-        public async Task<ActionResult<List<RegionDTO>>> GetAllRegion()
+        public async Task<ActionResult<List<RegionDTO>>> GetAllRegion([FromQuery] QueryStringParameters queryStringParameters)
         {
             //AD Login
-            var RegionDTO = new List<RegionDTO>();
+            var regionDTO = new PagedList<RegionDTO>();
             try
             {
-                var RegionQueries = new RegionQueries();
-                RegionDTO = await _queryDispatcher.QueryAsync(RegionQueries);
+                var RegionQueries = new RegionQueries(queryStringParameters);
+                regionDTO = await _queryDispatcher.QueryAsync(RegionQueries);
             }
             catch (Exception ex)
             {
@@ -62,7 +65,18 @@ namespace InBranchDashboard.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return Ok(RegionDTO);
+
+             var metadata = new
+            {
+                 regionDTO.TotalCount,
+                 regionDTO.PageSize,
+                 regionDTO.CurrentPage,
+                 regionDTO.TotalPages,
+                 regionDTO.HasNext,
+                 regionDTO.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(regionDTO);
 
         }
 

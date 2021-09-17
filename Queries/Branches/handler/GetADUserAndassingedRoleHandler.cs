@@ -15,7 +15,7 @@ using InBranchDashboard.Domain;
 
 namespace InBranchDashboard.Queries.Roles.handler
 {
-    public class GetADUserAndassingedRoleHandler : IQueryHandler<AdUserRoleListQuery, List<AdUserRoleDTO>>
+    public class GetADUserAndassingedRoleHandler : IQueryHandler<AdUserRoleQuery, List<AdUserRoleDTO>>
     {
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
@@ -30,7 +30,7 @@ namespace InBranchDashboard.Queries.Roles.handler
             _logger = logger;
             _convertDataTableToObject = convertDataTableToObject;
         }
-        public async Task<List<AdUserRoleDTO>> HandleAsync(AdUserRoleListQuery query)
+        public async Task<List<AdUserRoleDTO>> HandleAsync(AdUserRoleQuery query)
         {
             object[] param = { query.AdeUserId };
             var entity = await _dbController.SQLFetchAsync(Sql.SelectADUserAndRoleName, param);

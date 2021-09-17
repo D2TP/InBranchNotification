@@ -19,22 +19,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-
-namespace InBranchDashboard.Commands.Category.handler
+namespace InBranchDashboard.Commands.Categories.handler
 {
-    public class DeleteCategoryHandler: ICommandHandler<CategoryDeleteComand>
+    public class UpdateCategoryHandler : ICommandHandler<UpdateCategoryCommand>
     {
 
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
         // private readonly IMapper _mapper;
-        private readonly ILogger<DeleteCategoryHandler> _logger;
+        private readonly ILogger<UpdateCategoryHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
         private readonly IBusPublisher _publisher;
         private readonly ITracer _tracer;
         private readonly IMessageOutbox _outbox;
 
-        public DeleteCategoryHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<DeleteCategoryHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher publisher)
+        public UpdateCategoryHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<UpdateCategoryHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher publisher)
         {
             _dbController = dbController;
             _systemSettings = new SystemSettings(memoryCache);
@@ -45,7 +44,7 @@ namespace InBranchDashboard.Commands.Category.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task HandleAsync(CategoryDeleteComand command)
+        public async Task HandleAsync(UpdateCategoryCommand command)
         {
 
 
@@ -60,19 +59,19 @@ namespace InBranchDashboard.Commands.Category.handler
             int entity;
             try
             {
-                 
-                entity = await _dbController.SQLExecuteAsync(Sql.DeletCategory, param);
+                object[] param1 = { command.category_name,command.id,  };
+                entity = await _dbController.SQLExecuteAsync(Sql.UpdateCatigory, param1);
             }
             catch (Exception ex)
             {
 
-                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/DeleteCategory|| [DeleteCategoryHandler][Handle]", ex);
+                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/UpdateCategory|| [UpdateCategoryHandler][Handle]", ex);
                 throw new HandleGeneralException(500, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();
 
-            var @event = new GenericCreatedEvent("New Category created", command.id);
+            var @event = new GenericCreatedEvent(" Category Updated", command.id);
 
             if (_outbox.Enabled)
             {

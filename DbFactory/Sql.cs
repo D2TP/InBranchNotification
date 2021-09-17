@@ -9,6 +9,7 @@ namespace DbFactory
         public const string SelectADUserById = "SELECT id,  email, user_name, first_name, last_name , active, entry_date FROM inb_aduser where id =#";
         public const string SelectRole = "SELECT id,role_name,category_id  FROM inb_role where id=#";
         public const string SelectADUserAndRoleName = "SELECT r.category_id, r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.id=#";
+        public const string SelectADUserAndBranch = "SELECT a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,b.branch_name FROM  inb_aduser AS a  INNER JOIN inb_branch AS b ON a.branch_id = b.id";
         public const string SelectAllADUserAndRoleName = "SELECT a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id";
         public const string InsertUserRole = "INSERT INTO  inb_user_role  (id, ad_user_id , role_id )  VALUES (#,#,#)";
         public const string SelectUserBaseOnAdUserId = "Select  id, ad_user_id , role_id from inb_user_role where ad_user_id=#";

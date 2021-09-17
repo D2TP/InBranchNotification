@@ -10,11 +10,13 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
+using InBranchDashboard.Helpers;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ using System.Threading.Tasks;
 namespace InBranchDashboard.Queries.Priviledges.handler
 { 
 
-    public class PriviledgeQueryHandler : IQueryHandler<PriviledgeQueries, List<Priviledge>>
+    public class PriviledgeQueryHandler : IQueryHandler<PriviledgeQueries, PagedList<Priviledge>>
 {
 
         private readonly IDbController _dbController;
@@ -44,19 +46,23 @@ namespace InBranchDashboard.Queries.Priviledges.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<List<Priviledge>> HandleAsync(PriviledgeQueries query)
+        public async Task<PagedList<Priviledge>> HandleAsync(PriviledgeQueries query)
     {
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectPriviledge);
-            if (entity.Rows.Count == 0)
+            var entity =   _dbController.SQLFetchAsync(Sql.SelectPriviledge).Result.AsEnumerable().OrderBy(on => on.Field<string>("priviledge_name"))
+ .ToList(); ;
+            if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:PriviledgeController/GetAllCatigories-Get|| [PriviledgeQueryHandler][Handle]");
                 throw new HandleGeneralException(500, "Server returned no result");
             }
-            List<Priviledge> Priviledge = new List<Priviledge>();
-            Priviledge = _convertDataTableToObject.ConvertDataTable<Priviledge>(entity);
+        
+            var _priviledge = _convertDataTableToObject.ConvertDataRowList<Priviledge>(entity).AsQueryable();
 
-            return Priviledge;
+            var priviledge = PagedList<Priviledge>.ToPagedList(_priviledge,
+               query._queryStringParameters.PageNumber,
+               query._queryStringParameters.PageSize);
+            return priviledge;
         }
 }
 }

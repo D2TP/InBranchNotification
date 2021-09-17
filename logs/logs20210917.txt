@@ -1,0 +1,84 @@
+2021-09-17 00:00:11.147 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/GetAllRegion?PageNumber=1&PageSize=1 - -
+2021-09-17 00:00:11.173 -04:00 [INF] Executing endpoint 'InBranchDashboard.Controllers.RegionController.GetAllRegion (InBranchDashboard)'
+2021-09-17 00:00:11.207 -04:00 [INF] Route matched with {action = "GetAllRegion", controller = "Region"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[InBranchDashboard.DTOs.RegionDTO]]] GetAllRegion(InBranchDashboard.Domain.QueryStringParameters) on controller InBranchDashboard.Controllers.RegionController (InBranchDashboard).
+2021-09-17 00:00:11.220 -04:00 [INF] Executing action method InBranchDashboard.Controllers.RegionController.GetAllRegion (InBranchDashboard) - Validation state: "Valid"
+2021-09-17 00:00:11.310 -04:00 [INF] Executed action method InBranchDashboard.Controllers.RegionController.GetAllRegion (InBranchDashboard), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 86.9476ms.
+2021-09-17 00:00:11.314 -04:00 [INF] Executing OkObjectResult, writing value of type 'InBranchDashboard.Helpers.PagedList`1[[InBranchDashboard.DTOs.RegionDTO, InBranchDashboard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-09-17 00:00:11.318 -04:00 [INF] Executed action InBranchDashboard.Controllers.RegionController.GetAllRegion (InBranchDashboard) in 99.5038ms
+2021-09-17 00:00:11.320 -04:00 [INF] Executed endpoint 'InBranchDashboard.Controllers.RegionController.GetAllRegion (InBranchDashboard)'
+2021-09-17 00:00:11.322 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/GetAllRegion?PageNumber=1&PageSize=1 - - - 200 - application/json;+charset=utf-8 175.0980ms
+2021-09-17 00:21:29.603 -04:00 [INF] Prometheus integration is enabled.
+2021-09-17 00:21:29.921 -04:00 [INF] Outbox is enabled, type: 'Sequential', message processing every 2000 ms.
+2021-09-17 00:21:29.992 -04:00 [INF] User profile is available. Using 'C:\Users\mpool\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-17 00:21:32.329 -04:00 [INF] Declaring a queue: 'in_branch_dashboard/payments.payment_made' with routing key: 'payment_made' for an exchange: 'payments'.
+2021-09-17 00:21:32.363 -04:00 [INF] Declaring a dead letter queue: 'dlx-in_branch_dashboard/payments.payment_made' for an exchange: 'dlx-orders'.
+2021-09-17 00:21:32.613 -04:00 [INF] Now listening on: http://localhost:5007
+2021-09-17 00:21:32.678 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-17 00:21:32.682 -04:00 [INF] Hosting environment: Development
+2021-09-17 00:21:32.686 -04:00 [INF] Content root path: C:\Users\mpool\source\repos\D2TP\InBranchDashboardAPI
+2021-09-17 00:21:35.779 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/ - -
+2021-09-17 00:21:36.351 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/ - - - 404 0 - 576.7735ms
+2021-09-17 00:21:41.666 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/index.html - -
+2021-09-17 00:21:41.885 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/index.html - - - 200 - text/html;charset=utf-8 219.0371ms
+2021-09-17 00:21:44.316 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/v2/swagger.json - -
+2021-09-17 00:21:44.756 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/v2/swagger.json - - - 200 - application/json;charset=utf-8 439.9622ms
+2021-09-17 00:22:00.587 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/GellAllRolePrivledege?PageNumber=1&PageSize=1 - -
+2021-09-17 00:22:00.630 -04:00 [INF] Executing endpoint 'InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard)'
+2021-09-17 00:22:00.781 -04:00 [INF] Route matched with {action = "GellAllRoleUserIsAssinged", controller = "RolePrivledege"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[InBranchDashboard.Queries.Roles.AdUserRoleListQuery]] GellAllRoleUserIsAssinged(InBranchDashboard.Domain.QueryStringParameters) on controller InBranchDashboard.Controllers.RolePrivledegeController (InBranchDashboard).
+2021-09-17 00:22:01.348 -04:00 [INF] Executing action method InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard) - Validation state: "Valid"
+2021-09-17 00:22:03.740 -04:00 [INF] Executed action method InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 2362.379ms.
+2021-09-17 00:22:03.763 -04:00 [INF] Executing OkObjectResult, writing value of type 'InBranchDashboard.Helpers.PagedList`1[[InBranchDashboard.DTOs.RolePriviledgeDTO, InBranchDashboard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-09-17 00:22:03.805 -04:00 [INF] Executed action InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard) in 3003.2915ms
+2021-09-17 00:22:03.809 -04:00 [INF] Executed endpoint 'InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard)'
+2021-09-17 00:22:03.811 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/GellAllRolePrivledege?PageNumber=1&PageSize=1 - - - 200 - application/json;+charset=utf-8 3224.8216ms
+2021-09-17 00:22:24.981 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/GellAllRolePrivledege?PageNumber=1&PageSize=2 - -
+2021-09-17 00:22:24.988 -04:00 [INF] Executing endpoint 'InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard)'
+2021-09-17 00:22:24.997 -04:00 [INF] Route matched with {action = "GellAllRoleUserIsAssinged", controller = "RolePrivledege"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[InBranchDashboard.Queries.Roles.AdUserRoleListQuery]] GellAllRoleUserIsAssinged(InBranchDashboard.Domain.QueryStringParameters) on controller InBranchDashboard.Controllers.RolePrivledegeController (InBranchDashboard).
+2021-09-17 00:22:25.014 -04:00 [INF] Executing action method InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard) - Validation state: "Valid"
+2021-09-17 00:22:25.106 -04:00 [INF] Executed action method InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 72.068ms.
+2021-09-17 00:22:25.113 -04:00 [INF] Executing OkObjectResult, writing value of type 'InBranchDashboard.Helpers.PagedList`1[[InBranchDashboard.DTOs.RolePriviledgeDTO, InBranchDashboard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-09-17 00:22:25.117 -04:00 [INF] Executed action InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard) in 110.0648ms
+2021-09-17 00:22:25.120 -04:00 [INF] Executed endpoint 'InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard)'
+2021-09-17 00:22:25.123 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/GellAllRolePrivledege?PageNumber=1&PageSize=2 - - - 200 - application/json;+charset=utf-8 142.2970ms
+2021-09-17 00:22:36.461 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/GellAllRolePrivledege?PageNumber=2&PageSize=2 - -
+2021-09-17 00:22:36.465 -04:00 [INF] Executing endpoint 'InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard)'
+2021-09-17 00:22:36.469 -04:00 [INF] Route matched with {action = "GellAllRoleUserIsAssinged", controller = "RolePrivledege"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[InBranchDashboard.Queries.Roles.AdUserRoleListQuery]] GellAllRoleUserIsAssinged(InBranchDashboard.Domain.QueryStringParameters) on controller InBranchDashboard.Controllers.RolePrivledegeController (InBranchDashboard).
+2021-09-17 00:22:36.489 -04:00 [INF] Executing action method InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard) - Validation state: "Valid"
+2021-09-17 00:22:36.538 -04:00 [INF] Executed action method InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 44.8299ms.
+2021-09-17 00:22:36.547 -04:00 [INF] Executing OkObjectResult, writing value of type 'InBranchDashboard.Helpers.PagedList`1[[InBranchDashboard.DTOs.RolePriviledgeDTO, InBranchDashboard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-09-17 00:22:36.551 -04:00 [INF] Executed action InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard) in 66.1536ms
+2021-09-17 00:22:36.555 -04:00 [INF] Executed endpoint 'InBranchDashboard.Controllers.RolePrivledegeController.GellAllRoleUserIsAssinged (InBranchDashboard)'
+2021-09-17 00:22:36.557 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/GellAllRolePrivledege?PageNumber=2&PageSize=2 - - - 200 - application/json;+charset=utf-8 96.2771ms
+2021-09-17 00:38:36.177 -04:00 [INF] Prometheus integration is enabled.
+2021-09-17 00:38:36.465 -04:00 [INF] Outbox is enabled, type: 'Sequential', message processing every 2000 ms.
+2021-09-17 00:38:36.738 -04:00 [INF] User profile is available. Using 'C:\Users\mpool\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2021-09-17 00:38:38.318 -04:00 [INF] Declaring a queue: 'in_branch_dashboard/payments.payment_made' with routing key: 'payment_made' for an exchange: 'payments'.
+2021-09-17 00:38:38.353 -04:00 [INF] Declaring a dead letter queue: 'dlx-in_branch_dashboard/payments.payment_made' for an exchange: 'dlx-orders'.
+2021-09-17 00:38:38.491 -04:00 [INF] Now listening on: http://localhost:5007
+2021-09-17 00:38:38.502 -04:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-09-17 00:38:38.505 -04:00 [INF] Hosting environment: Development
+2021-09-17 00:38:38.507 -04:00 [INF] Content root path: C:\Users\mpool\source\repos\D2TP\InBranchDashboardAPI
+2021-09-17 00:38:40.780 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/ - -
+2021-09-17 00:38:41.237 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/ - - - 404 0 - 458.6195ms
+2021-09-17 00:38:45.937 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/index.html - -
+2021-09-17 00:38:46.169 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/index.html - - - 200 - text/html;charset=utf-8 232.0006ms
+2021-09-17 00:38:48.344 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/docs/v2/swagger.json - -
+2021-09-17 00:38:48.865 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/docs/v2/swagger.json - - - 200 - application/json;charset=utf-8 520.8425ms
+2021-09-17 00:39:06.510 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/GetAllRoles?PageNumber=1&PageSize=1 - -
+2021-09-17 00:39:06.521 -04:00 [INF] Executing endpoint 'InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard)'
+2021-09-17 00:39:06.647 -04:00 [INF] Route matched with {action = "GetAllRoles", controller = "Roles"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[InBranchDashboard.Domain.Role]]] GetAllRoles(InBranchDashboard.Domain.QueryStringParameters) on controller InBranchDashboard.Controllers.RolesController (InBranchDashboard).
+2021-09-17 00:39:07.223 -04:00 [INF] Executing action method InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard) - Validation state: "Valid"
+2021-09-17 00:39:20.895 -04:00 [INF] Executed action method InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 13639.2236ms.
+2021-09-17 00:39:20.918 -04:00 [INF] Executing OkObjectResult, writing value of type 'InBranchDashboard.Helpers.PagedList`1[[InBranchDashboard.Domain.Role, InBranchDashboard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-09-17 00:39:20.982 -04:00 [INF] Executed action InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard) in 14301.321ms
+2021-09-17 00:39:20.985 -04:00 [INF] Executed endpoint 'InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard)'
+2021-09-17 00:39:20.988 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/GetAllRoles?PageNumber=1&PageSize=1 - - - 200 - application/json;+charset=utf-8 14478.5068ms
+2021-09-17 00:39:33.973 -04:00 [INF] Request starting HTTP/1.1 GET http://localhost:5007/GetAllRoles?PageNumber=2&PageSize=1 - -
+2021-09-17 00:39:34.030 -04:00 [INF] Executing endpoint 'InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard)'
+2021-09-17 00:39:34.034 -04:00 [INF] Route matched with {action = "GetAllRoles", controller = "Roles"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[InBranchDashboard.Domain.Role]]] GetAllRoles(InBranchDashboard.Domain.QueryStringParameters) on controller InBranchDashboard.Controllers.RolesController (InBranchDashboard).
+2021-09-17 00:39:34.058 -04:00 [INF] Executing action method InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard) - Validation state: "Valid"
+2021-09-17 00:39:49.249 -04:00 [INF] Executed action method InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard), returned result Microsoft.AspNetCore.Mvc.OkObjectResult in 15186.1387ms.
+2021-09-17 00:39:49.254 -04:00 [INF] Executing OkObjectResult, writing value of type 'InBranchDashboard.Helpers.PagedList`1[[InBranchDashboard.Domain.Role, InBranchDashboard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-09-17 00:39:49.257 -04:00 [INF] Executed action InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard) in 15207.7576ms
+2021-09-17 00:39:49.261 -04:00 [INF] Executed endpoint 'InBranchDashboard.Controllers.RolesController.GetAllRoles (InBranchDashboard)'
+2021-09-17 00:39:49.263 -04:00 [INF] Request finished HTTP/1.1 GET http://localhost:5007/GetAllRoles?PageNumber=2&PageSize=1 - - - 200 - application/json;+charset=utf-8 15290.2805ms

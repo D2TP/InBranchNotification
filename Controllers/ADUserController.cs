@@ -16,6 +16,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LightQuery;
+using InBranchDashboard.Domain;
+using Newtonsoft.Json;
+using InBranchDashboard.Helpers;
 
 namespace InBranchDashboard.Controllers
 {
@@ -33,13 +37,14 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
         [HttpGet("getAllADusers")]
-        public async Task<ActionResult<List<ADCreateCommandDTO>>> GetAllADusers()
+     
+        public async Task<ActionResult<PagedList<ADCreateCommandDTO>>> GetAllADusers([FromQuery] ADUserParameters aDUserParameters)
         {
-            //AD Login
-            var aDCreateCommandDTO = new List<ADCreateCommandDTO>();
+            //AD users
+            var aDCreateCommandDTO = new PagedList<ADUserBranchDTO>();
             try
             {
-                var getAllADUserQuery = new GetAllADUserQuery();
+                var getAllADUserQuery = new GetAllADUserQuery(aDUserParameters);
                 aDCreateCommandDTO = await _queryDispatcher.QueryAsync(getAllADUserQuery);
             }
             catch (Exception ex)
@@ -58,6 +63,17 @@ namespace InBranchDashboard.Controllers
                 _logger.LogError("Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+
+            var metadata = new
+            {
+                aDCreateCommandDTO.TotalCount,
+                aDCreateCommandDTO.PageSize,
+                aDCreateCommandDTO.CurrentPage,
+                aDCreateCommandDTO.TotalPages,
+                aDCreateCommandDTO.HasNext,
+                aDCreateCommandDTO.HasPrevious
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(aDCreateCommandDTO);
 
