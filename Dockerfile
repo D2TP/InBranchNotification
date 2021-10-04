@@ -7,7 +7,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["OnboardingService.csproj", "./"]
+COPY ["InBranchDashboardAPI.csproj", "./"]
 RUN dotnet restore "./InBranchDashboardAPI.csproj"
 COPY . .
 WORKDIR "/src/"
