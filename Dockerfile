@@ -7,16 +7,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
-COPY ["InBranchDashboardAPI.csproj", "./"]
-RUN dotnet restore "./InBranchDashboardAPI.csproj"
+COPY ["InBranchDashboard.csproj", "./"]
+RUN dotnet restore "./InBranchDashboard.csproj"
 COPY . .
 WORKDIR "/src/"
-RUN dotnet build "InBranchDashboardAPI.csproj" -c Release -o /app/build
+RUN dotnet build "InBranchDashboard.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "InBranchDashboardAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "InBranchDashboard.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "InBranchDashboardAPI.dll"]
+ENTRYPOINT ["dotnet", "InBranchDashboard.dll"]
