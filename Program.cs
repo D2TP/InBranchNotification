@@ -89,7 +89,7 @@ namespace InBranchDashboard
                                         .AddInMemoryQueryDispatcher()
                                         .AddPrometheus()
                                         //   .AddRedis()
-                                        .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
+                                       // .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
                                         .AddMessageOutbox(
                                 //    o => o.AddMongo()
                                     )
@@ -125,9 +125,9 @@ namespace InBranchDashboard
                                         //        .Put<ChangeAccountStatus>("accounts",
                                         //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}")))
                                         .UseJaeger()
-                                        .UseSwaggerDocs()
-                                        .UseRabbitMq()
-                                        .SubscribeEvent<PaymentMade>())
+                                        .UseSwaggerDocs())
+                                        //.UseRabbitMq()
+                                        //.SubscribeEvent<PaymentMade>())
                                     .UseLogging();
                             //.UseVault();
                         });
