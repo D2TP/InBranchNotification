@@ -40,7 +40,7 @@ using InBranchDashboard.DbFactory;
 using DbFactory;
 using InBranchDashboard.Extensions;
 using InBranchDashboard.Services;
-
+using Swagger.Extension;
 namespace InBranchDashboard
 {
     public class Program
@@ -54,83 +54,85 @@ namespace InBranchDashboard
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
-                        {
-                            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            {
+                var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
-                            var jwtConfig = config.GetSection("JwtConfig").Get<JwtConfig>();
+                var jwtConfig = config.GetSection("JwtConfig").Get<JwtConfig>();
 
 
-                            webBuilder.ConfigureServices(services =>
-                            {
-                                services.AddSwagger();
-                                services.AddMvcCore().AddApiExplorer();
-                                services.AddScoped<IConvertDataTableToObject, ConvertDataTableToObject>();
-                                services.AddScoped<ITokenService, TokenService>();
-                                services.AddScoped<IDbController, DbController>();
-                                services.AddScoped<IValidateService, ValidateService>();
-                                services.AddAutoMapper(typeof(MappingProfiles));
-                                // ValidateService : IValidateService
-                                services
-                                        .AddConvey()
-                                        //              .AddErrorHandler<ExceptionToResponseMapper>()
-                                        //.AddServices()
-                                        .AddHttpClient()
-                                        .AddCorrelationContextLogging()
-                                        .AddConsul()
-                                        .AddFabio()
-                                        .AddJaeger()
-                                     //   .AddMongo()
-                                        //.AddMongoRepository<Account, Guid>("accounts")
-                                        .AddCommandHandlers()
-                                        .AddEventHandlers()
-                                        .AddQueryHandlers()
-                                        .AddInMemoryCommandDispatcher()
-                                        .AddInMemoryEventDispatcher()
-                                        .AddInMemoryQueryDispatcher()
-                                        .AddPrometheus()
-                                        //   .AddRedis()
-                                       // .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
-                                        .AddMessageOutbox(
-                                //    o => o.AddMongo()
-                                    )
-                                        // .AddWebApi()
+                webBuilder.ConfigureServices(services =>
+                {
+                    services.AddSwagger();
+                    services.AddMvcCore().AddApiExplorer();
+                    services.AddScoped<IConvertDataTableToObject, ConvertDataTableToObject>();
+                    services.AddScoped<ITokenService, TokenService>();
+                    services.AddScoped<IDbController, DbController>();
+                    services.AddScoped<IValidateService, ValidateService>();
+                    services.AddAutoMapper(typeof(MappingProfiles));
+                    // ValidateService : IValidateService
+                    services
+                            .AddConvey()
+                            //              .AddErrorHandler<ExceptionToResponseMapper>()
+                            //.AddServices()
+                            .AddHttpClient()
+                            .AddCorrelationContextLogging()
+                            .AddConsul()
+                            .AddFabio()
+                            .AddJaeger()
+                            //   .AddMongo()
+                            //.AddMongoRepository<Account, Guid>("accounts")
+                            .AddCommandHandlers()
+                            .AddEventHandlers()
+                            .AddQueryHandlers()
+                            .AddInMemoryCommandDispatcher()
+                            .AddInMemoryEventDispatcher()
+                            .AddInMemoryQueryDispatcher()
+                            .AddPrometheus()
+                            //   .AddRedis()
+                            .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
+                            .AddMessageOutbox(
+                        //    o => o.AddMongo()
+                        )
+                           // .AddWebApi()
+                           .AddSwaggerDocsExtended()
                                         .AddSwaggerDocs()
-                                        //.AddWebApiSwaggerDocs()
-                                        .AddJwt()
-                                        .Build();
-                            })
-                                    .Configure(app => app
-                                        .UseConvey()
-                                        .UserCorrelationContextLogging()
-                                        //   .UseErrorHandler()
-                                        .UsePrometheus()
-                                        .UseRouting()
-                                        .UseAuthentication()
-                                        //.UseCertificateAuthentication()
-                                        .UseEndpoints(r => r.MapControllers())
-                                        //.UseDispatcherEndpoints(endpoints => endpoints
-                                        //        .Get("", ctx => ctx.Response.WriteAsync("Accounts Service"))
-                                        //        .Get("ping", ctx => ctx.Response.WriteAsync("pong"))
-                                        //        .Get<GetAccounts, IEnumerable<AccountDto>>("accounts/{customerId}")
-                                        //        //G. OMONI my attempt below, but not able top validate and  swagger result not valid
-                                        //        .Get<LoginWithAdQuery, bool>("accounts/{LoginDTO}")
-                                        //        .Get<GetJwtToken, string>("login")
-                                        //        .Get<GetAccount, AccountDto>("accounts/{customerId}/{accountNo}", auth: true)
-                                        //        .Post<CreateAccount>("accounts",
-                                        //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}"))
-                                        //        .Put<CompleteAccountOpening>("accounts",
-                                        //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}/complete"))
-                                        //        .Post<CreateAccount>("accounts",
-                                        //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}"))
-                                        //        .Put<ChangeAccountStatus>("accounts",
-                                        //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}")))
-                                        .UseJaeger()
-                                        .UseSwaggerDocs())
-                                        //.UseRabbitMq()
-                                        //.SubscribeEvent<PaymentMade>())
-                                    .UseLogging();
-                            //.UseVault();
-                        });
+                            //.AddWebApiSwaggerDocs()
+                            .AddJwt()
+                            .Build();
+                })
+                        .Configure(app => app
+                            .UseConvey()
+                            .UserCorrelationContextLogging()
+                            //   .UseErrorHandler()
+                            .UsePrometheus()
+                            .UseRouting()
+                            .UseAuthentication()
+                            //.UseCertificateAuthentication()
+                            .UseEndpoints(r => r.MapControllers())
+                            //.UseDispatcherEndpoints(endpoints => endpoints
+                            //        .Get("", ctx => ctx.Response.WriteAsync("Accounts Service"))
+                            //        .Get("ping", ctx => ctx.Response.WriteAsync("pong"))
+                            //        .Get<GetAccounts, IEnumerable<AccountDto>>("accounts/{customerId}")
+                            //        //G. OMONI my attempt below, but not able top validate and  swagger result not valid
+                            //        .Get<LoginWithAdQuery, bool>("accounts/{LoginDTO}")
+                            //        .Get<GetJwtToken, string>("login")
+                            //        .Get<GetAccount, AccountDto>("accounts/{customerId}/{accountNo}", auth: true)
+                            //        .Post<CreateAccount>("accounts",
+                            //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}"))
+                            //        .Put<CompleteAccountOpening>("accounts",
+                            //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}/complete"))
+                            //        .Post<CreateAccount>("accounts",
+                            //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}"))
+                            //        .Put<ChangeAccountStatus>("accounts",
+                            //            afterDispatch: (cmd, ctx) => ctx.Response.Created($"accounts/{cmd.CustomerId}/{cmd.AccountNo}")))
+                            .UseJaeger()
+                        //     .UseSwaggerDocs()
+                        .UseSwaggerWithReverseProxySupport()
+                            .UseRabbitMq()
+                            .SubscribeEvent<PaymentMade>())
+                        .UseLogging();
+                //.UseVault();
+            });
         }
     }
 }
