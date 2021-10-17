@@ -10,8 +10,8 @@ using Convey.HTTP;
 using Convey.LoadBalancing.Fabio;
 using Convey.Logging;
 using Convey.MessageBrokers.CQRS;
-using Convey.MessageBrokers.Outbox;
-using Convey.MessageBrokers.Outbox.Mongo;
+//using Convey.MessageBrokers.Outbox;
+//using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.Prometheus;
 using Convey.Persistence.MongoDB;
@@ -89,10 +89,10 @@ namespace InBranchDashboard
                             .AddInMemoryQueryDispatcher()
                             .AddPrometheus()
                             //   .AddRedis()
-                            .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
-                            .AddMessageOutbox(
+                       //     .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
+                        //    .AddMessageOutbox(
                         //    o => o.AddMongo()
-                        )
+                    //    )
                            // .AddWebApi()
                            .AddSwaggerDocsExtended()
                                         .AddSwaggerDocs()
@@ -128,8 +128,9 @@ namespace InBranchDashboard
                             .UseJaeger()
                         //     .UseSwaggerDocs()
                         .UseSwaggerWithReverseProxySupport()
-                            .UseRabbitMq()
-                            .SubscribeEvent<PaymentMade>())
+                            //.UseRabbitMq()
+                            //.SubscribeEvent<PaymentMade>()
+                            )
                         .UseLogging();
                 //.UseVault();
             });

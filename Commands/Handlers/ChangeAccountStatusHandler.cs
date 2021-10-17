@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
-using Convey.MessageBrokers.Outbox;
+////using Convey.MessageBrokers.Outbox;
 using Convey.Persistence.MongoDB;
 using InBranchDashboard.Commands.Events;
 using InBranchDashboard.Domain;
@@ -18,18 +18,19 @@ namespace InBranchDashboard.Commands.Handlers
     {
         //private readonly IMongoRepository<Account, Guid> _repository;
         private readonly IBusPublisher _publisher;
-        private readonly IMessageOutbox _outbox;
+       // private readonly IMessageOutbox _outbox;
         private readonly ILogger<ChangeAccountStatusHandler> _logger;
         private readonly ITracer _tracer;
 
-        public ChangeAccountStatusHandler(  IBusPublisher publisher,
-            IMessageOutbox outbox, ITracer tracer,
+        public ChangeAccountStatusHandler( 
+            //IBusPublisher publisher,
+          //  IMessageOutbox outbox, ITracer tracer,
             ILogger<ChangeAccountStatusHandler> logger)
         {
             //_repository = repository;
-            _publisher = publisher;
-            _outbox = outbox;
-            _tracer = tracer;
+       ////     _publisher = publisher;
+            //_outbox = outbox;
+            //_tracer = tracer;
             _logger = logger;
         }
 

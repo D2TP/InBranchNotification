@@ -1,7 +1,7 @@
 ﻿
 using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
-using Convey.MessageBrokers.Outbox;
+////using Convey.MessageBrokers.Outbox;
 using DbFactory;
 using InBranchDashboard.Commands.AdUser;
 using InBranchDashboard.Commands.UserRole;
@@ -29,17 +29,17 @@ namespace InBranchMgt.Commands.AdUser.Handlers
         // private readonly IMapper _mapper;
         private readonly ILogger<DeleteAduserHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
-        private readonly IBusPublisher _publisher;
+    //    private readonly IBusPublisher _publisher;
         private readonly ITracer _tracer;
-        private readonly IMessageOutbox _outbox;
-        public DeleteAduserHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<DeleteAduserHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer, IMessageOutbox outbox, IBusPublisher  publisher)
+    //    private readonly IMessageOutbox _outbox;
+        public DeleteAduserHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<DeleteAduserHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer)//, IMessageOutbox outbox, IBusPublisher  publisher)
         {
             _dbController = dbController;
             _systemSettings = new SystemSettings(memoryCache);
             _logger = logger;
             _tracer = tracer;
-            _publisher = publisher;
-            _outbox = outbox;
+        //    _publisher = publisher;
+           // _outbox = outbox;
             _convertDataTableToObject = convertDataTableToObject;
         }
 
@@ -86,12 +86,12 @@ namespace InBranchMgt.Commands.AdUser.Handlers
 
             var @event = new GenericCreatedEvent("AdUser with Id" + command.AdUserId + "Delete", command.AdUserId);
 
-            if (_outbox.Enabled)
-            {
-                await _outbox.SendAsync(@event, spanContext: spanContext);
-                return;
-            }
-           await _publisher.PublishAsync(@event, spanContext: spanContext);
+            //if (_outbox.Enabled)
+            //{
+            //    await _outbox.SendAsync(@event, spanContext: spanContext);
+            //    return;
+            //}
+          // await _publisher.PublishAsync(@event, spanContext: spanContext);
 
 
         }

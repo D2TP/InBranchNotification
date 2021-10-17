@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Convey.CQRS.Commands;
 using Convey.MessageBrokers;
-using Convey.MessageBrokers.Outbox;
+////using Convey.MessageBrokers.Outbox;
 using Convey.Persistence.MongoDB;
 using InBranchDashboard.Domain;
 using InBranchDashboard.Events;
@@ -14,19 +14,20 @@ namespace InBranchDashboard.Commands.Handlers
     public class CompleteAccountOpeningHandler : ICommandHandler<CompleteAccountOpening>
     {
        // private readonly IMongoRepository<Account, Guid> _repository;
-        private readonly IBusPublisher _publisher;
-        private readonly IMessageOutbox _outbox;
+   //     private readonly IBusPublisher _publisher;
+        //private readonly IMessageOutbox _outbox;
         private readonly ILogger<CompleteAccountOpeningHandler> _logger;
         private readonly ITracer _tracer;
 
-        public CompleteAccountOpeningHandler( IBusPublisher publisher,
-            IMessageOutbox outbox, ITracer tracer,
+        public CompleteAccountOpeningHandler(
+            //IBusPublisher publisher,
+      //      IMessageOutbox outbox, ITracer tracer,
             ILogger<CompleteAccountOpeningHandler> logger)
         {
            // _repository = repository;
-            _publisher = publisher;
-            _outbox = outbox;
-            _tracer = tracer;
+          //  _publisher = publisher;
+            //_outbox = outbox;
+            //_tracer = tracer;
             _logger = logger;
         }
 
