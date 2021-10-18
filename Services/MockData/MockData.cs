@@ -1,6 +1,7 @@
 ﻿using InBranchDashboard.Commands.AdUser;
 using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
+using InBranchDashboard.Helpers;
 using InBranchMgt.Commands.AdUser;
 using InBranchMgt.Commands.AdUser.Handlers;
 
@@ -15,6 +16,80 @@ namespace InBranchDashboard.Services.MockData
     {
 
 
+
+        public static PagedList<ADUserBranchDTO> GetADUserBranchDTO()
+        {
+            var _ADUsers = new PagedList<ADUserBranchDTO>()
+            {
+
+
+
+
+
+                new ADUserBranchDTO()
+                   {
+                         user_name= "markt",
+                         first_name= "Mark",
+                         last_name= "Twain",
+                       
+                         id= "acc3f96e-d294-4700-952c-07aff64c77be",
+                         active= true,
+                         entry_date= Convert.ToDateTime("2021-08-23T06:54:08.787"),
+                         branch_name= "Branch 1",
+                         email= "mark@pragimtech.com"
+                   },
+                new ADUserBranchDTO()
+                   {
+                       user_name= "markt",
+                         first_name= "Mark",
+                         last_name= "Twain",
+                          
+                         id= "81ba906a-2b02-42cd-9af8-b5ece9e06cbb",
+                         active= true,
+                         entry_date= Convert.ToDateTime("2021-08-23T06:54:08.787"),
+                         branch_name= "Branch 1",
+                         email= "mark@pragimtech.com"
+                },
+                new ADUserBranchDTO()
+                   {
+                      user_name= "markt",
+                         first_name= "Mark",
+                         last_name= "Twain",
+                        
+                         id= "a1b87813-a3ab-487c-9e17-cfafd9eaec99",
+                         active= true,
+                         entry_date= Convert.ToDateTime("2021-08-23T06:54:08.787"),
+                         branch_name= "Branch 1",
+                         email= "mark@pragimtech.com"
+                },
+               new ADUserBranchDTO()
+                   {
+                      user_name= "markt",
+                         first_name= "Mark",
+                         last_name= "Twain",
+                        
+                         id="95c059a0-a8d4-417e-8cce-7d452b8f42b9",
+                         active= true,
+                         entry_date= Convert.ToDateTime("2021-08-23T06:54:08.787"),
+                         branch_name= "Branch 1",
+                         email= "mark@pragimtech.com"
+                },
+                new ADUserBranchDTO()
+                   {
+                        user_name= "markt",
+                         first_name= "Mark",
+                         last_name= "Twain",
+                         
+                         id= "e22e8f2c-295f-4ad3-b5c9-a3dcb0ef4424",
+                         active= true,
+                         entry_date= Convert.ToDateTime("2021-08-23T06:54:08.787"),
+                         branch_name= "Branch 1",
+                         email= "mark@pragimtech.com"
+                }
+            };
+
+            return _ADUsers;
+        }
 
         public static List<ADCreateCommandDTO> GetADUserItems()
         {
@@ -89,6 +164,8 @@ namespace InBranchDashboard.Services.MockData
 
             return _ADUsers;
         }
+
+
         public static IEnumerable<CreateADUserCommand> GetADUserCommand()
         {
 
