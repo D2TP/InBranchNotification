@@ -14,7 +14,7 @@ using Convey.MessageBrokers.CQRS;
 //using Convey.MessageBrokers.Outbox.Mongo;
 using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.Prometheus;
-using Convey.Persistence.MongoDB;
+////using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
 using InBranchDashboard.Commands;
 using InBranchDashboard.Domain;
