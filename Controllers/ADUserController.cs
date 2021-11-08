@@ -23,6 +23,8 @@ using InBranchDashboard.Helpers;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ADUserController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -36,11 +38,16 @@ namespace InBranchDashboard.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-        [HttpGet("getAllADusers")]
-     
-        public async Task<ActionResult<PagedList<ADCreateCommandDTO>>> GetAllADusers([FromQuery] ADUserParameters aDUserParameters)
+       
+        [HttpGet("GetAllADusers/{PageNumber}/{PageSize}")]
+        public async Task<ActionResult<PagedList<ADCreateCommandDTO>>> GetAllADusers(int PageNumber, int PageSize)
         {
             //AD users
+            var aDUserParameters = new ADUserParameters()
+            {
+                PageSize = PageSize,
+                PageNumber = PageNumber,
+            };
             var aDCreateCommandDTO = new PagedList<ADUserBranchDTO>();
             try
             {
@@ -79,8 +86,8 @@ namespace InBranchDashboard.Controllers
 
         }
 
-
-        [HttpGet("getADUserbyId")]
+        [HttpGet("GetADUserbyId/{id}")]
+ 
         public async Task<ActionResult<ADCreateCommandDTO>> GetADUserbyId(string id)
         {
             //AD Login
@@ -177,41 +184,42 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.UserName, ex.InnerException.Message);
+                    _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.user_name, ex.InnerException.Message);
                     return StatusCode(StatusCodes.Status500InternalServerError, resp);
                 }
-                _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.UserName, ex.Message);
+                _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.user_name, ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
 
             }
         }
 
-
-        [HttpDelete("DeleteADUser")]
+       
+        [HttpDelete("DeleteADUser/{id}")]
         public async Task<ActionResult> DeleteADUser(string id)
         {
 
-            if (id==string.Empty)
+            if (id == string.Empty)
             {
                 _logger.LogError("Validation error {username} was not updated||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle]");
                 return BadRequest(ModelState);
             }
 
-            var deleteAdUser = new DeleteAdUser { AdUserId=id };
+            var deleteAdUser = new DeleteAdUser { AdUserId = id };
             try
             {
 
                 await _commandDispatcher.SendAsync(deleteAdUser);
 
 
-                var response = new HttpResponseMessage(HttpStatusCode.OK) {
+                var response = new HttpResponseMessage(HttpStatusCode.OK)
+                {
                     Content = new StringContent("Succsessfuly Deleted!!!"),
-                    ReasonPhrase = "AD User with id: "+ id + "deleted, all assinged role also deleted"
+                    ReasonPhrase = "AD User with id: " + id + "deleted, all assinged role also deleted"
                 };
                 response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
-               
+
                 return StatusCode(StatusCodes.Status200OK, response);
-                      
+
             }
             catch (Exception ex)
             {
@@ -232,8 +240,8 @@ namespace InBranchDashboard.Controllers
             }
         }
 
-      
 
-        
+
+
     }
 }

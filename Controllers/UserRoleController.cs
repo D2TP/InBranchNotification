@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class UserRoleController : Controller
     {
              private readonly IQueryDispatcher _queryDispatcher;
@@ -35,7 +36,7 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
         [HttpDelete("RemoveARolefromADUser")]
-        public async Task<ActionResult> RemoveARolefromADUser(ADUserAndRold removeSingleRole)
+        public async Task<ActionResult> RemoveARolefromADUser([FromBody] ADUserAndRold removeSingleRole)
         {
 
             if (!ModelState.IsValid)
@@ -52,7 +53,7 @@ namespace InBranchDashboard.Controllers
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("Succsessfuly Deleted!!!"),
-                    ReasonPhrase = "AD User role id: " + removeSingleRole.RoleId + "was deleted,for the following user: " + removeSingleRole.AdUserId
+                    ReasonPhrase = "A role with role id: " + removeSingleRole.RoleId + "was deleted,for the following user: " + removeSingleRole.AdUserId
                 };
                 response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
 
@@ -122,7 +123,7 @@ namespace InBranchDashboard.Controllers
             }
         }
 
-        [HttpGet("GellAllRoleUserIsAssinged")]
+        [HttpGet("GellAllRoleUserIsAssinged/{adUserid}")]
         public async Task<ActionResult<AdUserRoleQuery>> GellAllRoleUserIsAssinged(string adUserid)
         {
             //AD Login

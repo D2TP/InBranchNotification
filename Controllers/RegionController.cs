@@ -23,6 +23,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class RegionController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -38,10 +39,17 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpGet("GetAllRegion")]
-        public async Task<ActionResult<List<RegionDTO>>> GetAllRegion([FromQuery] QueryStringParameters queryStringParameters)
+        [HttpGet("GetAllRegion/{PageNumber}/{PageSize}")]
+
+ 
+        public async Task<ActionResult<PagedList<RegionDTO>>> GetAllRegion(int PageNumber, int PageSize )
         {
             //AD Login
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageNumber = PageNumber,
+                PageSize = PageSize
+            };
             var regionDTO = new PagedList<RegionDTO>();
             try
             {
@@ -80,7 +88,7 @@ namespace InBranchDashboard.Controllers
 
         }
 
-        [HttpGet("GetRegionById")]
+        [HttpGet("GetRegionById/{id}")]
         public async Task<ActionResult<RegionDTO>> GetRegionById(string id)
         {
             //AD Login
@@ -192,7 +200,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeleteRegion")]
+        [HttpDelete("DeleteRegion/{id}")]
         public async Task<ActionResult> DeleteRegion(string id)
         {
 

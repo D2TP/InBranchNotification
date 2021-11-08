@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class PermissionController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -38,10 +39,16 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllPermission")]
-        public async Task<ActionResult<List<Permission>>> GetAllPermission([FromQuery] QueryStringParameters queryStringParameters)
+        [HttpGet("GetAllPermission/{PageNumber}/{PageSize}")]
+      
+        public async Task<ActionResult<PagedList<Permission>>> GetAllPermission(int PageNumber, int PageSize  )
         {
             //AD Login
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageNumber = PageNumber,
+                PageSize = PageSize
+            };
             var permissions = new PagedList<Permission>();
             try
             {
@@ -79,7 +86,7 @@ namespace InBranchDashboard.Controllers
 
         }
 
-        [HttpGet("GetPermissionById")]
+        [HttpGet("GetPermissionById/{id}")]
         public async Task<ActionResult<PermissionDTO>> GetPermissionById(string id)
         {
             //AD Login
@@ -191,7 +198,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeletePermission")]
+        [HttpDelete("DeletePermission/{id}")]
         public async Task<ActionResult> DeletePermission(string id)
         {
 

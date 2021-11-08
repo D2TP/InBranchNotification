@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class RolesController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -37,10 +38,16 @@ namespace InBranchDashboard.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-        [HttpGet("GetAllRoles")]
-        public async Task<ActionResult<List<Role>>> GetAllRoles([FromQuery] QueryStringParameters queryStringParameters)
+        [HttpGet("GetAllRoles/{PageNumber}/{PageSize}")]
+ 
+        public async Task<ActionResult<PagedList<Role>>> GetAllRoles(  int PageNumber, int PageSize)
         {
             //AD Login
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageNumber = PageNumber,
+                PageSize = PageSize
+            };
             var role = new PagedList<Role>();
             try
             {
@@ -78,7 +85,7 @@ namespace InBranchDashboard.Controllers
 
         }
 
-        [HttpGet("GetRolesById")]
+        [HttpGet("GetRolesById/{id}")]
         public async Task<ActionResult<Role>> GetRolesById(string id)
         {
             //AD Login
@@ -191,7 +198,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeleteRole")]
+        [HttpDelete("DeleteRole/{PageSize}")]
         public async Task<ActionResult> DeleteRole(string id)
         {
 

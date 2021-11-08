@@ -52,7 +52,7 @@ namespace InBranchDashboard.Queries.Categories.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/GetCatigoryiesById -Get|| [SingleCategorHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(500, "Catigory Id returned no result");
             }
             CategoryDTO categoryDTO = new CategoryDTO();
             categoryDTO = _convertDataTableToObject.ConvertDataTable<CategoryDTO>(entity).FirstOrDefault();

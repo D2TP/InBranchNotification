@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class RolePrivledegeController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -38,7 +39,7 @@ namespace InBranchDashboard.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-        [HttpDelete("RemoveRolePrivledege")]
+        [HttpDelete("RemoveRolePrivledege/{id}")]
         public async Task<ActionResult> RemoveARolePrivledege(string id)
         {
 
@@ -101,7 +102,7 @@ namespace InBranchDashboard.Controllers
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("Succsessfuly Created!!!"),
-                    ReasonPhrase = "AD User role id: " + command.id + "was created,for the following user: " + command.id
+                    ReasonPhrase = "Priviledge with the following Id : " + command.id + "was created,for the following user: " + command.id
                 };
                 response.Headers.Add("DeleteMessage", "Succsessfuly Added!!!");
 
@@ -126,10 +127,16 @@ namespace InBranchDashboard.Controllers
             }
         }
 
-        [HttpGet("GellAllRolePrivledege")]
-        public async Task<ActionResult<AdUserRoleListQuery>> GellAllRoleUserIsAssinged([FromQuery] QueryStringParameters queryStringParameters)
+        [HttpGet("GellAllRolePrivledege/{PageNumber}/{PageSize}")]
+        public async Task<ActionResult<AdUserRoleListQuery>> GellAllRoleUserIsAssinged(int PageNumber, int PageSize)
         {
             //AD Login
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageSize = PageSize,
+                PageNumber = PageNumber,
+            };
+
             var rolePriviledgeDTO = new PagedList<RolePriviledgeDTO>();
             try
             {

@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class PriviledgeController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -38,10 +39,16 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllPriviledge")]
-        public async Task<ActionResult<List<Priviledge>>> GetAllPriviledge([FromQuery] QueryStringParameters queryStringParameters)
+        [HttpGet("GetAllPriviledge/{PageNumber}/{PageSize}")]
+  
+        public async Task<ActionResult<PagedList<Priviledge>>> GetAllPriviledge(int PageNumber, int PageSize)
         {
             //AD Login
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageNumber = PageNumber,
+                PageSize = PageSize
+            };
             var priviledges = new PagedList<Priviledge>();
             try
             {
@@ -78,7 +85,7 @@ namespace InBranchDashboard.Controllers
 
         }
 
-        [HttpGet("GetPriviledgeById")]
+        [HttpGet("GetPriviledgeById/{id}")]
         public async Task<ActionResult<PriviledgeDTO>> GetPriviledgeById(string id)
         {
             //AD Login
@@ -190,7 +197,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeletePriviledge")]
+        [HttpDelete("DeletePriviledge/{id}")]
         public async Task<ActionResult> DeletePriviledge(string id)
         {
 

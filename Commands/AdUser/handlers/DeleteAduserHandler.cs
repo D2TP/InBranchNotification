@@ -66,7 +66,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             }
             //check if role Id exists
             var checkAllRole = await _dbController.SQLFetchAsync(Sql.SelectUserBaseOnAdUserId, paramRoleId) ?? null;
-            if (checkAllRole.Rows.Count > 0)
+            if (checkAllRole.Rows.Count == 0)
             {
                 _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
                 throw new HandleGeneralException(500, "Server Error occured");

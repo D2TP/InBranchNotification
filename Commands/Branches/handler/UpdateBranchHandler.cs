@@ -56,6 +56,13 @@ namespace InBranchDashboard.Commands.Branches.handler
                 _logger.LogError("Error: Server returned no result |Caller:BranchsController/UpdateBranch || [UpdateBranchHandler][Handle]");
                 throw new HandleGeneralException(500, "The BranchId not valid");
             }
+            object[] paramRegionId = { command.region_id };
+            var regionSearch = await _dbController.SQLFetchAsync(Sql.SelectOneRegion, paramRegionId);
+            if (regionSearch.Rows.Count == 0)
+            {
+                _logger.LogError("Error: Server returned no result |Caller:BranchsController/UpdateBranch || [UpdateBranchHandler][Handle]");
+                throw new HandleGeneralException(500, "The region_id not valid");
+            }
             int entity;
             try
             {

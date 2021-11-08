@@ -11,18 +11,18 @@ namespace InBranchDashboard.Commands.AdUser
      
         public string id { get; set; }
        
-        public string UserName { get; set; }
+        public string user_name { get; set; }
       
-        public string FirstName { get; set; }
+        public string first_name { get; set; }
         
-        public string LastName { get; set; }
+        public string last_name { get; set; }
 
-        public string RoleId { get; set; }
-        public bool Active { get; set; }
+        public string role_id { get; set; }
+        public bool active { get; set; }
 
-        public string BranchId { get; set; }
+        public string branch_Id { get; set; }
 
-        public string Email { get; set; }
+        public string email { get; set; }
 
     }
 }

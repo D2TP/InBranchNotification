@@ -24,8 +24,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class CategoriesController : Controller
     {
+
         private readonly IQueryDispatcher _queryDispatcher;
         private readonly ILogger<CategoriesController> _logger;
         private readonly ICommandDispatcher _commandDispatcher;
@@ -38,10 +40,15 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllCatigories")]
-        public async Task<ActionResult<List<CategoryDTO>>> GetAllCatigories([FromQuery] QueryStringParameters queryStringParameters)
+        [HttpGet("GetAllCatigories/{PageNumber}/{PageSize}")]
+ 
+        public async Task<ActionResult<PagedList<CategoryDTO>>> GetAllCatigories(  int PageNumber, int PageSize)
         {
-            //AD Login
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageSize = PageSize,
+                PageNumber = PageNumber
+            };
             var categoryDTO = new PagedList<CategoryDTO>();
             try
             {
@@ -80,7 +87,7 @@ namespace InBranchDashboard.Controllers
 
         }
 
-        [HttpGet("GetCatigoriesById")]
+        [HttpGet("GetCatigoriesById/{id}")]
         public async Task<ActionResult<CategoryDTO>> GetCatigoriesById(string id)
         {
             //AD Login
@@ -192,7 +199,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeleteCategory")]
+        [HttpDelete("DeleteCategory/{id}")]
         public async Task<ActionResult> DeleteCategory(string id)
         {
 

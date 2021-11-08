@@ -76,7 +76,7 @@ namespace InBranchDashboard.Commands.RolePriviledges.handler
             //    await _outbox.SendAsync(@event, spanContext: spanContext);
             //    return;
             //}
-            await _publisher.PublishAsync(@event, spanContext: spanContext);
+            //await _publisher.PublishAsync(@event, spanContext: spanContext);
 
         }
     }

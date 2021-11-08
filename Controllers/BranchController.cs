@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
+    [Route("api/[controller]")]
     public class BranchController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
@@ -38,9 +39,18 @@ namespace InBranchDashboard.Controllers
             _logger = logger;
             _mapper = mapper;
         }
-        [HttpGet("GetAllBranches")]
-        public async Task<ActionResult<List<Branch>>> GetAllBranches([FromQuery] QueryStringParameters queryStringParameters)
+
+
+        [HttpGet("GetAllBranches/{PageNumber}/{PageSize}")]
+        
+        public async Task<ActionResult<PagedList<Branch>>> GetAllBranches(int PageNumber, int PageSize)
         {
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageNumber = PageNumber,
+                PageSize=PageSize
+
+            };
             var branch = new PagedList<Branch>();
             try
             {
@@ -78,7 +88,7 @@ namespace InBranchDashboard.Controllers
 
         }
 
-        [HttpGet("GetBranchsById")]
+        [HttpGet("GetBranchsById/{id}")]
         public async Task<ActionResult<Branch>> GetBranchsById(string id)
         {
             //AD Login
@@ -191,7 +201,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeleteBranch")]
+        [HttpDelete("DeleteBranch/{id}")]
         public async Task<ActionResult> DeleteBranch(string id)
         {
 
