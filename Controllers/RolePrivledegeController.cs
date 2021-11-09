@@ -102,7 +102,7 @@ namespace InBranchDashboard.Controllers
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
                     Content = new StringContent("Succsessfuly Created!!!"),
-                    ReasonPhrase = "Priviledge with the following Id : " + command.id + "was created,for the following user: " + command.id
+                    ReasonPhrase = "Priviledge with the following Id : " + command.id + "was created. "  
                 };
                 response.Headers.Add("DeleteMessage", "Succsessfuly Added!!!");
 

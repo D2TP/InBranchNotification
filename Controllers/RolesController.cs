@@ -198,7 +198,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpDelete("DeleteRole/{PageSize}")]
+        [HttpDelete("DeleteRole/{id}")]
         public async Task<ActionResult> DeleteRole(string id)
         {
 
