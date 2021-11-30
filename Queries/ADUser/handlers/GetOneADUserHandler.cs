@@ -1,6 +1,7 @@
 ﻿using Convey.CQRS.Queries;
 using DbFactory;
 using InBranchDashboard.DbFactory;
+using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Exceptions;
 using InBranchDashboard.Queries.ADUser.queries;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Queries.ADUser.handlers
 {
-    public class GetOneADUserHandler : IQueryHandler<GetOneADUserQuery, ADCreateCommandDTO>
+    public class GetOneADUserHandler : IQueryHandler<GetOneADUserQuery, ObjectResponse>
     {
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
@@ -28,7 +29,7 @@ namespace InBranchDashboard.Queries.ADUser.handlers
             _logger = logger;
             _convertDataTableToObject = convertDataTableToObject;
         }
-        public async Task<ADCreateCommandDTO> HandleAsync(GetOneADUserQuery query)
+        public async Task<ObjectResponse> HandleAsync(GetOneADUserQuery query)
         {
             object[] param = { query.ADUserId };
             var entity = await _dbController.SQLFetchAsync(Sql.SelectADUserAndRoleName, param);
@@ -37,10 +38,34 @@ namespace InBranchDashboard.Queries.ADUser.handlers
                 _logger.LogError("Error: There is no user with {User Id} |Caller:ADUserController/GetAnDUsers-Get|| [CreateOneADUserHandler][Handle]", query.ADUserId);
                 throw new HandleGeneralException(404, "User does not exist");
             }
-            List<ADCreateCommandDTO> aDCreateCommandDTO = new List<ADCreateCommandDTO>();
-            aDCreateCommandDTO = _convertDataTableToObject.ConvertDataTable<ADCreateCommandDTO>(entity);
+            var aDCreateCommandDTOList = new List<ADCreateCommandDTO>();
+            //List<DataRow>
+            aDCreateCommandDTOList = _convertDataTableToObject.ConvertDataRowList<ADCreateCommandDTO>(entity.Select().ToList());
+            var objectResponse = new ObjectResponse();
+            var aDCreateCommandDTO = aDCreateCommandDTOList.FirstOrDefault();
+            var aDUserDTO = new ADUserDTO
+            {
+                UserName = aDCreateCommandDTO.user_name,
+                DisplayName = aDCreateCommandDTO.DisplayName,
+                Email = aDCreateCommandDTO.email,
+                FirstName = aDCreateCommandDTO.first_name,
+                LastNmae = aDCreateCommandDTO.last_name,
+                BranchName = aDCreateCommandDTO.branch_name,
+                Token = string.Empty
+            };
+             aDUserDTO.AppRoles = new List<AppRole>();
+            foreach (var item in aDCreateCommandDTOList)
+            {
+             var appRole = new AppRole();
+                appRole.RoleName = item.role_name; 
+                aDUserDTO.AppRoles.Add(appRole);
+            }
 
-            return aDCreateCommandDTO.FirstOrDefault();
+            objectResponse.Data = aDUserDTO;
+            objectResponse.Success = true;
+
+
+            return objectResponse;
         }
     }
 }

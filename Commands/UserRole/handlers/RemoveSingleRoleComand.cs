@@ -44,7 +44,18 @@ namespace InBranchDashboard.Commands.UserRole.handlers
 
         public async Task HandleAsync(ADUserAndRold command)
         {
-            
+            object[] paramRole_id = { command.RoleId };
+            var role_id = await _dbController.SQLFetchAsync(Sql.SelectOneRole, paramRole_id);
+            if (role_id.Rows.Count == 0)
+            {
+                _logger.LogError("  Server returned no result |Caller:UserRoleController/RemoveARolefromADUser|| [RemoveSingleRoleComand][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, role_id not valid");
+            }
+            if (role_id.Rows.Count == 1)
+            {
+                _logger.LogError("  Server returned only 1 result |Caller:UserRoleController/RemoveARolefromADUser|| [RemoveSingleRoleComand][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, you can't remove all roles from user, please update user or delete user");
+            }
             object[] param = { command.AdUserId, command.RoleId };
             int entity;
             try
@@ -56,7 +67,7 @@ namespace InBranchDashboard.Commands.UserRole.handlers
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:UserRoleController/RemoveARolefromADUser|| [RemoveSingleRoleComand][Handle]", ex);
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

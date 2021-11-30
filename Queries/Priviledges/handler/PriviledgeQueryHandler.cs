@@ -54,7 +54,7 @@ namespace InBranchDashboard.Queries.Priviledges.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:PriviledgeController/GetAllCatigories-Get|| [PriviledgeQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
         
             var _priviledge = _convertDataTableToObject.ConvertDataRowList<Priviledge>(entity).AsQueryable();

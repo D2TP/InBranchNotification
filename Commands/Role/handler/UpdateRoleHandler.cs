@@ -47,6 +47,13 @@ namespace InBranchDashboard.Commands.Roles.handler
 
         public async Task HandleAsync(UpdateRoleCommand command)
         {
+            object[] paramCategory_id = { command.category_id };
+            var Category_id = await _dbController.SQLFetchAsync(Sql.SelectOneCatigory, paramCategory_id);
+            if (Category_id.Rows.Count == 0)
+            {
+                _logger.LogError("  Server returned no result |Caller:RoleController/UpdateRole|| [UpdateRoleHandler][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, Category_id not valid");
+            }
 
 
             object[] param = { command.id };
@@ -54,8 +61,8 @@ namespace InBranchDashboard.Commands.Roles.handler
             var categorySearch = await _dbController.SQLFetchAsync(Sql.SelectOneRole, param);
             if (categorySearch.Rows.Count == 0)
             {
-                _logger.LogError("Error: Server returned no result |Caller:RolesController/DeleteRole || [DeleteRoleHandler][Handle]");
-                throw new HandleGeneralException(500, "The RoleId not valid");
+                _logger.LogError("Error: Server returned no result |Caller:RolesController/UpdateRole || [UpdateRoleHandler][Handle]");
+                throw new HandleGeneralException(400, "The RoleId not valid");
             }
             int entity;
             try
@@ -66,8 +73,8 @@ namespace InBranchDashboard.Commands.Roles.handler
             catch (Exception ex)
             {
 
-                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RoleController/UpdateCategory|| [UpdateRoleHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RoleController/UpdateRole|| [UpdateRoleHandler][Handle]", ex);
+                throw new HandleGeneralException(400, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

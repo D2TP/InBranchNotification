@@ -5,6 +5,6 @@ namespace InBranchDashboard.Services
 {
     public interface ITokenService
     {
-        Task<string> GetToken(ADUserDTO query);
+        Task<string> GetToken(ADUserDTORespons query);
     }
 }

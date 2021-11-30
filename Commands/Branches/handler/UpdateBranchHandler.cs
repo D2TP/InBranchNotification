@@ -54,14 +54,14 @@ namespace InBranchDashboard.Commands.Branches.handler
             if (BranchSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:BranchsController/UpdateBranch || [UpdateBranchHandler][Handle]");
-                throw new HandleGeneralException(500, "The BranchId not valid");
+                throw new HandleGeneralException(400, "The BranchId not valid");
             }
             object[] paramRegionId = { command.region_id };
             var regionSearch = await _dbController.SQLFetchAsync(Sql.SelectOneRegion, paramRegionId);
             if (regionSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:BranchsController/UpdateBranch || [UpdateBranchHandler][Handle]");
-                throw new HandleGeneralException(500, "The region_id not valid");
+                throw new HandleGeneralException(400, "The region_id not valid");
             }
             int entity;
             try
@@ -73,7 +73,7 @@ namespace InBranchDashboard.Commands.Branches.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:BranchController/UpdateBranch|| [UpdateBranchHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                throw new HandleGeneralException(400, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

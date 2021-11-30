@@ -41,8 +41,8 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GetAllCatigories/{PageNumber}/{PageSize}")]
- 
-        public async Task<ActionResult<PagedList<CategoryDTO>>> GetAllCatigories(  int PageNumber, int PageSize)
+
+        public async Task<ActionResult<ObjectResponse>> GetAllCatigories(int PageNumber, int PageSize)
         {
             var queryStringParameters = new QueryStringParameters
             {
@@ -50,10 +50,15 @@ namespace InBranchDashboard.Controllers
                 PageNumber = PageNumber
             };
             var categoryDTO = new PagedList<CategoryDTO>();
+            var objectResponse = new ObjectResponse();
             try
             {
                 var categoryQueries = new CategoryQueries(queryStringParameters);
                 categoryDTO = await _queryDispatcher.QueryAsync(categoryQueries);
+
+
+                objectResponse.Data = categoryDTO;
+                objectResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -66,10 +71,15 @@ namespace InBranchDashboard.Controllers
 
                     };
                     _logger.LogError("Server Error occured while getting all Categories ||Caller:CategoriesController/GetAllCatigories  || [CategoryQueries][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+
+
+                    objectResponse.Error = new[] { "[#InBCAT001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all ADUser||Caller:CategoriesController/GetAllCatigories  || [CategoryQueries][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#InBCAT001-1-C] Server Error occured while getting all ADUser||Caller:CategoriesController/GetAllCatigories  || [CategoryQueries][Handle] error:{error}", ex.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ex.Message);
             }
             var metadata = new
             {
@@ -80,22 +90,26 @@ namespace InBranchDashboard.Controllers
                 categoryDTO.HasNext,
                 categoryDTO.HasPrevious
             };
+            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
 
-            return Ok(categoryDTO);
+            return Ok(objectResponse);
 
         }
 
         [HttpGet("GetCatigoriesById/{id}")]
-        public async Task<ActionResult<CategoryDTO>> GetCatigoriesById(string id)
+        public async Task<ActionResult<ObjectResponse>> GetCatigoriesById(string id)
         {
             //AD Login
             var categoryDTO = new CategoryDTO();
+            var objectResponse = new ObjectResponse();
             try
             {
                 var categoryQuery = new CategoryQuery(id);
                 categoryDTO = await _queryDispatcher.QueryAsync(categoryQuery);
+                objectResponse.Success = true;
+                objectResponse.Data = categoryDTO;
             }
             catch (Exception ex)
             {
@@ -107,14 +121,22 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured while getting all Category ||Caller:CategoriesController/GetCatigoriesById  || [CategoryQueries][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#InBCAT002-2-C] Server Error occured while getting all Category ||Caller:CategoriesController/GetCatigoriesById  || [CategoryQueries][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#InBCAT002-2-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all Category||Caller:CategoriesController/GetCatigoriesById  || [CategoryQueries][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#InBCAT002-2-C] Server Error occured while getting all Category||Caller:CategoriesController/GetCatigoriesById  || [CategoryQueries][Handle] error:{error}", ex.Message);
+
+                objectResponse.Error = new[] { "[#InBCAT002-2-C]", ex.Message };
+
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
-            return Ok(categoryDTO);
+            return Ok(objectResponse);
 
         }
 
@@ -122,10 +144,11 @@ namespace InBranchDashboard.Controllers
         [HttpPost("CreateCategory")]
         public async Task<ActionResult> CreateCategory([FromBody] AddCategoryDTO addCategoryDTO)
         {
-
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {category} was not created ||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle]  ", addCategoryDTO.category_name);
+
+                _logger.LogError(" [#InBCAT003-3-C] Validation error {category} was not created ||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle]  ", addCategoryDTO.category_name);
                 return BadRequest(ModelState);
             }
 
@@ -137,8 +160,12 @@ namespace InBranchDashboard.Controllers
             {
 
                 await _commandDispatcher.SendAsync(command);
+                objectResponse.Success = true;
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetCatigoriesById), new { id = command.id }, objectResponse);
 
-                return CreatedAtAction(nameof(GetCatigoriesById), new { id = command.id }, null);
+
+
             }
             catch (Exception ex)
             {
@@ -150,11 +177,15 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured category was not created for {category}||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle] error:{error}", command.category_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    objectResponse.Error = new[] { "[#Branch003-3-C]", ex.InnerException.Message };
+                    _logger.LogError(" [#InBCAT003-3-C] Server Error occured category was not created for {category}||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle] error:{error}", command.category_name, ex.InnerException.Message);
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+
+
                 }
-                _logger.LogError("Server Error occured category was not created for {category}||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle] error:{error}", command.category_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("  [#InBCAT003-3-C]  Server Error occured category was not created for {category}||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle] error:{error}", command.category_name, ex.Message);
+              objectResponse.Error = new[] { "[#Branch003-3-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
@@ -164,20 +195,22 @@ namespace InBranchDashboard.Controllers
         [HttpPut("UpdateCategory")]
         public async Task<ActionResult> UpdateCategory(UpdateCategoryCommand command)
         {
-
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {category} was not upadated ||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle]  ", command.id);
+                _logger.LogError(" [#InBCAT004-4-C] Validation error {category} was not upadated ||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle]  ", command.id);
                 return BadRequest(ModelState);
             }
 
-            
+
             try
             {
 
                 await _commandDispatcher.SendAsync(command);
 
-                return CreatedAtAction(nameof(GetCatigoriesById), new { id = command.id }, null);
+                objectResponse.Success = true;
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetCatigoriesById), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
@@ -189,12 +222,17 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured category was not updated for {category}||Caller:CategoriesController/UpdateCategory  || [UpdateCategoryHandler][Handle] error:{error}", command.category_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#InBCAT004-4-C] Server Error occured category was not updated for {category}||Caller:CategoriesController/UpdateCategory  || [UpdateCategoryHandler][Handle] error:{error}", command.category_name, ex.InnerException.Message);
+                    
+                    objectResponse.Error = new[] { "[#InBCAT004-4-C]", ex.InnerException.Message };
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured category was not updated for {category}||Caller:CategoriesController/UpdateCategory  || [UpdateCategoryHandler][Handle] error:{error}", command.category_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#InBCAT004-4-C] Server Error occured category was not updated for {category}||Caller:CategoriesController/UpdateCategory  || [UpdateCategoryHandler][Handle] error:{error}", command.category_name, ex.Message);
 
+                objectResponse.Error = new[] { "[#InBCAT004-4-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                 
             }
         }
 
@@ -202,10 +240,10 @@ namespace InBranchDashboard.Controllers
         [HttpDelete("DeleteCategory/{id}")]
         public async Task<ActionResult> DeleteCategory(string id)
         {
-
-            if (id==string.Empty)
+            var objectResponse = new ObjectResponse();
+            if (id == string.Empty)
             {
-                _logger.LogError("Validation error {category} was not deleted ||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle]  ", id);
+                _logger.LogError(" [#InBCAT004-4-C]  Validation error {category} was not deleted ||Caller:CategoriesController/CreateCategory  || [SingleCategorHandler][Handle]  ", id);
                 return BadRequest(ModelState);
             }
             var command = new CategoryDeleteComand
@@ -221,6 +259,7 @@ namespace InBranchDashboard.Controllers
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -229,11 +268,17 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured category was not deleted   {category}||Caller:CategoriesController/DeleteCategory  || [DeleteCategoryHandler][Handle] error:{error}", command.category_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError(" [#InBCAT004-4-C]  Server Error occured category was not deleted   {category}||Caller:CategoriesController/DeleteCategory  || [DeleteCategoryHandler][Handle] error:{error}", command.category_name, ex.InnerException.Message);
+                   
+                    objectResponse.Error = new[] { "[#InBCAT004-4-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest   , objectResponse);
                 }
-                _logger.LogError("Server Error occured category was not deleted   {category}||Caller:CategoriesController/DeleteCategory  || [DeleteCategoryHandler][Handle] error:{error}", command.category_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError(" [#InBCAT004-4-C]  Server Error occured category was not deleted   {category}||Caller:CategoriesController/DeleteCategory  || [DeleteCategoryHandler][Handle] error:{error}", command.category_name, ex.Message);
+                objectResponse.Error = new[] { "[#InBCAT004-4-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }

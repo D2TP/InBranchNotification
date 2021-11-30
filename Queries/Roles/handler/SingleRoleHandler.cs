@@ -52,7 +52,7 @@ namespace InBranchDashboard.Queries.Roles.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RolesController/GetRolById -Get|| [SingleRoleHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             Role role = new Role();
             role = _convertDataTableToObject.ConvertDataTable<Role>(entity).FirstOrDefault();

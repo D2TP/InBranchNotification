@@ -52,7 +52,7 @@ namespace InBranchDashboard.Queries.RolePriviledges.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RolePriviledgeController/GetCatigoriesById -Get|| [SinglePermissionHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             RolePriviledgeDTO rolePriviledgeDTO = new RolePriviledgeDTO();
             rolePriviledgeDTO = _convertDataTableToObject.ConvertDataTable<RolePriviledgeDTO>(entity).FirstOrDefault();

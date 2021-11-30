@@ -28,6 +28,27 @@ namespace InBranchDashboard.DTOs
         public string branch_name { get; set; }
         [Display(Name = "Email")]
         public string email { get; set; }
-        public Role Roles { get; set; }
+        public StaffRoles Roles { get; set; }
+        private string displayName;
+        public string DisplayName
+        {
+            get { return fristNameLastName(); }
+            set { displayName = value; }
+        }
+
+
+        private string fristNameLastName()
+        {
+            return first_name + " " + last_name;
+        }
+        public class StaffRoles
+        {
+            public string RoleName { get; set; }
+
+
+
+        }
     }
+
+
 }

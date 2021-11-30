@@ -56,7 +56,7 @@ namespace InBranchDashboard.Commands.Roles.handler
             if (RoleSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:RoleController/DeleteRole || [DeleteRoleHandler][Handle]");
-                throw new HandleGeneralException(500, "The RoleId not valid");
+                throw new HandleGeneralException(400, "The RoleId not valid");
             }
             int entity;
             try
@@ -68,7 +68,7 @@ namespace InBranchDashboard.Commands.Roles.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RolesController/DeleteRole|| [DeleteRoleHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Delete failed");
+                throw new HandleGeneralException(400, "Delete failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

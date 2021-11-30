@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.DTOs
 {
-    public class ADUserDTO
+    public class ADUserDTORespons
     {
         public string DisplayName { get; set; }
         public string UserName { get; set; }
@@ -14,14 +14,6 @@ namespace InBranchDashboard.DTOs
         public string Email { get; set; }
         public string Token { get; set; }
         public string BranchName { get; set; }
-        //public int BranchId { get; set; }
-        public List<AppRole> AppRoles { get; set; }
-}
-    public class AppRole
-    {
-        public string RoleName { get; set; }
-
-
 
     }
 }

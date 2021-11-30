@@ -55,7 +55,7 @@ namespace InBranchDashboard.Queries.Roles.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RoleController/GetAllRoles-Get|| [RoleQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
          
           var  _role = _convertDataTableToObject.ConvertDataRowList<Role>(entity).AsQueryable();

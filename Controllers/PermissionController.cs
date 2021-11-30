@@ -40,20 +40,24 @@ namespace InBranchDashboard.Controllers
         }
 
         [HttpGet("GetAllPermission/{PageNumber}/{PageSize}")]
-      
-        public async Task<ActionResult<PagedList<Permission>>> GetAllPermission(int PageNumber, int PageSize  )
+        public async Task<ActionResult<ObjectResponse>> GetAllPermission(int PageNumber, int PageSize)
         {
-            //AD Login
             var queryStringParameters = new QueryStringParameters
             {
                 PageNumber = PageNumber,
                 PageSize = PageSize
+
             };
             var permissions = new PagedList<Permission>();
+            var objectResponse = new ObjectResponse();
             try
             {
                 var PermissionQueries = new PermissionQueries(queryStringParameters);
                 permissions = await _queryDispatcher.QueryAsync(PermissionQueries);
+
+
+                objectResponse.Data = permissions;
+                objectResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -66,10 +70,17 @@ namespace InBranchDashboard.Controllers
 
                     };
                     _logger.LogError("Server Error occured while getting all Permission ||Caller:PermissionController/GetAllPermission  || [PermissionQueries][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+
+                    objectResponse.Error = new[] { "[#InbPerm001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all ADUser||Caller:PermissionController/GetAllPermission  || [PermissionQueries][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+
+                _logger.LogError(" Server Error occured while getting all ADUser||Caller:PermissionController/GetAllPermission  || [PermissionQueries][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#InbPerm001-1-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
             var metadata = new
@@ -81,20 +92,23 @@ namespace InBranchDashboard.Controllers
                 permissions.HasNext,
                 permissions.HasPrevious
             };
+            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Ok(permissions);
 
+            return Ok(objectResponse);
         }
 
         [HttpGet("GetPermissionById/{id}")]
-        public async Task<ActionResult<PermissionDTO>> GetPermissionById(string id)
+        public async Task<ActionResult<ObjectResponse>> GetPermissionById(string id)
         {
             //AD Login
-            var permission = new Permission();
+            var branch = new Branch();
+            var objectResponse = new ObjectResponse();
             try
             {
-                var PermissionQuery = new PermissionQuery(id);
-                permission = await _queryDispatcher.QueryAsync(PermissionQuery);
+                var permissionQuery = new PermissionQuery(id);
+                objectResponse.Data = await _queryDispatcher.QueryAsync(permissionQuery);
+                objectResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -106,25 +120,34 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured while getting all Permission ||Caller:PermissionController/GetPermissionById  || [PermissionQueries][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[InbPerm2-1-C Server Error occured while getting all Permission ||Caller:PermissionController/GetPermissionById  || [PermissionQueries][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#InbPerm2-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all Permission||Caller:PermissionController/GetPermissionById  || [PermissionQueries][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#InbPerm2-1-C] Server Error occured while getting all Permission||Caller:PermissionController/GetPermissionById  || [PermissionQueries][Handle] error:{error}", ex.Message);
+
+                objectResponse.Error = new[] { "[#InbPerm2-1-C]", ex.Message };
+
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
-            return Ok(permission);
+            return Ok(objectResponse);
 
         }
 
-
         [HttpPost("CreatePermission")]
+    
         public async Task<ActionResult> CreatePermission([FromBody] PermissionDTO permissionDTO)
         {
 
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {Permission} was not created ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", permissionDTO.permission_name);
+                _logger.LogError("[#InbPerm3-3-C] Validation error {Permission} was not created ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", permissionDTO.permission_name);
                 return BadRequest(ModelState);
             }
 
@@ -137,10 +160,14 @@ namespace InBranchDashboard.Controllers
 
                 await _commandDispatcher.SendAsync(command);
 
-                return CreatedAtAction(nameof(GetPermissionById), new { id = command.id }, null);
+                objectResponse.Success = true;
+
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetPermissionById), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -149,11 +176,15 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Permission was not created for {Permission}||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle] error:{error}", command.permission_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+
+                    objectResponse.Error = new[] { "[#InbPerm3-3-C]", ex.InnerException.Message };
+                    _logger.LogError("[#InbPerm3-3-C] Server Error occured Permission was not created for {Permission}||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle] error:{error}", command.permission_name, ex.InnerException.Message);
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured Permission was not created for {Permission}||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle] error:{error}", command.permission_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+                _logger.LogError("[#InbPerm3-3-C] Server Error occured Permission was not created for {Permission}||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle] error:{error}", command.permission_name, ex.Message);
+                objectResponse.Error = new[] { "[#Branch003-3-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
@@ -163,11 +194,13 @@ namespace InBranchDashboard.Controllers
         [HttpPut("UpdatePermission")]
         public async Task<ActionResult> UpdatePermission(UpdatePermissionCommand command)
         {
-
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {Permission} was not upadated ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", command.id);
+
+                _logger.LogError("[#InbPerm4-4-C] Validation error {Permission} was not upadated ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", command.id);
                 return BadRequest(ModelState);
+ 
             }
 
 
@@ -175,11 +208,13 @@ namespace InBranchDashboard.Controllers
             {
 
                 await _commandDispatcher.SendAsync(command);
-
-                return CreatedAtAction(nameof(GetPermissionById), new { id = command.id }, null);
+                objectResponse.Success = true;
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetPermissionById), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -188,23 +223,26 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Permission was not updated for {Permission}||Caller:PermissionController/UpdatePermission  || [UpdatePermissionHandler][Handle] error:{error}", command.permission_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#InbPerm4-4-C] Server Error occured Permission was not updated for {Permission}||Caller:PermissionController/UpdatePermission  || [UpdatePermissionHandler][Handle] error:{error}", command.permission_name, ex.InnerException.Message);
+                    objectResponse.Error = new[] { "[#Branch004-4-C]", ex.InnerException.Message };
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+
                 }
-                _logger.LogError("Server Error occured Permission was not updated for {Permission}||Caller:PermissionController/UpdatePermission  || [UpdatePermissionHandler][Handle] error:{error}", command.permission_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#InbPerm4-4-C] Server Error occured Permission was not updated for {Permission}||Caller:PermissionController/UpdatePermission  || [UpdatePermissionHandler][Handle] error:{error}", command.permission_name, ex.Message);
+                objectResponse.Error = new[] { "[#InbPerm4-4-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
 
-
         [HttpDelete("DeletePermission/{id}")]
         public async Task<ActionResult> DeletePermission(string id)
         {
-
+            var objectResponse = new ObjectResponse();
             if (id == string.Empty)
             {
-                _logger.LogError("Validation error {Permission} was not deleted ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", id);
+                _logger.LogError(" [#InbPerm5-5-C]  Validation error {Permission} was not deleted ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", id);
                 return BadRequest(ModelState);
             }
             var command = new PermissionDeleteComand
@@ -228,11 +266,17 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.permission_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#InbPerm5-5-C] Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.permission_name, ex.InnerException.Message);
+                 
+                    objectResponse.Error = new[] { "[#InbPerm5-5-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.permission_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#InBCAT004-4-C] Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.permission_name, ex.Message);
+                objectResponse.Error = new[] { "[#InBCAT004-4-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }

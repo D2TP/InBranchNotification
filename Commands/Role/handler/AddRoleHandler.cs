@@ -47,7 +47,13 @@ namespace InBranchDashboard.Commands.Roles.handler
 
         public async Task HandleAsync(RoleCommand command)
         {
-
+            object[] paramCategory_id = { command.category_id };
+            var Category_id = await _dbController.SQLFetchAsync(Sql.SelectOneCatigory, paramCategory_id);
+            if (Category_id.Rows.Count == 0)
+            {
+                _logger.LogError("  Server returned no result |Caller:RoleController/CreateUserRoleHandler|| [AddRoleHandler][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, Category_id not valid");
+            }
 
             command.id = Guid.NewGuid().ToString(); 
              
@@ -63,7 +69,7 @@ namespace InBranchDashboard.Commands.Roles.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RoleController/CreateRole|| [AddRoleHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Creation failed");
+                throw new HandleGeneralException(400, "Creation failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

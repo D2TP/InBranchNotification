@@ -68,8 +68,12 @@ namespace InBranchDashboard
                     services.AddScoped<ITokenService, TokenService>();
                     services.AddScoped<IDbController, DbController>();
                     services.AddScoped<IValidateService, ValidateService>();
+                    services.AddScoped<IAuthenticateRestClient, AuthenticateRestClient>();
+                    services.AddScoped<IErrorList, ErrorList>();
+                    
                     services.AddAutoMapper(typeof(MappingProfiles));
-                    // ValidateService : IValidateService
+
+                    // ValidateService : IValidateService IAuthenticateRestClient
                     services
                             .AddConvey()
                             //              .AddErrorHandler<ExceptionToResponseMapper>()

@@ -55,7 +55,7 @@ namespace InBranchDashboard.Commands.Regions.handler
             if (RegionSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/DeleteRegion || [DeleteRegionHandler][Handle]");
-                throw new HandleGeneralException(500, "The RegionId not valid");
+                throw new HandleGeneralException(400, "The RegionId not valid");
             }
             int entity;
             try
@@ -67,7 +67,7 @@ namespace InBranchDashboard.Commands.Regions.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RegionController/DeleteRegion|| [DeleteRegionHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                throw new HandleGeneralException(400, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

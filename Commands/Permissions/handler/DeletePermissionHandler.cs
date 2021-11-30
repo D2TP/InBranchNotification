@@ -55,7 +55,7 @@ namespace InBranchDashboard.Commands.Permissions.handler
             if (PermissionSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:PermissionController/DeletePermission || [DeletePermissionHandler][Handle]");
-                throw new HandleGeneralException(500, "The PermissionId not valid");
+                throw new HandleGeneralException(400, "The PermissionId not valid");
             }
             int entity;
             try
@@ -67,7 +67,7 @@ namespace InBranchDashboard.Commands.Permissions.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:PermissionController/DeletePermission|| [DeletePermissionHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                throw new HandleGeneralException(400, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

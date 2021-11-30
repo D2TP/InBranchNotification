@@ -54,7 +54,7 @@ namespace InBranchDashboard.Queries.Regions.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/GetAllCatigories-Get|| [RegionQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             
           

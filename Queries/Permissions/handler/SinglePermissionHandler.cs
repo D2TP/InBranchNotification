@@ -52,7 +52,7 @@ namespace InBranchDashboard.Queries.Permissions.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:PermissionController/GetCatigoriesById -Get|| [SinglePermissionHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             Permission permission = new Permission();
             permission = _convertDataTableToObject.ConvertDataTable<Permission>(entity).FirstOrDefault();

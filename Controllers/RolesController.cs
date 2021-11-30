@@ -39,20 +39,22 @@ namespace InBranchDashboard.Controllers
             _mapper = mapper;
         }
         [HttpGet("GetAllRoles/{PageNumber}/{PageSize}")]
- 
-        public async Task<ActionResult<PagedList<Role>>> GetAllRoles(  int PageNumber, int PageSize)
+        public async Task<ActionResult<ObjectResponse>> GetAllRoles(int PageNumber, int PageSize)
         {
-            //AD Login
             var queryStringParameters = new QueryStringParameters
             {
                 PageNumber = PageNumber,
                 PageSize = PageSize
             };
             var role = new PagedList<Role>();
+            var objectResponse = new ObjectResponse();
             try
             {
                 var roleQueries = new RoleQueries(queryStringParameters);
                 role = await _queryDispatcher.QueryAsync(roleQueries);
+
+                objectResponse.Data = role;
+                objectResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -64,11 +66,18 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured while getting all Roles ||Caller:RolesController/GetAllRoles  || [RoleQueries][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#Role001-1-C] Server Error occured while getting all Roles ||Caller:RolesController/GetAllRoles  || [RoleQueries][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#Role001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all ADUser||Caller:RolesController/GetAllRoles  || [RoleQueries][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+
+                _logger.LogError("[#Role001-1-C] Server Error occured while getting all Roles ||Caller:RolesController/GetAllRoles  || [RoleQueries][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#Role001-1-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
             var metadata = new
@@ -80,20 +89,26 @@ namespace InBranchDashboard.Controllers
                 role.HasNext,
                 role.HasPrevious
             };
+            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Ok(role);
 
+            return Ok(objectResponse);
         }
 
+
         [HttpGet("GetRolesById/{id}")]
-        public async Task<ActionResult<Role>> GetRolesById(string id)
+        public async Task<ActionResult<ObjectResponse>> GetRolesById(string id)
         {
             //AD Login
-            var Role = new Role();
+
+            var objectResponse = new ObjectResponse();
+            var role = new Role();
             try
             {
                 var RoleQuery = new RoleQuery(id);
-                Role = await _queryDispatcher.QueryAsync(RoleQuery);
+                role = await _queryDispatcher.QueryAsync(RoleQuery);
+                objectResponse.Success = true;
+                objectResponse.Data = role;
             }
             catch (Exception ex)
             {
@@ -103,23 +118,32 @@ namespace InBranchDashboard.Controllers
                     {
                         Content = new StringContent(ex.InnerException.Message),
                         ReasonPhrase = ex.InnerException.Message
-
+                        //[#Role001-1-C]
                     };
-                    _logger.LogError("Server Error occured while getting all Role ||Caller:RolesController/GetRolesById  || [RoleQueries][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#Role001-2-C] Server Error occured while getting all Role ||Caller:RolesController/GetRolesById  || [RoleQueries][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#Role001-2-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all Role||Caller:RolesController/GetRolesById  || [RoleQueries][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#Role001-2-C] Server Error occured while getting all Role ||Caller:RolesController/GetRolesById  || [RoleQueries][Handle] error:{error}", ex.Message);
+
+                objectResponse.Error = new[] { "[#Role002-2-C]", ex.Message };
+
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
-            return Ok(Role);
+            return Ok(objectResponse);
 
         }
-
 
         [HttpPost("CreateRole")]
         public async Task<ActionResult> CreateRole([FromBody] AddRoleDTO addRoleDto)
         {
+
+            var objectResponse = new ObjectResponse();
 
             if (!ModelState.IsValid)
             {
@@ -130,17 +154,23 @@ namespace InBranchDashboard.Controllers
             var command = new RoleCommand
             {
                 role_name = addRoleDto.role_name,
-                category_id=addRoleDto.category_id
+                category_id = addRoleDto.category_id
             };
             try
             {
 
                 await _commandDispatcher.SendAsync(command);
 
-                return CreatedAtAction(nameof(GetRolesById), new { id = command.id }, null);
+                
+
+                objectResponse.Success = true;
+
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetRolesById), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -149,25 +179,29 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Role was not created for {Role}||Caller:RolesController/CreateRole  || [AddRoleHandler][Handle] error:{error}", command.role_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+
+                    objectResponse.Error = new[] { "[#Role003-3-C]", ex.InnerException.Message };
+                    _logger.LogError("[#Role003-3-C] Server Error occured Role was not created for {Role}||Caller:RolesController/CreateRole  || [AddRoleHandler][Handle] error:{error}", command.role_name, ex.InnerException.Message);
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured Role was not created for {Role}||Caller:RolesController/CreateRole  || [AddRoleHandler][Handle] error:{error}", command.role_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+                _logger.LogError("[#Role003-3-C] Server Error occured Role was not created for {Role}||Caller:RolesController/CreateRole  || [AddRoleHandler][Handle] error:{error}", command.role_name, ex.Message);
+                objectResponse.Error = new[] { "[#Role003-3-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
 
-
-
         [HttpPut("UpdateRole")]
         public async Task<ActionResult> UpdateRole(UpdateRoleCommand command)
         {
-
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {Role} was not upadated ||Caller:RolesController/CreateRole  || [UpdateRoleHandler][Handle]  ", command.id);
+
+                _logger.LogError("[#Role002-4-C] Validation error {Role} was not upadated ||Caller:RolesController/CreateRole  || [UpdateRoleHandler][Handle]  ", command.id);
                 return BadRequest(ModelState);
+
             }
 
 
@@ -175,11 +209,13 @@ namespace InBranchDashboard.Controllers
             {
 
                 await _commandDispatcher.SendAsync(command);
-
-                return CreatedAtAction(nameof(GetRolesById), new { id = command.id }, null);
+                objectResponse.Success = true;
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetRolesById), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -188,23 +224,27 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Role was not updated for {Role}||Caller:RolesController/UpdateRole  || [UpdateRoleHandler][Handle] error:{error}", command.role_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#Role004-4-C] Server Error occured Role was not updated for {Role}||Caller:RolesController/UpdateRole  || [UpdateRoleHandler][Handle] error:{error}", command.role_name, ex.InnerException.Message);
+                    objectResponse.Error = new[] { "[#Role004-4-C]", ex.InnerException.Message };
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+
                 }
-                _logger.LogError("Server Error occured Role was not updated for {Role}||Caller:RolesController/UpdateRole  || [UpdateRoleHandler][Handle] error:{error}", command.role_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#Role004-4-C] Server Error occured Role was not updated for {Role}||Caller:RolesController/UpdateRole  || [UpdateRoleHandler][Handle] error:{error}", command.role_name, ex.Message);
+                objectResponse.Error = new[] { "[#Role004-4-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
 
-
         [HttpDelete("DeleteRole/{id}")]
+ 
         public async Task<ActionResult> DeleteRole(string id)
         {
-
+            var objectResponse = new ObjectResponse();
             if (id == string.Empty)
             {
-                _logger.LogError("Validation error {Role} was not deleted ||Caller:RolesController/DeleteRole  || [DeleteRoleHandler][Handle]  ", id);
+                _logger.LogError(" [#InbPriv5-5-C] Validation error {Role} was not deleted ||Caller:RolesController/DeleteRole  || [DeleteRoleHandler][Handle]  ", id);
                 return BadRequest(ModelState);
             }
             var command = new RoleDeleteComand
@@ -228,11 +268,17 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Role was not deleted   {Role}||Caller:RolesController/DeleteRole  || [DeleteRoleHandler][Handle] error:{error}", command.role_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#Role004-4-C] Server Error occured Role was not updated for {Role}||Caller:RolesController/UpdateRole  || [UpdateRoleHandler][Handle] error:{error}", command.role_name, ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[##Role004-4-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured Role was not deleted   {Role}||Caller:RolesController/DeleteRole  || [DeleteRoleHandler][Handle] error:{error}", command.role_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#Role004-4-C] Server Error occured Role was not updated for {Role}||Caller:RolesController/UpdateRole  || [UpdateRoleHandler][Handle] error:{error}", command.role_name, ex.Message);
+                objectResponse.Error = new[] { "[##Role004-4-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }

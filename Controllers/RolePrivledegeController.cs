@@ -39,13 +39,75 @@ namespace InBranchDashboard.Controllers
             _logger = logger;
             _mapper = mapper;
         }
+
+
+        [HttpGet("GellAllRolePrivledege/{PageNumber}/{PageSize}")]
+   
+        public async Task<ActionResult<ObjectResponse>> GellAllRoleUserIsAssinged(int PageNumber, int PageSize)
+        {
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageSize = PageSize,
+                PageNumber = PageNumber,
+            };
+
+            var rolePriviledgeDTO = new PagedList<RolePriviledgeDTO>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+                var rolePriviledgeQueries = new RolePriviledgeQueries(queryStringParameters);
+                rolePriviledgeDTO = await _queryDispatcher.QueryAsync(rolePriviledgeQueries);
+
+                objectResponse.Data = rolePriviledgeDTO;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("[#RolePriv001-1-C] Server Error occured while getting all ADUser ||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#RolePriv001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+
+
+                _logger.LogError("[#RolePriv001-1-C] Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#RolePriv001-1-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            var metadata = new
+            {
+                rolePriviledgeDTO.TotalCount,
+                rolePriviledgeDTO.PageSize,
+                rolePriviledgeDTO.CurrentPage,
+                rolePriviledgeDTO.TotalPages,
+                rolePriviledgeDTO.HasNext,
+                rolePriviledgeDTO.HasPrevious
+            };
+            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(objectResponse);
+        }
+
         [HttpDelete("RemoveRolePrivledege/{id}")]
+     
         public async Task<ActionResult> RemoveARolePrivledege(string id)
         {
-
+            var objectResponse = new ObjectResponse();
             if (id == string.Empty)
             {
-                _logger.LogError("Validation error {Permission} was not deleted ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", id);
+                _logger.LogError("[#RolePriv002-2-C] Validation error {Permission} was not deleted ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", id);
                 return BadRequest(ModelState);
             }
             var command = new RolePriviledgeDeleteCommand
@@ -69,23 +131,31 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.id, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#RolePriv002-2-C] Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.id, ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#RolePriv002-2-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.id, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#RolePriv002-2-C] Server Error occured Permission was not deleted   {Permission}||Caller:PermissionController/DeletePermission  || [DeletePermissionHandler][Handle] error:{error}", command.id, ex.Message);
+                objectResponse.Error = new[] { "[#RolePriv002-2-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
 
 
-            [HttpPost("AddRolePrivledege")]
+
+        [HttpPost("AddRolePrivledege")]
         public async Task<ActionResult> AddRolePrivledege([FromBody] AddRolePriviledgeDTO addRolePriviledgeDTO)
         {
 
-            if (!ModelState.IsValid)
+            var objectResponse = new ObjectResponse();
+          if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {username} role was no added ||Caller:UserRoleController/AddRoleToADUser  || [CreateUserRoleHandler][Handle]  ");
+                _logger.LogError("[#RolePriv003-3-C] Validation error {username} role was no added ||Caller:UserRoleController/AddRoleToADUser  || [CreateUserRoleHandler][Handle]  ");
                 return BadRequest(ModelState);
             }
 
@@ -93,23 +163,23 @@ namespace InBranchDashboard.Controllers
             {
                 permission_id = addRolePriviledgeDTO.permission_id,
                 priviledge_id = addRolePriviledgeDTO.priviledge_id,
-                role_id=addRolePriviledgeDTO.role_id
+                role_id = addRolePriviledgeDTO.role_id
             };
             try
             {
+
                 await _commandDispatcher.SendAsync(command);
 
-                var response = new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent("Succsessfuly Created!!!"),
-                    ReasonPhrase = "Priviledge with the following Id : " + command.id + "was created. "  
-                };
-                response.Headers.Add("DeleteMessage", "Succsessfuly Added!!!");
 
-                return StatusCode(StatusCodes.Status200OK, response);
+                objectResponse.Success = true;
+
+                objectResponse.Data = new { id = command.id };
+                return StatusCode(StatusCodes.Status200OK, objectResponse);
+              
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -118,64 +188,18 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured role was not created for {username}||Caller:UserRoleController/AddRoleToADUser  || [CreateUserRoleHandler][Handle] error:{error}", command.id, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+
+                    objectResponse.Error = new[] { "[#RolePriv003-3-C]", ex.InnerException.Message };
+                    _logger.LogError("[#RolePriv003-3-C] Server Error occured role was not created for {username}||Caller:UserRoleController/AddRoleToADUser  || [CreateUserRoleHandler][Handle] error:{error}", command.id, ex.InnerException.Message);
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured  role was not created for {username}||Caller:UserRoleController/AddRoleToADUser  || [CreateUserRoleHandler][Handle] error:{error}", command.id, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+
+                _logger.LogError("[#RolePriv003-3-C] Server Error occured  role was not created for {username}||Caller:UserRoleController/AddRoleToADUser  || [CreateUserRoleHandler][Handle] error:{error}", command.id, ex.Message);
+                objectResponse.Error = new[] { "[#RolePriv003-3-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
-
-        [HttpGet("GellAllRolePrivledege/{PageNumber}/{PageSize}")]
-        public async Task<ActionResult<AdUserRoleListQuery>> GellAllRoleUserIsAssinged(int PageNumber, int PageSize)
-        {
-            //AD Login
-            var queryStringParameters = new QueryStringParameters
-            {
-                PageSize = PageSize,
-                PageNumber = PageNumber,
-            };
-
-            var rolePriviledgeDTO = new PagedList<RolePriviledgeDTO>();
-            try
-            {
-                var rolePriviledgeQueries = new RolePriviledgeQueries(queryStringParameters);
-                 rolePriviledgeDTO = await _queryDispatcher.QueryAsync(rolePriviledgeQueries);
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                {
-                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                    {
-                        Content = new StringContent(ex.InnerException.Message),
-                        ReasonPhrase = ex.InnerException.Message
-
-                    };
-                    _logger.LogError("Server Error occured while getting all ADUser ||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
-                }
-                _logger.LogError("Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-            }
-
-
-            var metadata = new
-            {
-                rolePriviledgeDTO.TotalCount,
-                rolePriviledgeDTO.PageSize,
-                rolePriviledgeDTO.CurrentPage,
-                rolePriviledgeDTO.TotalPages,
-                rolePriviledgeDTO.HasNext,
-                rolePriviledgeDTO.HasPrevious
-            };
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-
-            return Ok(rolePriviledgeDTO);
-
-        }
-
 
 
     }

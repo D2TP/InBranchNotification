@@ -54,7 +54,7 @@ namespace InBranchDashboard.Queries.Permissions.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:PermissionController/GetAllCatigories-Get|| [PermissionQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
              
             var _permission = _convertDataTableToObject.ConvertDataRowList<Permission>(entity).AsQueryable();

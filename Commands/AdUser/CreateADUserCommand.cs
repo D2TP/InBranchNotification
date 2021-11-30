@@ -38,6 +38,7 @@ namespace InBranchDashboard.Commands.AdUser
         public string BranchId { get; set; }
 
         public string Email { get; set; }
+        public string Domain { get; set; }
 
     }
 

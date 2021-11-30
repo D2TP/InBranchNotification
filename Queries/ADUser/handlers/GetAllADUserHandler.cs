@@ -39,7 +39,7 @@ namespace InBranchDashboard.Queries.ADUser.handlers
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:ADUserController/GetAllADUsers-Get|| [GetAllADUserHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             var aDCreateCommandDTO = _convertDataTableToObject.ConvertDataRowList<ADUserBranchDTO>(entity).AsQueryable();
             var pagelist = PagedList<ADUserBranchDTO>.ToPagedList(aDCreateCommandDTO,

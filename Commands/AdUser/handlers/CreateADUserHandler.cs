@@ -9,6 +9,7 @@ using InBranchDashboard.Domain;
 using InBranchDashboard.DTOs;
 using InBranchDashboard.Events;
 using InBranchDashboard.Exceptions;
+using InBranchDashboard.Services;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using OpenTracing;
@@ -27,18 +28,19 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
         // private readonly IMapper _mapper;
         private readonly ILogger<CreateADUserHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
-        // private readonly IBusPublisher _publisher;
+         private readonly IAuthenticateRestClient _authenticateRestClient;
         private readonly ITracer _tracer;
         //private readonly IMessageOutbox _outbox;
-        public CreateADUserHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<CreateADUserHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer)//, IMessageOutbox outbox, IBusPublisher  publisher)
+        public CreateADUserHandler(IMemoryCache memoryCache, IAuthenticateRestClient authenticateRestClient, IDbController dbController, ILogger<CreateADUserHandler> logger, IConvertDataTableToObject convertDataTableToObject, ITracer tracer)//, IMessageOutbox outbox, IBusPublisher  publisher)
         {
             _dbController = dbController;
             _systemSettings = new SystemSettings(memoryCache);
             _logger = logger;
             _tracer = tracer;
-         //   _publisher = publisher;
-           // _outbox = outbox;
-            _convertDataTableToObject = convertDataTableToObject;
+            //   _publisher = publisher;
+            // _outbox = outbox;
+            _authenticateRestClient = authenticateRestClient;
+             _convertDataTableToObject = convertDataTableToObject;
         }
 
         public async Task HandleAsync(CreateADUserCommand command)
@@ -67,18 +69,25 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
             if (user.Result.Rows.Count>0)
             {
                 _logger.LogError("Error: User already exists {Username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
-                throw new HandleGeneralException(422, "User already exists");
+                throw new HandleGeneralException(400, "User already exists");
 
             }
+
+            //get details from AD 
+      var userDetail=       _authenticateRestClient.GetXtradotAdUserDetails(command.UserName, command.Domain);
+            if (userDetail == null) {
+                _logger.LogError("Error: User:{Username} does not  exists in Active Directory ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
+                throw new HandleGeneralException(400, "User: "+command.UserName+ " does not exist in Active Directory");
+            };
             var aDUserId = Guid.NewGuid().ToString();
-            object[] paramADUser = { aDUserId  , command.UserName, command.FirstName, command.LastName, command.Active = true,command.Email,command.BranchId};
+            object[] paramADUser = { aDUserId  , command.UserName, userDetail.data.firstName, userDetail.data.lastName, command.Active = true, userDetail.data.email, command.BranchId};
 
             var adUser = _dbController.SQLExecuteAsync(Sql.InsertADUser, paramADUser) ?? null;
 
             if (adUser.Result == 0)
             {
                 _logger.LogError("Server Error occured, user was not created ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
 
             }
             object[] paramRole = {Guid.NewGuid().ToString(), aDUserId, command.RoleId };
@@ -88,7 +97,7 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
             if (userRole1.Result == 0)
             {
                 _logger.LogError("Server Error occured role was not created||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
 
             }
 

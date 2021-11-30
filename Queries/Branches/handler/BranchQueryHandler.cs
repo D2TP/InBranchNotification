@@ -56,7 +56,7 @@ namespace InBranchDashboard.Queries.Branches.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/GetAllCatigories-Get|| [CategoryQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
            
             var branches = _convertDataTableToObject.ConvertDataRowList<Branch>(entity).AsQueryable();

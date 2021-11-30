@@ -62,7 +62,7 @@ namespace InBranchDashboard.Commands.Regions.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RegionController/CreateRegion|| [AddRegionHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Creation failed");
+                throw new HandleGeneralException(400, "Creation failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

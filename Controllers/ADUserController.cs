@@ -40,7 +40,7 @@ namespace InBranchDashboard.Controllers
         }
        
         [HttpGet("GetAllADusers/{PageNumber}/{PageSize}")]
-        public async Task<ActionResult<PagedList<ADCreateCommandDTO>>> GetAllADusers(int PageNumber, int PageSize)
+        public async Task<ActionResult<ObjectResponse>> GetAllADusers(int PageNumber, int PageSize)
         {
             //AD users
             var aDUserParameters = new ADUserParameters()
@@ -49,13 +49,17 @@ namespace InBranchDashboard.Controllers
                 PageNumber = PageNumber,
             };
             var aDCreateCommandDTO = new PagedList<ADUserBranchDTO>();
+            var objectResponse = new ObjectResponse();
             try
             {
                 var getAllADUserQuery = new GetAllADUserQuery(aDUserParameters);
                 aDCreateCommandDTO = await _queryDispatcher.QueryAsync(getAllADUserQuery);
+                objectResponse.Data = aDCreateCommandDTO;
+                objectResponse.Success = true;
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
@@ -64,11 +68,18 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured while getting all ADUser ||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError(" [#AdUser001-1-C] Server Error occured while getting all ADUser ||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.InnerException.Message);
+                    
+               
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+                    
+                        objectResponse.Message= new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#AdUser001-1-C] Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
             var metadata = new
@@ -80,25 +91,29 @@ namespace InBranchDashboard.Controllers
                 aDCreateCommandDTO.HasNext,
                 aDCreateCommandDTO.HasPrevious
             };
+            objectResponse.Message = new[] { "X-Pagination"+JsonConvert.SerializeObject(metadata) }; ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
-            return Ok(aDCreateCommandDTO);
+            return Ok(objectResponse);
 
         }
 
         [HttpGet("GetADUserbyId/{id}")]
  
-        public async Task<ActionResult<ADCreateCommandDTO>> GetADUserbyId(string id)
+        public async Task<ActionResult<ObjectResponse>> GetADUserbyId(string id)
         {
             //AD Login
-            var aDCreateCommandDTO = new ADCreateCommandDTO();
+            var objectResponse = new ObjectResponse();
+            
             try
             {
                 var getOneADUserQuery = new GetOneADUserQuery(id);
-                aDCreateCommandDTO = await _queryDispatcher.QueryAsync(getOneADUserQuery);
+                objectResponse = await _queryDispatcher.QueryAsync(getOneADUserQuery);
+                 
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
@@ -108,12 +123,20 @@ namespace InBranchDashboard.Controllers
 
                     };
                     _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", id, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status400BadRequest, resp);
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
                 _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", id, ex.Message);
-                return StatusCode(StatusCodes.Status404NotFound, ex.Message);
+                objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
-            return Ok(aDCreateCommandDTO);
+
+               
+            return Ok(objectResponse);
 
         }
 
@@ -122,22 +145,29 @@ namespace InBranchDashboard.Controllers
         [HttpPost("CreateADUser")]
         public async Task<ActionResult> CreateADUser([FromBody] ADUserInsertDTO aDUserInsertDTO)
         {
-
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
                 _logger.LogError("Validation error {username} was not created ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]  ");
-                return BadRequest(ModelState);
+              var modeerror=   ModelState.Values.SelectMany(x => x.Errors)
+                                       .Select(x => x.ErrorMessage);
+                objectResponse.Error = new[] { "Validation error {username} was not created ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] " };
+                objectResponse.Error = objectResponse.Error.ToList().Union(modeerror).ToArray();
+                return BadRequest(objectResponse);
             }
             var command = _mapper.Map<ADUserInsertDTO, CreateADUserCommand>(aDUserInsertDTO);
 
             try
             {
                 await _commandDispatcher.SendAsync(command);
+                objectResponse.Success = true;
 
-                return CreatedAtAction(nameof(GetADUserbyId), new { id = command.id }, null);
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetADUserbyId), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -146,24 +176,35 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
+                    objectResponse.Error = new[] { "[#AdUser002-2-C]", ex.InnerException.Message };
                     _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.UserName, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.UserName, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#AdUser001-2-C] Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.UserName, ex.Message);
+                objectResponse.Error = new[] { "[#AdUser001-2-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
+
+  
+
+
 
 
         [HttpPut("UpdateADUser")]
         public async Task<ActionResult> UpdateADUser([FromBody] UpdateAduser command)
         {
-
+            var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
             {
-                _logger.LogError("Validation error {username} was not updated||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle]");
-                return BadRequest(ModelState);
+                _logger.LogError("[#AdUser001-2-C] Validation error {username} was not updated||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle]");
+
+                var modeerror = ModelState.Values.SelectMany(x => x.Errors)
+                                       .Select(x => x.ErrorMessage).ToArray();
+                objectResponse.Error = new[] { "#AdUser001-2-C] Validation error {username} was not created ||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle] " };
+                objectResponse.Error = modeerror.ToArray();
+                return BadRequest(objectResponse);
             }
 
 
@@ -172,10 +213,14 @@ namespace InBranchDashboard.Controllers
 
                 await _commandDispatcher.SendAsync(command);
 
-                return CreatedAtAction(nameof(GetADUserbyId), new { id = command.id }, null);
+                objectResponse.Success = true;
+
+                objectResponse.Data = new { id = command.id };
+                return CreatedAtAction(nameof(GetADUserbyId), new { id = command.id }, objectResponse);
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -184,24 +229,36 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.user_name, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError("[#AdUser003-3-C] Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.user_name, ex.InnerException.Message);
+                    objectResponse.Error = new[] { "[#AdUser003-3-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.user_name, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError("[#AdUser003-3-C] Server Error occured ADuser was not created for {username}||Caller:ADUserController/Create  || [CreateADUserHandler][Handle] error:{error}", command.user_name, ex.Message);
+                objectResponse.Error = new[] { "[#AdUser003-3-C]", ex.Message };
+
+              return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+
+              
 
             }
         }
 
+ 
        
         [HttpDelete("DeleteADUser/{id}")]
         public async Task<ActionResult> DeleteADUser(string id)
         {
-
+            var objectResponse = new ObjectResponse();
             if (id == string.Empty)
             {
-                _logger.LogError("Validation error {username} was not updated||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle]");
-                return BadRequest(ModelState);
+                _logger.LogError(" [#AdUser001-4-C]  Validation error {user with } " + id + " was not updated due to validation issue||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle]");
+              
+                 
+                objectResponse.Error = new[] { "#AdUser001-4-C] Validation error {user with } " + id + " was not updated due to validation issue||Caller:ADUserController/UpdateADUser  || [UpdateADUserADUserHandler][Handle] " };
+                
+                return BadRequest(objectResponse);
             }
 
             var deleteAdUser = new DeleteAdUser { AdUserId = id };
@@ -218,11 +275,19 @@ namespace InBranchDashboard.Controllers
                 };
                 response.Headers.Add("DeleteMessage", "Succsessfuly Deleted!!!");
 
-                return StatusCode(StatusCodes.Status200OK, response);
+
+                objectResponse.Success = true;
+
+                objectResponse.Data =  new { id =  id };
+                objectResponse.Success = true;
+                objectResponse.Message = new[] { "AD User with id: " + id + "deleted, all assinged role also deleted" };
+
+                return StatusCode(StatusCodes.Status200OK, objectResponse);
 
             }
             catch (Exception ex)
             {
+                objectResponse.Success = false;
                 if (ex.InnerException != null)
                 {
                     var resp = new HttpResponseMessage(HttpStatusCode.UnprocessableEntity)
@@ -231,17 +296,26 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured ADuser was not deleted for {id}||Caller:ADUserController/DeleteADUser  || [DeleteADUser][Handle] error:{error}", id, ex.InnerException.Message);
-                    return StatusCode(StatusCodes.Status500InternalServerError, resp);
+                    _logger.LogError(" [#AdUser001-4-C]  Server Error occured ADuser was not deleted for {id}||Caller:ADUserController/DeleteADUser  || [DeleteADUser][Handle] error:{error}", id, ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#AdUser003-4-C]", ex.InnerException.Message };
+
+                          objectResponse.Message = new[] { resp.ToString() };
+                         return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+
+               
                 }
-                _logger.LogError("Server Error occured ADuser was not Deleted for {id}||Caller:ADUserController/DeleteADUser  || [DeleteADUser][Handle] error:{error}", id, ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                _logger.LogError(" [#AdUser001-4-C]  Server Error occured ADuser was not Deleted for {id}||Caller:ADUserController/DeleteADUser  || [DeleteADUser][Handle] error:{error}", id, ex.Message);
+               
+
+                objectResponse.Error = new[] { "[#AdUser003-3-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
 
-
-
+ 
 
     }
 }

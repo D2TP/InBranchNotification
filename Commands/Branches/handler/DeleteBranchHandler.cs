@@ -51,11 +51,11 @@ namespace InBranchDashboard.Commands.Branches.handler
 
             object[] param = { command.id };
 
-            var BranchSearch = await _dbController.SQLFetchAsync(Sql.SelectOneBranch, param);
+             var BranchSearch = await _dbController.SQLFetchAsync(Sql.SelectOneBranch, param);
             if (BranchSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:BranchController/DeleteBranch || [DeleteBranchHandler][Handle]");
-                throw new HandleGeneralException(500, "The BranchId not valid");
+                throw new HandleGeneralException(400, "The BranchId not valid");
             }
             int entity;
             try
@@ -67,7 +67,7 @@ namespace InBranchDashboard.Commands.Branches.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:BranchsController/DeleteBranch|| [DeleteBranchHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Delete failed");
+                throw new HandleGeneralException(400, "Delete failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

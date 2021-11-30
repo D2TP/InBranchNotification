@@ -54,7 +54,7 @@ namespace InBranchDashboard.Queries.RolePriviledges.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RolePriviledgeController/GetAllCatigories-Get|| [RolePriviledgeQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             
           var  _rolePriviledge = _convertDataTableToObject.ConvertDataRowList<RolePriviledgeDTO>(entity).AsQueryable();

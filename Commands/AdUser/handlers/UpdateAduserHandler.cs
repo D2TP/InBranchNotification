@@ -69,7 +69,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             if (adUser.Result == 0)
             {
                 _logger.LogError("Server Error occured, user was not created ||Caller:ADUserController/UpdateADUser  || [UpdateADUserHandler][Handle]", command.user_name);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
 
             }
             object[] paramRole = {  command.id, command.role_id, command.role_id };
@@ -79,7 +79,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             if (  userRole1.Status.ToString()== "Faulted")
             {
                 _logger.LogError("Server Error occured role was not created||Caller:ADUserController/UpdateADUser  || [UpdateADUserHandler][Handle]", command.user_name);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
 
             }
 

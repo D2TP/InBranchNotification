@@ -61,7 +61,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             if (deleteAdUser == 0)
             {
                 _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
 
             }
             //check if role Id exists
@@ -69,7 +69,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             if (checkAllRole.Rows.Count == 0)
             {
                 _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
             }
 
             object[] paramRoleuserRowId = { command.AdUserId };
@@ -79,7 +79,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             if (deleteRole == 0)
             {
                 _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
-                throw new HandleGeneralException(500, "Server Error occured");
+                throw new HandleGeneralException(400, "Server Error occured");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

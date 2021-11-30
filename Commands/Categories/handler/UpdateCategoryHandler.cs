@@ -54,7 +54,7 @@ namespace InBranchDashboard.Commands.Categories.handler
             if (categorySearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:CategoriesController/DeleteCategory || [DeleteCategoryHandler][Handle]");
-                throw new HandleGeneralException(500, "The CategoryId not valid");
+                throw new HandleGeneralException(400, "The CategoryId not valid");
             }
             int entity;
             try
@@ -66,7 +66,7 @@ namespace InBranchDashboard.Commands.Categories.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:CategoriesController/UpdateCategory|| [UpdateCategoryHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                throw new HandleGeneralException(400, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

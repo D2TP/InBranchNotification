@@ -52,7 +52,7 @@ namespace InBranchDashboard.Queries.Branches.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RolesController/GetRolById -Get|| [SingleBranchHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
             Branch branch = new Branch();
             branch = _convertDataTableToObject.ConvertDataTable<Branch>(entity).FirstOrDefault();

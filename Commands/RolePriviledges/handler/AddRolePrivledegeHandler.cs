@@ -42,7 +42,30 @@ namespace InBranchDashboard.Commands.RolePriviledges.handler
         public async Task HandleAsync(RolePrivledegeCommand command)
         {
 
+            //check role and and privilegdge check of Ids
+            object[] paramPriviledge_id = {   command.priviledge_id};
+         var priviledge_id = await _dbController.SQLFetchAsync(Sql.SelectOnePriviledge, paramPriviledge_id);
+            if (priviledge_id.Rows.Count == 0)
+            {
+                _logger.LogError(" Server returned no result |Caller:RolePrivledegeController/CreateRolePrivledege|| [AddRolePrivledegeHandler][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, priviledge_id not valid");
+            }
+            object[] paramRole_id = { command.role_id };
+            var role_id = await _dbController.SQLFetchAsync(Sql.SelectOneRole, paramRole_id);
+            if (role_id.Rows.Count == 0)
+            {
+                _logger.LogError("  Server returned no result |Caller:RolePrivledegeController/CreateRolePrivledege|| [AddRolePrivledegeHandler][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, role_id not valid");
+            }
 
+            object[] paramPermission_id = { command.permission_id };
+            var permission_id = await _dbController.SQLFetchAsync(Sql.SelectOnePermission, paramPermission_id);
+            if (permission_id.Rows.Count == 0)
+            {
+                _logger.LogError("  Server returned no result |Caller:RolePrivledegeController/CreateRolePrivledege|| [AddRolePrivledegeHandler][Handle]");
+                throw new HandleGeneralException(400, "Creation failed, permission_id not valid");
+            }
+            //command.role_id, command.permission_id 
             command.id = Guid.NewGuid().ToString();
 
 
@@ -57,7 +80,7 @@ namespace InBranchDashboard.Commands.RolePriviledges.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:RolePrivledegeController/CreateRolePrivledege|| [AddRolePrivledegeHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Creation failed");
+                throw new HandleGeneralException(400, "Creation failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

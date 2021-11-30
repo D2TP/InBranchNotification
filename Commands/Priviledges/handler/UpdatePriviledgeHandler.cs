@@ -54,7 +54,7 @@ namespace InBranchDashboard.Commands.Priviledges.handler
             if (PriviledgeSearch.Rows.Count == 0)
             {
                 _logger.LogError("Error: Server returned no result |Caller:PriviledgeController/DeletePriviledge || [DeletePriviledgeHandler][Handle]");
-                throw new HandleGeneralException(500, "The PriviledgeId not valid");
+                throw new HandleGeneralException(400, "The PriviledgeId not valid");
             }
             int entity;
             try
@@ -66,7 +66,7 @@ namespace InBranchDashboard.Commands.Priviledges.handler
             {
 
                 _logger.LogError("ex syetem error stack: {ex}Error: Server returned no result |Caller:PriviledgeController/UpdatePriviledge|| [UpdatePriviledgeHandler][Handle]", ex);
-                throw new HandleGeneralException(500, "Update failed");
+                throw new HandleGeneralException(400, "Update failed");
             }
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();

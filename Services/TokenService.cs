@@ -27,7 +27,7 @@ namespace InBranchDashboard.Services
 
         }
 
-        public Task<string> GetToken(ADUserDTO query)
+        public Task<string> GetToken(ADUserDTORespons query)
         {
 
             var _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Token:Key"]));

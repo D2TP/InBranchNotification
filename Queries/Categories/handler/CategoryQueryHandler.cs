@@ -55,7 +55,7 @@ namespace InBranchDashboard.Queries.Categories.handler
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RegionController/GetAllCatigories-Get|| [CategoryQueryHandler][Handle]");
-                throw new HandleGeneralException(500, "Server returned no result");
+                throw new HandleGeneralException(400, "Server returned no result");
             }
            
           var  category = _convertDataTableToObject.ConvertDataRowList<CategoryDTO>(entity).AsQueryable();
