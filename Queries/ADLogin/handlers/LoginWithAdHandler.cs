@@ -57,21 +57,21 @@ namespace InBranchDashboard.Queries.ADLogin.handlers
             var adPassed = false;
 
             //  var _authenticateRestClient = new AuthenticateRestClient();
-            var validateADuser = _authenticateRestClient.CheckXtradotAdUser(query);
-            if (!validateADuser)
-            {
-                _logger.LogWarning("Failed User name and Password --> username: {request.UserName} || [LoginWithAdHandler][Handle]", query.UserName);
-                throw new HandleGeneralException(401, "Failed User name and Password");
-            }
-            //Get domain for ad details
-            var xtradotGetDomains = _authenticateRestClient.XtradotGetDomains();
-            adPassed = true;
-            if (adPassed == false)
-            {
-                _logger.LogWarning("Failed to retrive Active Directory details contact admin --> username: {request.UserName} || [LoginWithAdHandler][Handle]", query.UserName);
-                //throw
-                throw new HandleGeneralException(401, "Failed to retrive Active Directory details contact System Admin");
-            }
+            //var validateADuser = _authenticateRestClient.CheckXtradotAdUser(query);
+            //if (!validateADuser)
+            //{
+            //    _logger.LogWarning("Failed User name and Password --> username: {request.UserName} || [LoginWithAdHandler][Handle]", query.UserName);
+            //    throw new HandleGeneralException(401, "Failed User name and Password");
+            //}
+            ////Get domain for ad details
+            //var xtradotGetDomains = _authenticateRestClient.XtradotGetDomains();
+            //adPassed = true;
+            //if (adPassed == false)
+            //{
+            //    _logger.LogWarning("Failed to retrive Active Directory details contact admin --> username: {request.UserName} || [LoginWithAdHandler][Handle]", query.UserName);
+            //    //throw
+            //    throw new HandleGeneralException(401, "Failed to retrive Active Directory details contact System Admin");
+            //}
 
             //getting detail from AD LDAP service not available yet
 

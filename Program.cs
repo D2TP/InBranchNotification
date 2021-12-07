@@ -41,6 +41,8 @@ using DbFactory;
 using InBranchDashboard.Extensions;
 using InBranchDashboard.Services;
 using Swagger.Extension;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace InBranchDashboard
 {
     public class Program
@@ -70,7 +72,8 @@ namespace InBranchDashboard
                     services.AddScoped<IValidateService, ValidateService>();
                     services.AddScoped<IAuthenticateRestClient, AuthenticateRestClient>();
                     services.AddScoped<IErrorList, ErrorList>();
-                    
+                    services.AddAuthorization();
+                    services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     services.AddAutoMapper(typeof(MappingProfiles));
 
                     // ValidateService : IValidateService IAuthenticateRestClient
@@ -92,6 +95,7 @@ namespace InBranchDashboard
                             .AddInMemoryEventDispatcher()
                             .AddInMemoryQueryDispatcher()
                             .AddPrometheus()
+                            
                             //   .AddRedis()
                        //     .AddRabbitMq(plugins: p => p.AddJaegerRabbitMqPlugin())
                         //    .AddMessageOutbox(
@@ -108,9 +112,11 @@ namespace InBranchDashboard
                             .UseConvey()
                             .UserCorrelationContextLogging()
                             //   .UseErrorHandler()
+                            .UseMiddleware<AuthenticationMiddleware>()
                             .UsePrometheus()
                             .UseRouting()
                             .UseAuthentication()
+                            .UseAuthorization()
                             //.UseCertificateAuthentication()
                             .UseEndpoints(r => r.MapControllers())
                             //.UseDispatcherEndpoints(endpoints => endpoints

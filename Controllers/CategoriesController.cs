@@ -12,6 +12,7 @@ using InBranchDashboard.Queries.ADUser.queries;
 using InBranchDashboard.Queries.Categories;
 using InBranchMgt.Commands.AdUser;
 using InBranchMgt.Commands.AdUser.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,6 +25,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 namespace InBranchDashboard.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class CategoriesController : Controller
     {

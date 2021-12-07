@@ -47,7 +47,7 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
         {
 
 
-            //G. OMONI check if role is valid 
+          
 
             object[] paramRoleId = { command.RoleId };
             var roleResult = await _dbController.SQLFetchAsync(Sql.SelectRole, paramRoleId) ?? null;
@@ -57,6 +57,17 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
             {
                 _logger.LogError("Error: There is no Role with the supplied roleid {roleid}|Caller:ADUserController/Create|| [CreateADUserHandler][Handle]", command.RoleId);
                 throw new HandleGeneralException(422, "There is no Role with the supplied roleid");
+
+            }
+            //SelectOneBranch
+            object[] paramBranchId = { command.BranchId };
+            var branchResult = await _dbController.SQLFetchAsync(Sql.SelectOneBranch, paramBranchId) ?? null;
+
+
+            if (roleResult.Rows.Count == 0)
+            {
+                _logger.LogError("Error: There is no Branch with the supplied branchId {branchId}|Caller:ADUserController/Create|| [CreateADUserHandler][Handle]", command.BranchId);
+                throw new HandleGeneralException(422, "There is no  Branch with the supplied branchId");
 
             }
             //role_name
@@ -80,8 +91,8 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
                 throw new HandleGeneralException(400, "User: "+command.UserName+ " does not exist in Active Directory");
             };
             var aDUserId = Guid.NewGuid().ToString();
-            object[] paramADUser = { aDUserId  , command.UserName, userDetail.data.firstName, userDetail.data.lastName, command.Active = true, userDetail.data.email, command.BranchId};
-
+            object[] paramADUser = { aDUserId  , command.UserName, userDetail.data.firstName, userDetail.data.lastName, command.Active = true, userDetail.data.email, command.BranchId,command.created_by};
+            //INSERT INTO  inb_aduser (id,user_name,first_name,last_name,active,email,branch_id,created_by)VALUES(#,#,#,#,#,#,#,#)
             var adUser = _dbController.SQLExecuteAsync(Sql.InsertADUser, paramADUser) ?? null;
 
             if (adUser.Result == 0)

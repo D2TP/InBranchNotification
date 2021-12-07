@@ -16,14 +16,21 @@ namespace InBranchDashboard.Services
             CreateMap<ADUserInsertDTO, CreateADUserCommand>()
              .ForMember(d => d.Active, o => o.MapFrom(s => s.active))
                 .ForMember(d => d.BranchId, o => o.MapFrom(s => s.branch_Id))
-             .ForMember(d => d.Email, o => o.MapFrom(s => s.email))
-                .ForMember(d => d.FirstName, o => o.MapFrom(s => s.first_name))
-                 .ForMember(d => d.LastName, o => o.MapFrom(s => s.last_name))
+             .ForMember(d => d.Domain, o => o.MapFrom(s => s.Domain))
+                //.ForMember(d => d.FirstName, o => o.MapFrom(s => s.first_name))
+                // .ForMember(d => d.LastName, o => o.MapFrom(s => s.last_name))
                  .ForMember(d => d.RoleId, o => o.MapFrom(s => s.role_id))
                  .ForMember(d => d.UserName, o => o.MapFrom(s => s.user_name));
             //CreateMap<Address, AddressDto>().ReverseMap();
             //CreateMap<CustomerBasketDto, CustomerBasket>().ReverseMap();
             //CreateMap<BasketItemDto, BasketItem>().ReverseMap();
+
+            CreateMap<UpdateAdUserDto,UpdateAduser>()
+          .ForMember(d => d.active, o => o.MapFrom(s => s.active))
+             .ForMember(d => d.branch_Id, o => o.MapFrom(s => s.branch_Id))
+          .ForMember(d => d.Domain, o => o.MapFrom(s => s.Domain))
+              .ForMember(d => d.role_id, o => o.MapFrom(s => s.role_id))
+              .ForMember(d => d.user_name, o => o.MapFrom(s => s.user_name));
         }
     }
 }

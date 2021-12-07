@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <Compile Remove="Commands\AdUser\ADCreateCommandDTO.cs" />
+    <Compile Remove="Controllers\AccountsAController.cs" />
+    <Compile Remove="Controllers\AccountsController.cs" />
     <Compile Remove="Queries\ADLogin\handlers\ADDetailsHandler.cs" />
     <Compile Remove="Queries\ADLogin\handlers\GetJwtTokenHandler.cs" />
     <Compile Remove="Queries\ADLogin\queries\ADDetailsQuery.cs" />

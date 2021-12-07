@@ -40,6 +40,7 @@ namespace InBranchDashboard.Commands.AdUser
         public string Email { get; set; }
         public string Domain { get; set; }
 
+        public string created_by { get; set; }
     }
 
     // check and thow and array of exception. 

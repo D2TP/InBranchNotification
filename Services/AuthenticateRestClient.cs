@@ -1,6 +1,8 @@
 ﻿using InBranchDashboard.Domain;
+using InBranchDashboard.Exceptions;
 using InBranchDashboard.Queries.ADLogin.queries;
 using InBranchDashboard.Services;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -13,7 +15,8 @@ namespace InBranchDashboard.Services
     public class AuthenticateRestClient : IAuthenticateRestClient
     {
         private readonly string _baseUrlServic;
-        public AuthenticateRestClient()
+        private readonly ILogger<AuthenticateRestClient> _logger;
+        public AuthenticateRestClient(ILogger<AuthenticateRestClient> logger)
         {
             _baseUrlServic = BaseUrlService.BaseUrlLinkForActiveDirectory();
         }
@@ -29,6 +32,11 @@ namespace InBranchDashboard.Services
             request.AddParameter("application/json", body, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             var xtradotResponse = JsonConvert.DeserializeObject<XtradotResponse>(response.Content);
+            if (xtradotResponse == null)
+            {
+                _logger.LogError("[#AuthenticateRestClient-1-C] Connection to Xtradot api/Authentication/ad-validate failed Method: loginWithAdQuery");
+                throw new HandleGeneralException(401, "[#AuthenticateRestClient-1-C] Connection to Xtradot api/Authentication/ad-validate failed Method: loginWithAdQuery");
+            }
             if (xtradotResponse.data.isValid)
             {
                 validateUser = true;

@@ -4,7 +4,7 @@ namespace DbFactory
     {
                                               
         //ADUSer and Role
-        public const string InsertADUser = "INSERT INTO  inb_aduser (id,user_name,first_name,last_name,active,email,branch_id)VALUES(#,#,#,#,#,#,#)";
+        public const string InsertADUser = "INSERT INTO  inb_aduser (id,user_name,first_name,last_name,active,email,branch_id,created_by)VALUES(#,#,#,#,#,#,#,#)";
         public const string SelectADUser = "SELECT id,  email, user_name, first_name, last_name , active, entry_date FROM inb_aduser where user_name =#";
         public const string SelectADUserById = "SELECT id,  email, user_name, first_name, last_name , active, entry_date FROM inb_aduser where id =#";
         public const string SelectRole = "SELECT id,role_name,category_id  FROM inb_role where id=#";
@@ -16,7 +16,7 @@ namespace DbFactory
         public const string InsertUserRole = "INSERT INTO  inb_user_role  (id, ad_user_id , role_id )  VALUES (#,#,#)";
         public const string SelectUserBaseOnAdUserId = "Select  id, ad_user_id , role_id from inb_user_role where ad_user_id=#";
 
-        public const string UpdateADUser = "UPDATE inb_aduser SET user_name=#, first_name=#,last_name=#, active=#, email=#,branch_id=# WHERE id=# ";
+        public const string UpdateADUser = "UPDATE inb_aduser SET user_name=#, first_name=#,last_name=#, active=#, email=#,branch_id=#,modified_by=#,modified_date=# WHERE id=# ";
         public const string UpdatetUserRole = "UPDATE inb_user_role SET role_id=#  WHERE ad_user_id=# and role_id = #";
         public const string GetUserRole = "SELECT * from  inb_user_role   WHERE ad_user_id=# and role_id = #";
 

@@ -12,12 +12,12 @@ namespace InBranchDashboard.DTOs
         [Required]
         [StringLength(maximumLength: 250, MinimumLength = 2)]
         public string user_name { get; set; }
-        [Required]
-        [StringLength(maximumLength: 250, MinimumLength = 2)]
-        public string first_name { get; set; }
-        [Required]
-        [StringLength(maximumLength: 250, MinimumLength = 2)]
-        public string last_name { get; set; }
+        //[Required]
+        //[StringLength(maximumLength: 250, MinimumLength = 2)]
+        //public string first_name { get; set; }
+        //[Required]
+        //[StringLength(maximumLength: 250, MinimumLength = 2)]
+        //public string last_name { get; set; }
         [Required]
         [StringLength(maximumLength: 250, MinimumLength = 10)]
         public string role_id { get; set; }
@@ -26,7 +26,9 @@ namespace InBranchDashboard.DTOs
         public bool  active{ get; set; }
        
         public string branch_Id { get; set; }
-        [EmailAddress(ErrorMessage = "Email address is not valid.")]
-        public string email { get; set; }
+        //[EmailAddress(ErrorMessage = "Email address is not valid.")]
+        //public string email { get; set; }
+
+        public string Domain { get; set; }
     }
 }
