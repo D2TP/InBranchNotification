@@ -48,8 +48,9 @@ namespace InBranchDashboard.Queries.Regions.handler
 
         public async Task<PagedList<RegionDTO>> HandleAsync(RegionQueries query)
     {
-            var entity =   _dbController.SQLFetchAsync(Sql.SelectRegion).Result.AsEnumerable().OrderBy(on => on.Field<string>("region_name"))
- .ToList(); 
+            var getEntity =await _dbController.SQLFetchAsync(Sql.SelectRegion);
+ 
+            var entity = getEntity.AsEnumerable().OrderBy(on => on.Field<string>("region_name")).ToList();
             if (entity.Count == 0)
             {
 

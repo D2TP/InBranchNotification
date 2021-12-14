@@ -48,8 +48,9 @@ namespace InBranchDashboard.Queries.Permissions.handler
 
         public async Task<PagedList<Permission>> HandleAsync(PermissionQueries query)
     {
-            var entity =   _dbController.SQLFetchAsync(Sql.SelectPermission).Result.AsEnumerable().OrderBy(on => on.Field<string>("permission_name"))
- .ToList(); 
+            var getEntity = await _dbController.SQLFetchAsync(Sql.SelectPermission);
+        var entity =    getEntity.AsEnumerable().OrderBy(on => on.Field<string>("permission_name"))
+ .ToList();
             if (entity.Count == 0)
             {
 

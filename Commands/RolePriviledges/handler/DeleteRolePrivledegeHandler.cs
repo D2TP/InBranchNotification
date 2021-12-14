@@ -27,7 +27,7 @@ namespace InBranchDashboard.Commands.RolePriviledges.handler
         private readonly SystemSettings _systemSettings;
         private readonly ILogger<DeleteRolePrivledegeHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
-        private readonly IBusPublisher _publisher;
+       // private readonly IBusPublisher _publisher;
         private readonly ITracer _tracer;
       //  private readonly IMessageOutbox _outbox;
 

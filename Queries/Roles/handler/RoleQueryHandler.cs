@@ -49,8 +49,8 @@ namespace InBranchDashboard.Queries.Roles.handler
 
         public async Task<PagedList<Role>> HandleAsync(RoleQueries query)
     {
-            var entity =   _dbController.SQLFetchAsync(Sql.SelectRoles).Result.AsEnumerable().OrderBy(on => on.Field<string>("role_name"))
- .ToList(); ;
+            var getEntity = await _dbController.SQLFetchAsync(Sql.SelectRoles);
+        var entity = getEntity.AsEnumerable().OrderBy(on => on.Field<string>("role_name")).ToList();
             if (entity.Count == 0)
             {
 

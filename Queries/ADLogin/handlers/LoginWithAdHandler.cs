@@ -54,7 +54,7 @@ namespace InBranchDashboard.Queries.ADLogin.handlers
                 _logger.LogWarning("Validation error --> username: {request.UserName} || [LoginWithAdHandler][Handle]", validationErrorLsit);
                 throw new HandleGeneralException(401, "Failed the following validation : " + validationErrorLsit);
             }
-            var adPassed = false;
+            
 
             //  var _authenticateRestClient = new AuthenticateRestClient();
             //var validateADuser = _authenticateRestClient.CheckXtradotAdUser(query);

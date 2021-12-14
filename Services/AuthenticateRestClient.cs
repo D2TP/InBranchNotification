@@ -14,17 +14,19 @@ namespace InBranchDashboard.Services
 {
     public class AuthenticateRestClient : IAuthenticateRestClient
     {
-        private readonly string _baseUrlServic;
+        private readonly IBaseUrlService _baseUrlService;
         private readonly ILogger<AuthenticateRestClient> _logger;
-        public AuthenticateRestClient(ILogger<AuthenticateRestClient> logger)
+        public AuthenticateRestClient(ILogger<AuthenticateRestClient> logger, IBaseUrlService baseUrlService)
         {
-            _baseUrlServic = BaseUrlService.BaseUrlLinkForActiveDirectory();
+            _baseUrlService = baseUrlService;
+            _logger = logger;
         }
 
         public bool CheckXtradotAdUser(LoginWithAdQuery loginWithAdQuery)
         {
+            var baseUrl = _baseUrlService.BaseUrlLinkForActiveDirectory();
             bool validateUser = false;
-            var client = new RestClient(_baseUrlServic + "api/Authentication/ad-validate");
+            var client = new RestClient(baseUrl + "api/Authentication/ad-validate");
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/json");
@@ -49,7 +51,8 @@ namespace InBranchDashboard.Services
 
         public XtradotAdUserdetails GetXtradotAdUserDetails(string username, string domain)
         {
-            var client = new RestClient(_baseUrlServic + "api/Authentication/ad/" + username + "/" + domain);
+            var baseUrl = _baseUrlService.BaseUrlLinkForActiveDirectory();
+            var client = new RestClient(baseUrl + "api/Authentication/ad/" + username + "/" + domain);
 
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
@@ -60,7 +63,8 @@ namespace InBranchDashboard.Services
 
         public FBNDomain XtradotGetDomains()
         {
-            var client = new RestClient(_baseUrlServic + "api/Authentication/lookup/domains");
+            var baseUrl = _baseUrlService.BaseUrlLinkForActiveDirectory();
+            var client = new RestClient(baseUrl + "api/Authentication/lookup/domains");
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);

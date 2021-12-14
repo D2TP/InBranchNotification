@@ -6,12 +6,18 @@
 
   <ItemGroup>
     <Compile Remove="Commands\AdUser\ADCreateCommandDTO.cs" />
+    <Compile Remove="Commands\Handlers\ChangeAccountStatusHandler.cs" />
+    <Compile Remove="Commands\Handlers\CompleteAccountOpeningHandler.cs" />
+    <Compile Remove="Commands\Handlers\CreateAccountHandler.cs" />
     <Compile Remove="Controllers\AccountsAController.cs" />
     <Compile Remove="Controllers\AccountsController.cs" />
     <Compile Remove="Queries\ADLogin\handlers\ADDetailsHandler.cs" />
     <Compile Remove="Queries\ADLogin\handlers\GetJwtTokenHandler.cs" />
     <Compile Remove="Queries\ADLogin\queries\ADDetailsQuery.cs" />
     <Compile Remove="Queries\ADLogin\queries\GetJwtTokenQuery.cs" />
+    <Compile Remove="Queries\handlers\GetAccountHandler.cs" />
+    <Compile Remove="Queries\handlers\GetAccountsHandler.cs" />
+    <Compile Remove="Queries\handlers\GetJwtTokenHandler.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +52,11 @@
     <PackageReference Include="RestSharp" Version="106.13.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\Handlers\" />
+    <Folder Include="Queries\handlers\" />
   </ItemGroup>
 
 </Project>

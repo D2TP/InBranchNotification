@@ -49,8 +49,8 @@ namespace InBranchDashboard.Queries.Branches.handler
 
         public async Task<PagedList<Branch>> HandleAsync(BranchQueries query)
     {
-           // var entity = await _dbController.SQLFetchAsync(Sql.SelectBranches);
-            var entity = _dbController.SQLFetchAsync(Sql.SelectBranches).Result.AsEnumerable().OrderBy(on => on.Field<string>("branch_name"))
+            var getEntity = await _dbController.SQLFetchAsync(Sql.SelectBranches);
+            var entity = getEntity.AsEnumerable().OrderBy(on => on.Field<string>("branch_name"))
  .ToList();
             if (entity.Count == 0)
             {

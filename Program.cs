@@ -72,6 +72,7 @@ namespace InBranchDashboard
                     services.AddScoped<IValidateService, ValidateService>();
                     services.AddScoped<IAuthenticateRestClient, AuthenticateRestClient>();
                     services.AddScoped<IErrorList, ErrorList>();
+                    services.AddScoped<IBaseUrlService, BaseUrlService>();
                     services.AddAuthorization();
                     services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                     services.AddAutoMapper(typeof(MappingProfiles));
@@ -111,7 +112,7 @@ namespace InBranchDashboard
                         .Configure(app => app
                             .UseConvey()
                             .UserCorrelationContextLogging()
-                            //   .UseErrorHandler()
+                           .UseMiddleware<CustomExcepExceptionExtensions>()
                             .UseMiddleware<AuthenticationMiddleware>()
                             .UsePrometheus()
                             .UseRouting()

@@ -48,8 +48,8 @@ namespace InBranchDashboard.Queries.Priviledges.handler
 
         public async Task<PagedList<Priviledge>> HandleAsync(PriviledgeQueries query)
     {
-            var entity =   _dbController.SQLFetchAsync(Sql.SelectPriviledge).Result.AsEnumerable().OrderBy(on => on.Field<string>("priviledge_name"))
- .ToList(); ;
+            var getEntity = await _dbController.SQLFetchAsync(Sql.SelectPriviledge);
+            var entity = getEntity.AsEnumerable().OrderBy(on => on.Field<string>("priviledge_name")).ToList(); ;
             if (entity.Count == 0)
             {
 

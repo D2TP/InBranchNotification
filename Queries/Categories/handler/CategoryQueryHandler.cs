@@ -48,9 +48,9 @@ namespace InBranchDashboard.Queries.Categories.handler
 
         public async Task<PagedList<CategoryDTO>> HandleAsync(CategoryQueries query)
         {
-            
-            var entity =   _dbController.SQLFetchAsync(Sql.SelectCatigories).Result.AsEnumerable().OrderBy(on => on.Field<string>("category_name"))
- .ToList(); ;
+
+            var getEntity = await _dbController.SQLFetchAsync(Sql.SelectCatigories);
+            var entity = getEntity.AsEnumerable().OrderBy(on => on.Field<string>("category_name")).ToList();
             if (entity.Count == 0)
             {
 

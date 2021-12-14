@@ -48,8 +48,9 @@ namespace InBranchDashboard.Queries.RolePriviledges.handler
 
         public async Task<PagedList<RolePriviledgeDTO>> HandleAsync(RolePriviledgeQueries query)
     {
-            var entity =   _dbController.SQLFetchAsync(Sql.SelectRolePriviledge).Result.AsEnumerable().OrderBy(on => on.Field<string>("priviledge_name"))
- .ToList();
+            var getEntity =await   _dbController.SQLFetchAsync(Sql.SelectRolePriviledge);
+            var entity = getEntity.AsEnumerable().OrderBy(on => on.Field<string>("priviledge_name"))
+  .ToList();
             if (entity.Count == 0)
             {
 
