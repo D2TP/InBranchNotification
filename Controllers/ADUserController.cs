@@ -154,8 +154,17 @@ namespace InBranchDashboard.Controllers
 
         public async Task<ActionResult<ObjectResponse>> ActivateOrDeactivateADUser(ActivaeDeactivateAduser activaeDeactivateAduser)
         {
-            //AD Login
             var objectResponse = new ObjectResponse();
+            if (!ModelState.IsValid)
+            {
+                _logger.LogError("Validation error activation or deactivation failed ||Caller:ADUserController/ActivateOrDeactivateADUser   || [CreateADUserHandler][ActivaeDeactivateAduserHandler]  ");
+                var modeerror = ModelState.Values.SelectMany(x => x.Errors)
+                                         .Select(x => x.ErrorMessage);
+                objectResponse.Error = new[] { "Validation error activation or deactivation failed ||Caller:ADUserController/ActivateOrDeactivateADUser   || [ActivaeDeactivateAduserHandler][Handle] " };
+                objectResponse.Error = objectResponse.Error.ToList().Union(modeerror).ToArray();
+                return BadRequest(objectResponse);
+            }
+            
 
             try
             {
@@ -177,14 +186,14 @@ namespace InBranchDashboard.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", activaeDeactivateAduser.AdUserId, ex.InnerException.Message);
+                    _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle] error:{error}", activaeDeactivateAduser.AdUserId, ex.InnerException.Message);
 
                     objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
 
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", activaeDeactivateAduser.AdUserId, ex.Message);
+                _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle] error:{error}", activaeDeactivateAduser.AdUserId, ex.Message);
                 objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.Message };
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);

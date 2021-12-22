@@ -52,7 +52,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             var checkIfUserExist = await _dbController.SQLFetchAsync(Sql.SelectADUser, paramAdUserName) ?? null;
              if (checkIfUserExist.Rows.Count == 0)
             {
-                _logger.LogError("An Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
+                _logger.LogError("An Error occured while deleting  ||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle]", command.AdUserId);
                 throw new HandleGeneralException(404, "Invalid AdUser Id supplied");
 
             }
@@ -64,13 +64,13 @@ namespace InBranchMgt.Commands.AdUser.Handlers
                 var checkAllRole = await _dbController.SQLSelectAsync(Sql.CheckIdAdUserIsActive, paramAdUserActive) ?? null;
                 if (Convert.ToInt32(checkAllRole) > 0)
                 {
-                    _logger.LogError("User Already Active  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
+                    _logger.LogError("User Already Active  ||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle]", command.AdUserId);
                     throw new HandleGeneralException(400, "User Already Active");
                 }
                 var activateAdUser = await _dbController.SQLExecuteAsync(Sql.ActivateDeactivateADUser, paramAdUserActive);
                 if (activateAdUser == 0)
                 {
-                    _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
+                    _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle]", command.AdUserId);
                     throw new HandleGeneralException(400, "Server Error occured");
 
                 }
@@ -83,13 +83,13 @@ namespace InBranchMgt.Commands.AdUser.Handlers
                 // var checkAllRole = await _dbController.SQLExecuteAsync(Sql.CheckIdAdUserIsActive, paramAdUserActive) ?? null;
                 if (Convert.ToInt32(checkAllRole) > 0)
                 {
-                    _logger.LogError("User Already Active  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
+                    _logger.LogError("User Already Active  ||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle]", command.AdUserId);
                     throw new HandleGeneralException(400, "User Already Inactive");
                 }
                 var deactivateAdUser = await _dbController.SQLExecuteAsync(Sql.ActivateDeactivateADUser, paramAdUserActive);
                 if (deactivateAdUser == 0)
                 {
-                    _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/DeleteADUser  || [DeleteAduserHandler][Handle]", command.AdUserId);
+                    _logger.LogError("Server Error occured while deleting  ||Caller:ADUserController/ActivateOrDeactivateADUser  || [ActivaeDeactivateAduserHandler][Handle]", command.AdUserId);
                     throw new HandleGeneralException(400, "Server Error occured");
 
                 }
