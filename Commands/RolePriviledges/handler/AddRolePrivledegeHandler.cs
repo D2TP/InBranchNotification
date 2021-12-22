@@ -58,19 +58,22 @@ namespace InBranchDashboard.Commands.RolePriviledges.handler
                 throw new HandleGeneralException(400, "Creation failed, role_id not valid");
             }
 
-            object[] paramPermission_id = { command.permission_id };
-            var permission_id = await _dbController.SQLFetchAsync(Sql.SelectOnePermission, paramPermission_id);
-            if (permission_id.Rows.Count == 0)
+            object[] paramCheckRolePriviledge = { command.priviledge_id, command.role_id };
+            var checkIfRolePriviledgeExists = await _dbController.SQLSelectAsync(Sql.CheckIfRolePriviledgeExists, paramCheckRolePriviledge);
+            if (Convert.ToInt32(checkIfRolePriviledgeExists) > 0)
             {
                 _logger.LogError("  Server returned no result |Caller:RolePrivledegeController/CreateRolePrivledege|| [AddRolePrivledegeHandler][Handle]");
-                throw new HandleGeneralException(400, "Creation failed, permission_id not valid");
+                throw new HandleGeneralException(400, "Creation failed, a role with same privilege already exists ");
             }
-            //command.role_id, command.permission_id 
+
+
+
+
             command.id = Guid.NewGuid().ToString();
 
+            // check if role pridvledge combo exist
 
-
-            object[] param = { command.id, command.priviledge_id, command.role_id,command.permission_id };
+            object[] param = { command.id, command.priviledge_id, command.role_id  };
             int entity;
             try
             {
@@ -85,7 +88,7 @@ namespace InBranchDashboard.Commands.RolePriviledges.handler
 
             var spanContext = _tracer.ActiveSpan.Context.ToString();
 
-            var @event = new GenericCreatedEvent("New Role, Privledege and Permission  created", command.id);
+            var @event = new GenericCreatedEvent("New Role, Privledege ", command.id);
 
             //if (_outbox.Enabled)
             //{

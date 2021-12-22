@@ -96,11 +96,69 @@ namespace InBranchDashboard.Controllers
                 rolePriviledgeDTO.HasNext,
                 rolePriviledgeDTO.HasPrevious
             };
-            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
+            objectResponse.Message = new[] {   JsonConvert.SerializeObject(metadata) };  ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(objectResponse);
         }
+
+
+
+
+        [HttpGet("GetPriviledgeAttchedToARoleByRoleId/{id}")]
+         
+        public async Task<ActionResult<ObjectResponse>> GetPriviledgeAttchedToleRole(string id)
+        {
+            var objectResponse = new ObjectResponse();
+            if (id == string.Empty)
+            {
+                _logger.LogError("[#RolePriv002-2-C] Validation error {Permission} was not deleted ||Caller:PermissionController/CreatePermission  || [SingleCategorHandler][Handle]  ", id);
+                return BadRequest(ModelState);
+            }
+          
+         
+
+           // var rolePriviledgeDTO = new PagedList<RolePriviledgeDTO>();
+             
+            try
+            {
+                 var command = new RolePriviledgeQuery(id);
+               
+               var  rolePriviledgeDTO = await _queryDispatcher.QueryAsync(command);
+
+                objectResponse.Data = rolePriviledgeDTO;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("[#RolePriv001-1-C] Server Error occured while getting all ADUser ||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#RolePriv001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+
+
+                _logger.LogError("[#RolePriv001-1-C] Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#RolePriv001-1-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            
+          
+
+            return Ok(objectResponse);
+        }
+
 
         [HttpDelete("RemoveRolePrivledege/{id}")]
      
@@ -163,7 +221,7 @@ namespace InBranchDashboard.Controllers
 
             var command = new RolePrivledegeCommand
             {
-                permission_id = addRolePriviledgeDTO.permission_id,
+               
                 priviledge_id = addRolePriviledgeDTO.priviledge_id,
                 role_id = addRolePriviledgeDTO.role_id
             };

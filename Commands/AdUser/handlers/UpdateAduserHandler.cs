@@ -87,9 +87,9 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             //    email=#,branch_id=#
             object[] paramADUser = {  command.user_name, userDetail.data.firstName, userDetail.data.lastName, command.active = command.active, userDetail.data.email,command.branch_Id,command.modified_by, DateTime.Now, command.id };
 
-            var adUser = _dbController.SQLExecuteAsync(Sql.UpdateADUser, paramADUser) ?? null;
+            var adUser =await _dbController.SQLExecuteAsync(Sql.UpdateADUser, paramADUser)  ;
 
-            if (adUser.Result == 0)
+            if (adUser == 0)
             {
                 _logger.LogError("Server Error occured, user was not created ||Caller:ADUserController/UpdateADUser  || [UpdateADUserHandler][Handle]", command.user_name);
                 throw new HandleGeneralException(400, "Server Error occured");

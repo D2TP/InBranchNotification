@@ -94,7 +94,7 @@ namespace InBranchDashboard.Controllers
                 regionDTO.HasNext,
                 regionDTO.HasPrevious
             };
-            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
+            objectResponse.Message = new[] {   JsonConvert.SerializeObject(metadata) };  ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(objectResponse);

@@ -20,6 +20,9 @@ namespace DbFactory
         public const string UpdatetUserRole = "UPDATE inb_user_role SET role_id=#  WHERE ad_user_id=# and role_id = #";
         public const string GetUserRole = "SELECT * from  inb_user_role   WHERE ad_user_id=# and role_id = #";
 
+        public const string CheckIdAdUserIsActive = "SELECT count(*) from inb_aduser   WHERE active=# and user_name=#  ";
+        public const string ActivateDeactivateADUser = "Update inb_aduser set active=#   WHERE  user_name=#";
+       // public const string ActivateADUser = "Update inb_aduser set active=#   WHERE  id=#";
         public const string DeleteADUser = "DELETE FROM inb_aduser WHERE  id=#";
         public const string DeleteUserRoles = "DELETE FROM inb_user_role WHERE  ad_user_id=#";
         public const string DeleteSingleUserRoles = "DELETE FROM inb_user_role WHERE  ad_user_id=# and role_id=#";
@@ -56,10 +59,11 @@ namespace DbFactory
 
 
         //RolePriviledge
-        public const string SelectRolePriviledge = "SELECT pr.priviledge_name , p.permission_name, rp.role_id,rp.priviledge_id, rp.permission_id, rp.id FROM   dbo.inb_permission as p INNER JOIN inb_role_priviledge as rp ON p.id = rp.permission_id INNER JOIN dbo.inb_priviledge as pr ON rp.priviledge_id = pr.id";
-       
-        public const string SelectOneRolePriviledge = "SELECT pr.priviledge_name , p.permission_name, rp.role_id,rp.priviledge_id, rp.permission_id, rp.id FROM   dbo.inb_permission as p INNER JOIN inb_role_priviledge as rp ON p.id = rp.permission_id INNER JOIN dbo.inb_priviledge as pr ON rp.priviledge_id = pr.id where rp.id=#";
-        public const string InsertRolePriviledge = "INSERT INTO  inb_role_priviledge (id,priviledge_id,role_id,permission_id)  VALUES (#,#,#,#)";
+        public const string SelectRolePriviledge = "SELECT    rp.id, rp.priviledge_id,pr.priviledge_name ,  rp.role_id,r.role_name FROM     dbo.inb_role_priviledge   as rp   INNER JOIN dbo.inb_priviledge as pr ON rp.priviledge_id = pr.id inner join inb_role as r on r.id=rp.role_id";
+
+        public const string CheckIfRolePriviledgeExists = "SELECT count(*) from dbo.inb_role_priviledge where priviledge_id=#  and  role_id=#";
+        public const string SelectOneRolePriviledge = "  SELECT    rp.id, rp.priviledge_id,pr.priviledge_name ,  rp.role_id,r.role_name FROM     dbo.inb_role_priviledge   as rp     INNER JOIN dbo.inb_priviledge as pr ON rp.priviledge_id = pr.id inner join inb_role as r on r.id=rp.role_id  where  r.id=#";
+        public const string InsertRolePriviledge = "INSERT INTO  inb_role_priviledge (id,priviledge_id,role_id)  VALUES (#,#,#)";
    //     public const string UpdatePriviledge = "UPDATE inb_priviledge SET priviledge_name=#  WHERE id=#";
         public const string DeleteRolePriviledge = "DELETE FROM inb_role_priviledge WHERE  id=#";
 

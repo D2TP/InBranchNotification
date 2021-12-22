@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Queries.RolePriviledges
 {
-    public class RolePriviledgeQuery : IQuery<RolePriviledgeDTO>
+    public class RolePriviledgeQuery : IQuery<List<RolePriviledgeDTO>>
     {
         public RolePriviledgeQuery(string id)
         {
@@ -20,6 +20,6 @@ namespace InBranchDashboard.Queries.RolePriviledges
         public string priviledge_id { get; set; }
         public string role_id { get; set; }
 
-        public string permission_id { get; set; }
+     //   public string permission_id { get; set; }
     }
 }

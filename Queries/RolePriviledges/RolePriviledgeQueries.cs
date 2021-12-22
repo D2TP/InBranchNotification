@@ -28,6 +28,6 @@ namespace InBranchDashboard.Queries.RolePriviledges
         public string priviledge_id { get; set; }
         public string role_id { get; set; }
 
-        public string permission_id { get; set; }
+    //    public string permission_id { get; set; }
     }
 }

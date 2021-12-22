@@ -91,7 +91,7 @@ namespace InBranchDashboard.Controllers
                 role.HasNext,
                 role.HasPrevious
             };
-            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
+            objectResponse.Message = new[] {   JsonConvert.SerializeObject(metadata) };  ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(objectResponse);

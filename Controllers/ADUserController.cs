@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace InBranchDashboard.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ADUserController : Controller
@@ -100,7 +100,7 @@ namespace InBranchDashboard.Controllers
                 aDCreateCommandDTO.HasNext,
                 aDCreateCommandDTO.HasPrevious
             };
-            objectResponse.Message = new[] { "X-Pagination" + JsonConvert.SerializeObject(metadata) }; ;
+            objectResponse.Message = new[] {   JsonConvert.SerializeObject(metadata) }; 
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(objectResponse);
@@ -150,6 +150,50 @@ namespace InBranchDashboard.Controllers
         }
 
 
+        [HttpPost("ActivateOrDeactivateADUser")]
+
+        public async Task<ActionResult<ObjectResponse>> ActivateOrDeactivateADUser(ActivaeDeactivateAduser activaeDeactivateAduser)
+        {
+            //AD Login
+            var objectResponse = new ObjectResponse();
+
+            try
+            {
+                //  await _commandDispatcher.SendAsync(command);
+
+               // var getOneADUserQuery = new GetOneADUserQuery(id);
+                await _commandDispatcher.SendAsync(activaeDeactivateAduser);
+                objectResponse.Success = true;
+                objectResponse.Message = new[] { "Active status change for " + activaeDeactivateAduser.AdUserId + " was completed succesfully" };
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", activaeDeactivateAduser.AdUserId, ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", activaeDeactivateAduser.AdUserId, ex.Message);
+                objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+
+            return Ok(objectResponse);
+
+        }
 
         [HttpPost("CreateADUser")]
         public async Task<ActionResult> CreateADUser([FromBody] ADUserInsertDTO aDUserInsertDTO)
