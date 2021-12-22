@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace InBranchDashboard.Controllers
 {
-   // [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ADUserController : Controller
