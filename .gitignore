@@ -11,9 +11,9 @@
 *.suo
 *.user
 *.sln.docstates
-appsettings.json
 *.txt
 *.log
+appsettings.json
 # Build results
 [Dd]ebug/
 [Rr]elease/
