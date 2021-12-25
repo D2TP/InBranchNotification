@@ -35,6 +35,7 @@ namespace InBranchDashboard.Controllers
         private readonly IMapper _mapper;
         public RolesController(ILogger<RolesController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
         {
+
             _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
             _logger = logger;
