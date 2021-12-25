@@ -1,4 +1,4 @@
-﻿using KYCUploadAPICustomer.Exceptions;
+﻿using InBranchDashboard.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace KYCUploadAPICustomer.Services
+namespace InBranchDashboard.Services
 {
     public class BaseUrlService : IBaseUrlService
     {
