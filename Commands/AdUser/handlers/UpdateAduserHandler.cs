@@ -78,7 +78,7 @@ namespace InBranchMgt.Commands.AdUser.Handlers
             Role role = new Role();
             role = _convertDataTableToObject.ConvertDataTable<Role>(roleResult).FirstOrDefault();
 
-            var userDetail = _authenticateRestClient.GetXtradotAdUserDetails(command.user_name, command.Domain);
+            var userDetail =await _authenticateRestClient.GetXtradotAdUserDetails(command.user_name, command.Domain);
             if (userDetail == null)
             {
                 _logger.LogError("Error: User:{Username} does not  exists in Active Directory ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.user_name);

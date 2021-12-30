@@ -85,7 +85,7 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
             }
 
             //get details from AD 
-      var userDetail=       _authenticateRestClient.GetXtradotAdUserDetails(command.UserName, command.Domain);
+      var userDetail=   await    _authenticateRestClient.GetXtradotAdUserDetails(command.UserName, command.Domain);
             if (userDetail == null) {
                 _logger.LogError("Error: User:{Username} does not  exists in Active Directory ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
                 throw new HandleGeneralException(400, "User: "+command.UserName+ " does not exist in Active Directory");

@@ -49,14 +49,14 @@ namespace InBranchDashboard.Services
 
         }
 
-        public XtradotAdUserdetails GetXtradotAdUserDetails(string username, string domain)
+        public async Task<XtradotAdUserdetails> GetXtradotAdUserDetails(string username, string domain)
         {
-            var baseUrl = _baseUrlService.BaseUrlLinkForActiveDirectory();
+            var baseUrl =await _baseUrlService.BaseUrlLinkForActiveDirectory();
             var client = new RestClient(baseUrl + "api/Authentication/ad/" + username + "/" + domain);
 
             client.Timeout = -1;
             var request = new RestRequest(Method.GET);
-            IRestResponse response = client.Execute(request);
+            IRestResponse response = await client.ExecuteAsync(request);
             var xtradotAdUserdetails = JsonConvert.DeserializeObject<XtradotAdUserdetails>(response.Content);
             return xtradotAdUserdetails;
         }
