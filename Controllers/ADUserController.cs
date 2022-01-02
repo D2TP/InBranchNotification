@@ -150,7 +150,7 @@ namespace InBranchDashboard.Controllers
         }
 
 
-        [HttpPost("ActivateOrDeactivateADUser")]
+        [HttpPut("ActivateOrDeactivateADUser")]
 
         public async Task<ActionResult<ObjectResponse>> ActivateOrDeactivateADUser(ActivaeDeactivateAduser activaeDeactivateAduser)
         {

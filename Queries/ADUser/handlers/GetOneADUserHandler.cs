@@ -57,7 +57,8 @@ namespace InBranchDashboard.Queries.ADUser.handlers
             foreach (var item in aDCreateCommandDTOList)
             {
              var appRole = new AppRole();
-                appRole.RoleName = item.role_name; 
+                appRole.RoleName = item.role_name;
+                appRole.IsRoleActive = item.is_role_active;
                 aDUserDTO.AppRoles.Add(appRole);
             }
 

@@ -10,5 +10,6 @@ namespace InBranchDashboard.Commands.UserRole
     {
         public string AdUserId { get; set; }
         public string RoleId { get; set; }
+        public bool Active { get; set; }
     }
 }

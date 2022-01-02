@@ -22,6 +22,9 @@ namespace InBranchDashboard.DTOs
     
         [Display(Name = "Active")]
         public bool  active{ get; set; }
+
+        [Display(Name = "Is_Role_Active")]
+        public bool is_role_active { get; set; }
         [Display(Name = "EntryDate")]
         public DateTime  entry_date   { get; set; }
         [Display(Name = "BranchName")]
@@ -45,7 +48,7 @@ namespace InBranchDashboard.DTOs
         {
             public string RoleName { get; set; }
 
-
+            public bool Is_Role_Active { get; set; }
 
         }
     }

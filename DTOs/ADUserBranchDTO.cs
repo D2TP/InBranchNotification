@@ -27,6 +27,6 @@ namespace InBranchDashboard.DTOs
         public string branch_name { get; set; }
         [Display(Name = "Email")]
         public string email { get; set; }
-
+  //      public List<AppRole> AppRoles { get; set; }
     }
 }

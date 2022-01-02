@@ -93,9 +93,9 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
             var aDUserId = Guid.NewGuid().ToString();
             object[] paramADUser = { aDUserId  , command.UserName, userDetail.data.firstName, userDetail.data.lastName, command.Active = true, userDetail.data.email, command.BranchId,command.created_by};
             //INSERT INTO  inb_aduser (id,user_name,first_name,last_name,active,email,branch_id,created_by)VALUES(#,#,#,#,#,#,#,#)
-            var adUser = _dbController.SQLExecuteAsync(Sql.InsertADUser, paramADUser) ?? null;
+            var adUser =await _dbController.SQLExecuteAsync(Sql.InsertADUser, paramADUser)  ;
 
-            if (adUser.Result == 0)
+            if (adUser == 0)
             {
                 _logger.LogError("Server Error occured, user was not created ||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
                 throw new HandleGeneralException(400, "Server Error occured");
@@ -103,9 +103,9 @@ namespace InBranchDashboard.Commands.AdUser.Handlers
             }
             object[] paramRole = {Guid.NewGuid().ToString(), aDUserId, command.RoleId };
 
-            var userRole1 = _dbController.SQLExecuteAsync(Sql.InsertUserRole, paramRole);
+            var userRole1 =await _dbController.SQLExecuteAsync(Sql.InsertUserRole, paramRole);
            
-            if (userRole1.Result == 0)
+            if (userRole1 == 0)
             {
                 _logger.LogError("Server Error occured role was not created||Caller:ADUserController/Create  || [CreateADUserHandler][Handle]", command.UserName);
                 throw new HandleGeneralException(400, "Server Error occured");

@@ -21,7 +21,7 @@ namespace InBranchDashboard.DTOs
     {
         public string RoleName { get; set; }
 
-
+        public bool IsRoleActive { get; set; }
 
     }
 }

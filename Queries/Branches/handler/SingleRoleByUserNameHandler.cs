@@ -12,10 +12,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using InBranchDashboard.Domain;
+using InBranchDashboard.Queries.Branches;
 
 namespace InBranchDashboard.Queries.Roles.handler
 {
-    public class GetADUserAndassingedRoleHandler : IQueryHandler<AdUserRoleQuery, List<AdUserRoleDTO>>
+    public class SingleRoleByUserNameHandler : IQueryHandler<UserRoleQuery, List<AdUserRoleDTO>>
     {
         private readonly IDbController _dbController;
         private readonly SystemSettings _systemSettings;
@@ -23,20 +24,20 @@ namespace InBranchDashboard.Queries.Roles.handler
         private readonly ILogger<GetADUserAndassingedRoleHandler> _logger;
         private readonly IConvertDataTableToObject _convertDataTableToObject;
 
-        public GetADUserAndassingedRoleHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<GetADUserAndassingedRoleHandler> logger, IConvertDataTableToObject convertDataTableToObject)
+        public SingleRoleByUserNameHandler(IMemoryCache memoryCache, IDbController dbController, ILogger<GetADUserAndassingedRoleHandler> logger, IConvertDataTableToObject convertDataTableToObject)
         {
             _dbController = dbController;
             _systemSettings = new SystemSettings(memoryCache);
             _logger = logger;
             _convertDataTableToObject = convertDataTableToObject;
         }
-        public async Task<List<AdUserRoleDTO>> HandleAsync(AdUserRoleQuery query)
+        public async Task<List<AdUserRoleDTO>> HandleAsync(UserRoleQuery query)
         {
-            object[] param = { query.AdeUserId };
-            var entity = await _dbController.SQLFetchAsync(Sql.SelectADUserAndRoleName, param);
+            object[] param = { query.AdUserName };
+            var entity = await _dbController.SQLFetchAsync(Sql.SelectADUserByUserName, param);
             if (entity.Rows.Count == 0)
             {
-                _logger.LogError("Error: There is no user with {User Id} |Caller:ADUserController/GetAnDUsers-Get|| [CreateOneADUserHandler][Handle]", query.AdeUserId);
+                _logger.LogError("Error: There is no user with {User Id} |Caller:ADUserController/GetAnDUsers-Get|| [CreateOneADUserHandler][Handle]", query.AdUserName);
                 throw new HandleGeneralException(404, "User does not exist");
             }
             List<AdUserRoleDTO> adUserRoleDTO = new List<AdUserRoleDTO>();

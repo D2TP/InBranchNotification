@@ -8,16 +8,18 @@ namespace DbFactory
         public const string SelectADUser = "SELECT id,  email, user_name, first_name, last_name , active, entry_date FROM inb_aduser where user_name =#";
         public const string SelectADUserById = "SELECT id,  email, user_name, first_name, last_name , active, entry_date FROM inb_aduser where id =#";
         public const string SelectRole = "SELECT id,role_name,category_id  FROM inb_role where id=#";
-        public const string SelectADUserAndRoleName = "SELECT r.category_id, r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.id=#";
-        public const string SelectADUserAndBranchName = "SELECT r.category_id, r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.user_name=#";
+        public const string SelectADUserAndRoleName = "SELECT r.category_id,   u.active as is_role_active , r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.id=#";
+        public const string SelectADUserByUserName = "SELECT r.category_id,   u.active as is_role_active , r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.user_name=#";
+
+        public const string SelectADUserAndBranchName = "SELECT r.category_id, r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.user_name=# and u.active=1 ";
 
         public const string SelectADUserAndBranch = "SELECT a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,b.branch_name FROM  inb_aduser AS a  INNER JOIN inb_branch AS b ON a.branch_id = b.id";
         public const string SelectAllADUserAndRoleName = "SELECT a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id";
-        public const string InsertUserRole = "INSERT INTO  inb_user_role  (id, ad_user_id , role_id )  VALUES (#,#,#)";
+        public const string InsertUserRole = "INSERT INTO  inb_user_role  (id, ad_user_id , role_id, active )  VALUES (#,#,#,1)";
         public const string SelectUserBaseOnAdUserId = "Select  id, ad_user_id , role_id from inb_user_role where ad_user_id=#";
 
         public const string UpdateADUser = "UPDATE inb_aduser SET user_name=#, first_name=#,last_name=#, active=#, email=#,branch_id=#,modified_by=#,modified_date=# WHERE id=# ";
-        public const string UpdatetUserRole = "UPDATE inb_user_role SET role_id=#  WHERE ad_user_id=# and role_id = #";
+        public const string UpdatetUserRole = "UPDATE inb_user_role SET role_id=#, active=1 WHERE ad_user_id=# and role_id = #";
         public const string GetUserRole = "SELECT * from  inb_user_role   WHERE ad_user_id=# and role_id = #";
 
         public const string CheckIdAdUserIsActive = "SELECT count(*) from inb_aduser   WHERE active=# and user_name=#  ";
@@ -26,7 +28,8 @@ namespace DbFactory
         public const string DeleteADUser = "DELETE FROM inb_aduser WHERE  id=#";
         public const string DeleteUserRoles = "DELETE FROM inb_user_role WHERE  ad_user_id=#";
         public const string DeleteSingleUserRoles = "DELETE FROM inb_user_role WHERE  ad_user_id=# and role_id=#";
-
+        public const string ActivateDeactivateSingleUserRoles = "Update inb_user_role set active=# WHERE  ad_user_id=# and role_id=#";
+        public const string CheckIdAdUserRoleIsActive = "SELECT count(*) from inb_user_role   WHERE  active=# and ad_user_id=# and role_id=#  ";
 
         //categories
         public const string SelectCatigories = "SELECT id,category_name  FROM inb_category";

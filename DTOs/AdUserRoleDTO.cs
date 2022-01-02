@@ -26,6 +26,7 @@ namespace InBranchDashboard.DTOs
         public string branch_name { get; set; }
         [Display(Name = "Email")]
         public string email { get; set; }
-        public Role Role { get; set; }
+        
+        public RoleDTo Role { get; set; }
     }
 }

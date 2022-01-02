@@ -42,6 +42,8 @@ namespace InBranchDashboard.Queries.ADUser.handlers
                 throw new HandleGeneralException(400, "Server returned no result");
             }
             var aDCreateCommandDTO = _convertDataTableToObject.ConvertDataRowList<ADUserBranchDTO>(entity).AsQueryable();
+            
+           // aDCreateCommandDTO.FirstOrDefault().AppRoles = new List<AppRole>();
             var pagelist = PagedList<ADUserBranchDTO>.ToPagedList(aDCreateCommandDTO,
             query._aDUserParameters.PageNumber,
             query._aDUserParameters.PageSize);
