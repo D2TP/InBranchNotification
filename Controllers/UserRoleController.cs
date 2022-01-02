@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
-   // [Authorize]
+     [Authorize]
     [Route("api/[controller]")]
     public class UserRoleController : Controller
     {
