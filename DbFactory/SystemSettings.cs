@@ -134,6 +134,59 @@ namespace DbFactory
                 throw;
             }
         }
+
+
+        public DbConnectionParam GetUSerManagmentConnectionDetatils()
+        {
+            try
+            {
+                DbConnectionParam dbConnectionCache = new DbConnectionParam();
+
+                // Look for cache key.
+                if (!_cache.TryGetValue(CacheKeys.DbConnectionDetails, out dbConnectionCache))
+                {
+                    DbConnectionParam dbConnection = new DbConnectionParam();
+                    var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+                    var _commnserviceBaseUrl = config.GetSection("CommonEndpoint").GetSection("BaseUrl").Value;
+                    // Key not in cache, so get data.
+                    var settings = _apiCommon.GetSettingGroup("IN_BRANCH_DB", _commnserviceBaseUrl);
+                    if (settings.Count > 0)
+                    {
+                        dbConnection.CommandTimeout = ValidateNumber(settings.Where(m => m.settingId.Equals("IN_BRANCH_CMD_TIME_OUT")).Select(m => m.fieldValue).FirstOrDefault(), 60);
+                        dbConnection.ConnectionTimeout = ValidateNumber(settings.Where(m => m.settingId.Equals("IN_BRANCH_CONN_TIME_OUT")).Select(m => m.fieldValue).FirstOrDefault(), 60);
+                        dbConnection.MaxPoolSize = ValidateNumber(settings.Where(m => m.settingId.Equals("IN_BRANCH_CONN_POOL")).Select(m => m.fieldValue).FirstOrDefault(), 100);
+                        dbConnection.Port = ValidateNumber(settings.Where(m => m.settingId.Equals("IN_BRANCH_PORT")).Select(m => m.fieldValue).FirstOrDefault(), 1433);
+
+                        dbConnection.ProviderName = settings.Where(m => m.settingId.Equals("IN_BRANCH_DATA_PROVIDER")).Select(m => m.fieldValue).FirstOrDefault();
+                        dbConnection.DatabaseType = settings.Where(m => m.settingId.Equals("IN_BRANCH_DATA_TYPE")).Select(m => m.fieldValue).FirstOrDefault();
+                        dbConnection.DatabaseName = settings.Where(m => m.settingId.Equals("IN_BRANCH_DATABASE")).Select(m => m.fieldValue).FirstOrDefault();
+                        dbConnection.Password = settings.Where(m => m.settingId.Equals("IN_BRANCH_PASSWORD")).Select(m => m.fieldValue).FirstOrDefault();
+                        dbConnection.Server = settings.Where(m => m.settingId.Equals("IN_BRANCH_SERVER")).Select(m => m.fieldValue).FirstOrDefault();
+                        dbConnection.UserId = settings.Where(m => m.settingId.Equals("IN_BRANCH_USERNAME")).Select(m => m.fieldValue).FirstOrDefault();
+
+                        dbConnectionCache = dbConnection;
+
+                        // Set cache options.
+                        var cacheEntryOptions = new MemoryCacheEntryOptions()
+                            // Keep in cache for this time, reset time if accessed.
+                            .SetSlidingExpiration(TimeSpan.FromDays(1));
+
+                        // Save data in cache.
+                        _cache.Set(CacheKeys.DbConnectionDetails, dbConnectionCache, cacheEntryOptions);
+                    }
+                }
+
+                return dbConnectionCache;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+
+
+
         public async Task<string> GetBaseUrlAsync(string settingId)
         {
             try

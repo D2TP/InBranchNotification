@@ -28,7 +28,7 @@ namespace DbFactory
         { 
             _systemSettings = new SystemSettings(memoryCache);
 
-            DbConnectionParam cParam =   _systemSettings.GetConnectionDetatils();
+            DbConnectionParam cParam =   _systemSettings.GetUSerManagmentConnectionDetatils();
 
             _ConnectString = string.Format(cParam.DatabaseType.ToUpper() == CDatabaseType.Oracle ? CConnectString.Oracle
                                          : cParam.DatabaseType.ToUpper() == CDatabaseType.PostgreSQL ? CConnectString.PostgreSQL
