@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace InBranchDashboard.Controllers
 {
-    [Authorize]
+ //   [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ADUserController : Controller
@@ -107,6 +107,77 @@ namespace InBranchDashboard.Controllers
 
         }
 
+
+
+        
+        [HttpGet("SearchAllADusers/{PageNumber}/{PageSize}")]
+
+        // [Authorize(Roles = "Trustee")]
+        // [Authorize(Roles = "Trustee")]
+        public async Task<ActionResult<ObjectResponse>> SearchAllADusers(int PageNumber, int PageSize,string name,string role, string status)
+        {
+
+
+            //AD users
+            var aDUserParameters = new ADUserSearchParameters()
+            {
+                PageSize = PageSize,
+                PageNumber = PageNumber,
+                Name = name,
+                Role = role,
+                Status = status
+            };
+            var aDCreateCommandDTO = new PagedList<ADUserRoleBranchDTO>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+                var getAllADUserQuery = new GetAllADUserSearchQuery(aDUserParameters);
+                aDCreateCommandDTO = await _queryDispatcher.QueryAsync(getAllADUserQuery);
+                objectResponse.Data = aDCreateCommandDTO;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError(" [#AdUser001-1-C] Server Error occured while getting all ADUser ||Caller:ADUserController/SearchAllADusers  || [GetAllADUserSearchQuery][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#AdUser001-1-C] Server Error occured while getting all ADUser||Caller:ADUserController/SearchAllADusers  || [GetAllADUserSearchQuery][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            var metadata = new
+            {
+                aDCreateCommandDTO.TotalCount,
+                aDCreateCommandDTO.PageSize,
+                aDCreateCommandDTO.CurrentPage,
+                aDCreateCommandDTO.TotalPages,
+                aDCreateCommandDTO.HasNext,
+                aDCreateCommandDTO.HasPrevious
+            };
+            objectResponse.Message = new[] { JsonConvert.SerializeObject(metadata) };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(objectResponse);
+
+        }
+
+
         [HttpGet("GetADUserbyId/{id}")]
 
         public async Task<ActionResult<ObjectResponse>> GetADUserbyId(string id)
@@ -148,7 +219,48 @@ namespace InBranchDashboard.Controllers
             return Ok(objectResponse);
 
         }
+        [HttpGet("GetADUCount")]
 
+        public async Task<ActionResult<ObjectResponse>> GetADUserCount( )
+        {
+            //AD Login
+            var objectResponse = new ObjectResponse();
+            var countDto = new CountDto();
+            try
+            {
+                var getOneADUserQuery = new GetAllADUserCountQuery();
+                countDto = await _queryDispatcher.QueryAsync(getOneADUserQuery);
+                objectResponse.Data= countDto;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/GetADUserCount  || [GetAllADUserCountQuery][Handle] error:{error}",    ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("Server Error occured while getting ADUser: {id}||Caller:ADUserController/GetADUserCount  || [GetAllADUserCountQuery][Handle] error:{error}",  ex.Message);
+                objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+
+            return Ok(objectResponse);
+
+        }
 
         [HttpPut("ActivateOrDeactivateADUser")]
 

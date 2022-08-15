@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace InBranchDashboard.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     public class RolePrivledegeController : Controller
     {
@@ -97,6 +97,66 @@ namespace InBranchDashboard.Controllers
                 rolePriviledgeDTO.HasPrevious
             };
             objectResponse.Message = new[] {   JsonConvert.SerializeObject(metadata) };  ;
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(objectResponse);
+        }
+
+        [HttpGet("GellAllRoleBasedOnPrivledege/{PageNumber}/{PageSize}")]
+
+        public async Task<ActionResult<ObjectResponse>> GellAllRoleBasedOnPrivledeg(int PageNumber, int PageSize)
+        {
+            var queryStringParameters = new QueryStringParameters
+            {
+                PageSize = PageSize,
+                PageNumber = PageNumber,
+            };
+
+            var rolePriviledgeDTO = new PagedList<RoleBaseOnPriviledgeDTO>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+                 
+                var rolePriviledgeQueries = new RoleBasedOnPriviledgeQueries(queryStringParameters);
+                rolePriviledgeDTO = await _queryDispatcher.QueryAsync(rolePriviledgeQueries);
+
+                objectResponse.Data = rolePriviledgeDTO;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("[#RolePriv001-1-C] Server Error occured while getting all ADUser ||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.InnerException.Message);
+
+                    objectResponse.Error = new[] { "[#RolePriv001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+
+
+                _logger.LogError("[#RolePriv001-1-C] Server Error occured while getting all ADUser||Caller:ADUserController/getADUserbyId  || [GetOneADUserQuery][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#RolePriv001-1-C]", ex.Message };
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            var metadata = new
+            {
+                rolePriviledgeDTO.TotalCount,
+                rolePriviledgeDTO.PageSize,
+                rolePriviledgeDTO.CurrentPage,
+                rolePriviledgeDTO.TotalPages,
+                rolePriviledgeDTO.HasNext,
+                rolePriviledgeDTO.HasPrevious
+            };
+            objectResponse.Message = new[] { JsonConvert.SerializeObject(metadata) }; ;
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(objectResponse);

@@ -54,7 +54,7 @@ namespace InBranchDashboard.Queries.RolePriviledges.handler
             if (entity.Count == 0)
             {
 
-                _logger.LogError("Error: Server returned no result |Caller:RolePriviledgeController/GetAllCatigories-Get|| [RolePriviledgeQueryHandler][Handle]");
+                _logger.LogError("Error: Server returned no result |Caller:RolePriviledgeController/GellAllRolePrivledege-Get|| [RolePriviledgeQueryHandler][Handle]");
                 throw new HandleGeneralException(400, "Server returned no result");
             }
             

@@ -281,7 +281,7 @@ namespace DbFactory
                 SQLAdapter.Fill(dataSet);
                 return dataSet.Tables[0];
             }
-            catch (Exception) { throw; }
+            catch (Exception ) { throw; }
         }
         public DataTable SQLFetch(string sSQL, object[] strParam)
         {
