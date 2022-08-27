@@ -1,5 +1,5 @@
 ﻿
-using InBranchDashboard.Exceptions;
+using InBranchNotification.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;

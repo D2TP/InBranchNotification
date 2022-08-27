@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public interface IBaseUrlService
     {

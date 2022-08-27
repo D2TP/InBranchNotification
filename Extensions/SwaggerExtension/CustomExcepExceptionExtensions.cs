@@ -1,4 +1,4 @@
-﻿using InBranchDashboard.Domain;
+﻿using InBranchNotification.Domain;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

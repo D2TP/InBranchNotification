@@ -1,12 +1,12 @@
 ﻿using Convey.CQRS.Queries;
-using InBranchDashboard.Domain;
-using InBranchDashboard.DTOs;
+using InBranchNotification.Domain;
+using InBranchNotification.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Queries.ADLogin.queries
+namespace InBranchNotification.Queries.ADLogin.queries
 {
     public class LoginWithAdQuery : IQuery<ObjectResponse>
     {

@@ -1,7 +1,7 @@
-﻿using InBranchDashboard.DTOs;
+﻿using InBranchNotification.DTOs;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public interface ITokenService
     {

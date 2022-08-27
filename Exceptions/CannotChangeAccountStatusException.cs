@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using InBranchDashboard.Domain;
+using InBranchNotification.Domain;
 
-namespace InBranchDashboard.Exceptions
+namespace InBranchNotification.Exceptions
 {
     
 

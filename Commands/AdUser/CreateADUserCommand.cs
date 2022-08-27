@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Commands.AdUser
+namespace InBranchNotification.Commands.AdUser
 {
     public class CreateADUserCommand : ICommand
     {

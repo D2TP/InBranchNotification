@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public class ErrorList : IErrorList
     {

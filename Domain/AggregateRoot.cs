@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using InBranchDashboard.Services;
+using InBranchNotification.Services;
 using Convey.Types;
 
-namespace InBranchDashboard.Domain
+namespace InBranchNotification.Domain
 {
     public abstract class AggregateRoot  : IIdentifiable<Guid>
     {

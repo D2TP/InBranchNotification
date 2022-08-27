@@ -1,7 +1,7 @@
-﻿using InBranchDashboard.Domain;
-using InBranchDashboard.Exceptions;
-using InBranchDashboard.Queries.ADLogin.queries;
-using InBranchDashboard.Services;
+﻿using InBranchNotification.Domain;
+using InBranchNotification.Exceptions;
+using InBranchNotification.Queries.ADLogin.queries;
+using InBranchNotification.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RestSharp;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public class AuthenticateRestClient : IAuthenticateRestClient
     {

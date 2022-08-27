@@ -1,6 +1,6 @@
 ﻿
-using InBranchDashboard.DTOs;
-using InBranchDashboard.Queries.ADLogin.queries;
+using InBranchNotification.DTOs;
+using InBranchNotification.Queries.ADLogin.queries;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public class TokenService : ITokenService
     {

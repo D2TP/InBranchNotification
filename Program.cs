@@ -16,11 +16,11 @@ using Convey.MessageBrokers.RabbitMQ;
 using Convey.Metrics.Prometheus;
 ////using Convey.Persistence.MongoDB;
 using Convey.Persistence.Redis;
-using InBranchDashboard.Commands;
-using InBranchDashboard.Domain;
-using InBranchDashboard.Events.External;
-using InBranchDashboard.DTOs;
-using InBranchDashboard.Queries;
+using InBranchNotification.Commands;
+using InBranchNotification.Domain;
+using InBranchNotification.Events.External;
+using InBranchNotification.DTOs;
+using InBranchNotification.Queries;
 using Convey.Tracing.Jaeger;
 using Convey.Tracing.Jaeger.RabbitMQ;
 using Convey.WebApi;
@@ -33,17 +33,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Convey.Auth;
-using InBranchDashboard.Queries.handlers;
-using InBranchDashboard.Queries.ADLogin.queries;
+ 
 using Microsoft.Extensions.DependencyInjection;
-using InBranchDashboard.DbFactory;
+using InBranchNotification.DbFactory;
 using DbFactory;
-using InBranchDashboard.Extensions;
-using InBranchDashboard.Services;
+using InBranchNotification.Extensions;
+using InBranchNotification.Services;
 using Swagger.Extension;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace InBranchDashboard
+namespace InBranchNotification
 {
     public class Program
     {

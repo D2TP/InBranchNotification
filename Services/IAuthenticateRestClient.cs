@@ -1,8 +1,8 @@
-﻿using InBranchDashboard.Domain;
-using InBranchDashboard.Queries.ADLogin.queries;
+﻿using InBranchNotification.Domain;
+using InBranchNotification.Queries.ADLogin.queries;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public interface IAuthenticateRestClient
     {

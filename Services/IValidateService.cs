@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public interface IValidateService
     {

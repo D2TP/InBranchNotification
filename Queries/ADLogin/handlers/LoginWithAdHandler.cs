@@ -1,11 +1,11 @@
 ﻿using Convey.CQRS.Queries;
 using DbFactory;
-using InBranchDashboard.DbFactory;
-using InBranchDashboard.Domain;
-using InBranchDashboard.DTOs;
-using InBranchDashboard.Exceptions;
-using InBranchDashboard.Queries.ADLogin.queries;
-using InBranchDashboard.Services;
+using InBranchNotification.DbFactory;
+using InBranchNotification.Domain;
+using InBranchNotification.DTOs;
+using InBranchNotification.Exceptions;
+using InBranchNotification.Queries.ADLogin.queries;
+using InBranchNotification.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Queries.ADLogin.handlers
+namespace InBranchNotification.Queries.ADLogin.handlers
 {
     public class LoginWithAdHandler : IQueryHandler<LoginWithAdQuery, ObjectResponse>
     {

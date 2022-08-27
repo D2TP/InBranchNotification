@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
-using InBranchDashboard.Commands.AdUser;
-using InBranchDashboard.DTOs;
-using InBranchMgt.Commands.AdUser.Handlers;
+using InBranchNotification.Commands.AdUser;
+using InBranchNotification.DTOs;
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public class MappingProfiles : Profile
     {

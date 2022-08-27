@@ -1,4 +1,4 @@
-﻿namespace InBranchDashboard.Services
+﻿namespace InBranchNotification.Services
 {
     public interface IDomainEvent
     {

@@ -2,7 +2,7 @@
 using System.Net;
 using Convey.WebApi.Exceptions;
 
-namespace InBranchDashboard
+namespace InBranchNotification
 {
     public class ExceptionToResponseMapper : IExceptionToResponseMapper
     {

@@ -1,10 +1,10 @@
-﻿using InBranchDashboard.DTOs;
+﻿using InBranchNotification.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Events
+namespace InBranchNotification.Events
 {
     public class GenericCreatedEvent
     {

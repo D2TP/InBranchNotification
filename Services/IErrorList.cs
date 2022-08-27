@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public interface IErrorList
     {

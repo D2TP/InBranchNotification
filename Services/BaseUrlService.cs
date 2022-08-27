@@ -1,4 +1,4 @@
-﻿using InBranchDashboard.Exceptions;
+﻿using InBranchNotification.Exceptions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace InBranchDashboard.Services
+namespace InBranchNotification.Services
 {
     public class BaseUrlService : IBaseUrlService
     {

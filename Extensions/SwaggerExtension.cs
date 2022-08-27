@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
-namespace InBranchDashboard.Extensions
+namespace InBranchNotification.Extensions
 {
     public static class SwaggerExtension
     {

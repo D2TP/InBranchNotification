@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "InBranchDashboard": {
+    "InBranchNotification": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
