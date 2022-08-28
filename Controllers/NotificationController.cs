@@ -180,6 +180,51 @@ namespace InBranchNotification.Controllers
             }
         }
 
- 
+        [HttpGet("NotificationTypes")]
+        public    ActionResult<ObjectResponse>   NotificationTypes()
+        {
+
+            var objectResponse = new ObjectResponse();
+            try
+            {
+                List<string> listType = new List<string>();
+                listType.Add("SMS");
+                listType.Add("Email");
+                listType.Add("Push");
+                objectResponse.Data = listType;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError(" [#Notification001-1-C] Server Error occured while getting all Notification Type ||Caller:NotificationController /NotificationTypes  }", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                     
+                    return StatusCode(400, objectResponse);
+                }
+                _logger.LogError("[#Notification001-1-C] Server Error occured while getting all ADUser||Caller:NotificationController /SearchAllNotification   || [GetAllNotificationSearcHandler][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+          
+
+            return Ok(objectResponse);
+
+        }
+
     }
 }
