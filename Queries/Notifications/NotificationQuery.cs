@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace InBranchNotification.Queries.Branches
 {
-    public class BranchQuery : IQuery<Branch>
+    public class NotificationQuery : IQuery<Notification>
     {
-        public BranchQuery(string id)
+        public NotificationQuery(string id)
         {
             this.id = id;
         }

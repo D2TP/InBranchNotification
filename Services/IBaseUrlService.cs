@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using InBranchNotification.Domain;
+using Microsoft.Extensions.Primitives;
+using System.Threading.Tasks;
 
 namespace InBranchNotification.Services
 {
@@ -6,5 +8,6 @@ namespace InBranchNotification.Services
     {
         Task<string> BaseUrlLink();
         Task<string> BaseUrlLinkForActiveDirectory();
+        Task<ObjectResponse> AddAuditItem(Audit audit, StringValues userAgent)
     }
 }
