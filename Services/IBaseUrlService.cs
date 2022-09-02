@@ -8,6 +8,6 @@ namespace InBranchNotification.Services
     {
         Task<string> BaseUrlLink();
         Task<string> BaseUrlLinkForActiveDirectory();
-        Task<ObjectResponse> AddAuditItem(Audit audit, StringValues userAgent)
+        Task<ObjectResponse> AddAuditItem(Audit audit, StringValues userAgent);
     }
 }
