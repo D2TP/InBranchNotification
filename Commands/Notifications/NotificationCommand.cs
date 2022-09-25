@@ -16,5 +16,8 @@ namespace InBranchNotification.Commands.Audit
         public string sender { get; set; }
         public string body { get; set; }
         public bool completed { get; set; }
+        public Boolean approved { get; set; }
+        public List<string> recipents { get; set; }
+        public int? recipent_count => recipents.Count;
     }
 }

@@ -1,10 +1,10 @@
 ﻿using InBranchNotification.Domain;
-using System;
 using System.Collections.Generic;
+using System;
 
-namespace InBranchAuditTrail.DTOs
+namespace InBranchNotification.DTOs
 {
-    public class NotificationSearchDTO 
+    public class SingleNotificationDto
     {
 
         public string id { get; set; }
@@ -25,8 +25,5 @@ namespace InBranchAuditTrail.DTOs
             get { return recipents != null ? recipents.Count : 0; }
             set { rcount = value; }
         }
-
-        //  public int? recipent_count => recipents!=null? recipents.Count:0;
-
     }
 }

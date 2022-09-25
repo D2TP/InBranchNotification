@@ -69,6 +69,7 @@ namespace InBranchNotification
                     services.AddScoped<ITokenService, TokenService>();
                     services.AddScoped<IDbController, DbController>();
                     services.AddScoped<IValidateService, ValidateService>();
+                    services.AddScoped<INotificationTypeService, NotificationTypeService>();
                     services.AddScoped<IAuthenticateRestClient, AuthenticateRestClient>();
                     services.AddScoped<IErrorList, ErrorList>();
                     services.AddScoped<IBaseUrlService, BaseUrlService>();

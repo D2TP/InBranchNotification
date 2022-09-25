@@ -16,6 +16,7 @@ using OpenTracing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -50,9 +51,9 @@ namespace InBranchNotification.Commands.Audit.handler
 
             command.id = Guid.NewGuid().ToString();
 
-            //id,title,type,notification_date,sender,body,completed
+            var recipentsToJson = JsonSerializer.Serialize(command.recipents);
 
-            object[] param = { command.id,command.title, command.type, command.notification_date, command.sender, command.body, command.completed};
+            object[] param = { command.id,command.title, command.type, command.notification_date, command.sender, command.body, command.completed, recipentsToJson, command.recipent_count, command.approved };
 
 
           

@@ -31,9 +31,20 @@ namespace InBranchNotification.DbFactory
                 foreach (PropertyInfo pro in temp.GetProperties())
                 {
                     if (pro.Name == column.ColumnName)
-                        pro.SetValue(obj, dr[column.ColumnName], null);
+                    {
+                        object value = dr[column.ColumnName];
+                        if (value == DBNull.Value) value = null;
+                       
+                        pro.SetValue(obj, value, null);
+                    }
+                    //       pro.SetValue(obj, dr[column.ColumnName], null);
+
+
                     else
-                        continue;
+                    {
+                         continue;
+                    }
+                       
                 }
             }
             return obj;

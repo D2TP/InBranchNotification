@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace InBranchAuditTrail.DTOs
 {
@@ -10,7 +11,8 @@ namespace InBranchAuditTrail.DTOs
         public string type { get; set; }
         public string sender { get; set; }
         public string body { get; set; }
-     
-       
+        public List<string> recipents { get; set; }
+        public int? recipent_count => recipents.Count;
+
     }
 }

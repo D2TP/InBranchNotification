@@ -19,12 +19,12 @@ namespace InBranchNotification.Services
     {
         private readonly ILogger<BaseUrlService> _logger;
         private readonly IHttpContextAccessor _accessor;
-        private readonly IBaseUrlService _baseUrlService;
-        public BaseUrlService(IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<BaseUrlService> logger)
+       
+        public BaseUrlService( IHttpContextAccessor accessor, ILogger<BaseUrlService> logger)
         {
             _logger = logger;
             _accessor = accessor;
-            _baseUrlService = baseUrlService;
+            
         }
 
         public class Status
@@ -101,7 +101,7 @@ namespace InBranchNotification.Services
             var fullUlr = _commnserviceBaseUrl + "api/Audit/AuditItem";
             //http://196.6.186.100:8085/common/api/Audit/AuditItem
             _logger.LogCritical("This is the full Ulr:" + fullUlr);
-            var client = new RestClient("http://196.6.186.100:8085/common/api/Audit/AuditItem");
+            var client = new RestClient(fullUlr);
 
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);

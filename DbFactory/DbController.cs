@@ -143,7 +143,7 @@ namespace DbFactory
                 DbCreateParameters(SQLCmd, strParam);
                 bRet = SQLCmd.ExecuteNonQuery();
             }
-            catch (Exception) { throw; }
+            catch (Exception ex) { throw; }
             return bRet;
         }
         public int SQLExecuteTransactions(string sSQL, object[] strParam)

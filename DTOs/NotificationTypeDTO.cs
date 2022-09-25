@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace InBranchNotification.DTOs
 {
-    public class BranchDTO
+    public class NotificationTypeDTO
     {
-        public string branch_name { get; set; }
-        public string region_id { get; set; }
+        public string id { get; set; }
+        public string notification_type { get; set; }
     }
 }

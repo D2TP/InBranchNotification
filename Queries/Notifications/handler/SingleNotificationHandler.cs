@@ -15,13 +15,15 @@ using Microsoft.Extensions.Logging;
 using OpenTracing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace InBranchNotification.Queries.Branches.handler
 {
-    public class SingleNotificationHandler : IQueryHandler<NotificationQuery, Notification>
+    public class SingleNotificationHandler : IQueryHandler<NotificationQuery, SingleNotificationDto>
     {
 
         private readonly IDbController _dbController;
@@ -43,21 +45,39 @@ namespace InBranchNotification.Queries.Branches.handler
             _convertDataTableToObject = convertDataTableToObject;
         }
 
-        public async Task<Notification> HandleAsync(NotificationQuery query)
+        public async Task<SingleNotificationDto> HandleAsync(NotificationQuery query)
         {
 
             object[] param = { query.id };
             var entity = await _dbController.SQLFetchAsync(Sql.SelectOneNotification, param);
+
             if (entity.Rows.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:RolesController/GetRolById -Get|| [SingleBranchHandler][Handle]");
                 throw new HandleGeneralException(400, "Server returned no result");
             }
-            var notification = new Notification();
-            notification = _convertDataTableToObject.ConvertDataTable<Notification>(entity).FirstOrDefault();
+            var singleNotificationDto = new SingleNotificationDto();
 
-            return notification;
+             
+            foreach (var item in entity.AsEnumerable())
+            {
+
+                singleNotificationDto.title = item.Field<string>("id") != null ? Convert.ToString(item.Field<string>("id")) : null;
+                singleNotificationDto.title = item.Field<string>("title") != null ? Convert.ToString(item.Field<string>("title")) : null;
+                singleNotificationDto.notification_date = item.Field<DateTime>("notification_date") != null ? Convert.ToDateTime(item.Field<DateTime>("notification_date")) : null;
+                singleNotificationDto.sender = item.Field<string>("sender") != null ? Convert.ToString(item.Field<string>("sender")) : "";
+                singleNotificationDto.completed =   Convert.ToBoolean(item.Field<Boolean>("completed")) ;
+                singleNotificationDto.recipents = item.Field<string>("recipents") != null ? JsonSerializer.Deserialize<List<string>>(item.Field<string>("recipents")) : null;
+                singleNotificationDto.type = item.Field<string>("type") != null ? Convert.ToString(item.Field<string>("type")) : null;
+                singleNotificationDto.body = item.Field<string>("body") != null ? Convert.ToString(item.Field<string>("body")) : null;
+                
+                //JsonSerializer.Deserialize(item.Field<string>("sender"),);
+            }
+
+         //   singleNotificationDto = _convertDataTableToObject.ConvertDataTable<SingleNotificationDto>(entity).FirstOrDefault();
+
+            return singleNotificationDto;
         }
 
       

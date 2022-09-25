@@ -1,15 +1,15 @@
 ﻿using AutoMapper;
 using Convey.CQRS.Commands;
 using Convey.CQRS.Queries;
-
+ 
 using InBranchAuditTrail.DTOs;
 using InBranchNotification.Commands.Audit;
-
+ 
 
 using InBranchNotification.Domain;
 using InBranchNotification.DTOs;
 using InBranchNotification.Helpers;
-
+ 
 using InBranchNotification.Queries.Branches;
 using InBranchNotification.Queries.Notifications;
 using InBranchNotification.Services;
@@ -24,23 +24,23 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using static App.Metrics.Health.HealthCheck;
 
 namespace InBranchNotification.Controllers
 {
-    //   [Authorize]
+ //   [Authorize]
     [Route("api/[controller]")]
-    public class NotificationController : Controller
+    public class NotificationTypeController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
-        private readonly ILogger<NotificationController> _logger;
+        private readonly ILogger<NotificationTypeController> _logger;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _accessor;
         private readonly IBaseUrlService _baseUrlService;
         private readonly INotificationTypeService _notificationTypeService;
-        //
-        public NotificationController(INotificationTypeService notificationTypeService, IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<NotificationController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
+    
+      
+    public NotificationTypeController(INotificationTypeService notificationTypeService,IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<NotificationTypeController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
         {
             _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
@@ -52,12 +52,12 @@ namespace InBranchNotification.Controllers
         }
 
 
-
-        [HttpGet("SearchAllNotification/{PageNumber}/{PageSize}")]
+  
+        [HttpGet("GetAllNotificationTypes")]
 
         // [Authorize(Roles = "Trustee")]
         // [Authorize(Roles = "Trustee")]
-        public async Task<ActionResult<ObjectResponse>> SearchAllNotification(int PageNumber, int PageSize, string id, string title, string type, DateTime? from_entry_date, DateTime? to_entry_date, string sender, string body, bool completed)
+        public async Task<ActionResult<ObjectResponse>> GetAllNotificationTypes( )
         {
             //Audit Item
 
@@ -74,28 +74,14 @@ namespace InBranchNotification.Controllers
             var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
 
             //AD users
-            var notificationSearchParameters = new NotificationSearchParameters()
-            {
-                PageSize = PageSize,
-                PageNumber = PageNumber,
-                id = id,
-                body = body,
-                from_entry_date = from_entry_date,
-                to_entry_date = to_entry_date,
-                sender = sender,
-                completed = completed,
-                title = title,
-                type = type
 
-
-            };
-            var notificationDTO = new PagedList<NotificationSearchDTO>();
+            var notificationTypesDTO = new List<NotificationTypeDTO>();
             var objectResponse = new ObjectResponse();
             try
             {
-                var getAllNotificationQuery = new GetAllNotificationSearchQuery(notificationSearchParameters);
-                notificationDTO = await _queryDispatcher.QueryAsync(getAllNotificationQuery);
-                objectResponse.Data = notificationDTO;
+                
+                notificationTypesDTO = await _notificationTypeService.GetNotificationTypesAsync();
+                objectResponse.Data = notificationTypesDTO;
                 objectResponse.Success = true;
             }
             catch (Exception ex)
@@ -109,7 +95,7 @@ namespace InBranchNotification.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError(" [#Notification001-1-C] Server Error occured while getting all Notifications ||Caller:NotificationController /SearchAllNotification  || [GetAllNotificationSearcHandler][Handle] error:{error}", ex.InnerException.Message);
+                    _logger.LogError(" [#NotificationType001-1-C] Server Error occured while getting all Notification ||Caller:NotificationTypeController /GetAllNotificationTypes  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
 
 
                     objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
@@ -117,32 +103,23 @@ namespace InBranchNotification.Controllers
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("[#Notification001-1-C] Server Error occured while getting all Notifications||Caller:NotificationController /SearchAllNotification   || [GetAllNotificationSearcHandler][Handle] error:{error}", ex.Message);
+                _logger.LogError("[#NotificationType001-1-C] Server Error occured while getting all NotificationType||Caller:NotificationController /GetAllNotificationTypes   || [NotificationTypeService][Handle] error:{error}", ex.Message);
                 objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
-            var metadata = new
-            {
-                notificationDTO.TotalCount,
-                notificationDTO.PageSize,
-                notificationDTO.CurrentPage,
-                notificationDTO.TotalPages,
-                notificationDTO.HasNext,
-                notificationDTO.HasPrevious
-            };
-            objectResponse.Message = new[] { JsonConvert.SerializeObject(metadata) };
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            
+         
 
             return Ok(objectResponse);
 
         }
 
 
-
-        [HttpPost("CreateNotificationItem")]
-        public async Task<ActionResult> CreateNotification([FromBody] NotificationDTO notificationDTO)
+ 
+        [HttpPost("CreateNotificationTypeItem")]
+        public async Task<ActionResult> CreateNotificationType([FromBody] string notificationType)
         {
             //Audit Item
 
@@ -151,45 +128,36 @@ namespace InBranchNotification.Controllers
             var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
             var audit = new Audit();
             audit.inb_aduser_id = userName;
-            audit.activity = "Create Notification";
-            audit.activity_module = "NotificationController";
-            audit.activity_submodule = "CreateNotification";
-            audit.action_type = "client";
-            audit.clients = string.Join(",", notificationDTO.recipents);
+            audit.activity = "Create Notification Type";
+            audit.activity_module = "NotificationTypeController";
+            audit.activity_submodule = "CreateNotificationType";
+            audit.action_type = "system";
+            audit.clients = "system";
             var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
 
             var objectResponse = new ObjectResponse();
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid )
             {
-                _logger.LogError("[#Notification002-2-C] Validation error {Notification} was not created ||Caller:NotificationController/CreateNotification  || [AddNotificationHandler][Handle]  ", notificationDTO.title + " User" + notificationDTO.sender);
+                _logger.LogError("[#NotificationType002-2-C] Validation error {NotificationType} was not created ||Caller:NotificationTypeController/CreateNotificationType  || [NotificationTypeService][Handle]  ", notificationType +" User"+ notificationType);
                 var modeerror = ModelState.Values.SelectMany(x => x.Errors)
                                          .Select(x => x.ErrorMessage).ToArray();
-                objectResponse.Error = new[] { "[#Notification002-2-C] Validation error {Notification} was not created ||Caller:NotificationController/CreateNotification  || [AddNotificationHandler][Handle]  ", notificationDTO.title + " User" + notificationDTO.sender };
+                objectResponse.Error = new[] { "[#NotificationType002-2-C] Validation error {NotificationType} was not created ||Caller:NotificationTypeController/CreateNotificationType  || [NotificationTypeService][Handle]  ", notificationType + " User" + notificationType };
                 objectResponse.Error = objectResponse.Error.ToList().Union(modeerror).ToArray();
-
+                 
                 return BadRequest(objectResponse);
             }
 
-            var command = new NotificationCommand
-            {
-                title = notificationDTO.title,
-                body = notificationDTO.body,
-                sender = notificationDTO.sender,
-                type = notificationDTO.type,
-                notification_date = DateTime.Now,
-                completed = false,
-                recipents = notificationDTO.recipents,
-
-            };
+            
             try
             {
-
-                await _commandDispatcher.SendAsync(command);
+                var notificationTypeDto = new NotificationTypeDTO();
+                notificationTypeDto.notification_type=notificationType;
+                await _notificationTypeService.AddNotificationTypeAsync(notificationTypeDto);
 
                 objectResponse.Success = true;
 
-                objectResponse.Data = new { id = command.id };
-                return CreatedAtAction(nameof(GetNotificationById), new { id = command.id }, objectResponse);
+                objectResponse.Data = new { id = notificationTypeDto.id };
+                return CreatedAtAction(nameof(GetNotificationTypeById), new { id = notificationTypeDto.id }, objectResponse);
             }
             catch (Exception ex)
             {
@@ -203,79 +171,20 @@ namespace InBranchNotification.Controllers
 
                     };
 
-                    objectResponse.Error = new[] { "[#Notification002-2-C]", ex.InnerException.Message };
-                    _logger.LogError("[#Notification002-2-C] Server Error occured Branch was not created for {Notification}||Caller:NotificationController/CreateBranch  || [AddNotificationHandler][Handle] error:{error}", notificationDTO.title + " User" + notificationDTO.sender, ex.InnerException.Message);
+                    objectResponse.Error = new[] { "[#NotificationType002-2-C]", ex.InnerException.Message };
+                    _logger.LogError("[#NotificationType002-2-C] Server Error occured Branch was not created for {NotificationType}||Caller:NotificationTypeController/CreateBranch  || [AddNotificationHandler][Handle] error:{error}", notificationType + " User" + notificationType, ex.InnerException.Message);
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
 
-                _logger.LogError("[#Notification002-2-C] Server Error occured Notofcation was not created for {Notification}||Caller:NotificationController/CreateBranch  || [AddNotificationHandler][Handle] error:{error}", notificationDTO.title + " User" + notificationDTO.sender, ex.Message);
-                objectResponse.Error = new[] { "[#Notification002-2-C]", ex.Message };
+                _logger.LogError("[#NotificationType002-2-C] Server Error occured Branch was not created for {NotificationType}||Caller:NotificationTypeController/CreateBranch  || [AddNotificationHandler][Handle] error:{error}", notificationType + " User" + notificationType, ex.Message);
+                objectResponse.Error = new[] { "[#NotificationType002-2-C]", ex.Message };
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
-
-
-
-
-        [HttpGet("GetNotificationById/{id}")]
-        public async Task<ActionResult<ObjectResponse>> GetNotificationById(string id)
-        {
-            //Audit Item
-
-            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
-            var claimsItems = HttpContext.User.Claims;
-            var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
-            var audit = new Audit();
-            audit.inb_aduser_id ="Tests";
-            audit.activity = "Get Notification By Id";
-            audit.activity_module = "NotificationController";
-            audit.activity_submodule = "GetNotificationById";
-            audit.action_type = "system";
-            audit.clients = "system";
-            var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
-           // AD Login
-            var branch = new Branch();
-            var objectResponse = new ObjectResponse();
-            try
-            {
-                var branchQuery = new NotificationQuery(id);
-                objectResponse.Data = await _queryDispatcher.QueryAsync(branchQuery);
-                objectResponse.Success = true;
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                {
-                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                    {
-                        Content = new StringContent(ex.InnerException.Message),
-                        ReasonPhrase = ex.InnerException.Message
-
-                    };
-                    _logger.LogError("[#Notification004-4-C] Server Error occured while getting Notification by id ||Caller:NotificationController/GetNotificationById  || [NotificationQueries][Handle] error:{error}", ex.InnerException.Message);
-
-
-                    objectResponse.Error = new[] { "[#Notification004-4-C]", ex.InnerException.Message };
-
-                    objectResponse.Message = new[] { resp.ToString() };
-                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
-                }
-                _logger.LogError("[#Branch002-4-C] Server Error occured while getting a Notification by Id||Caller:NotificationController/GetNotificationById  || [NotificationQueries][Handle] error:{error}", ex.Message);
-
-                objectResponse.Error = new[] { "[#Notification004-4-C]", ex.Message };
-
-
-                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
-            }
-
-            return Ok(objectResponse);
-
-        }
-
-
-        [HttpPut("ApproveOrRejectNotification")]
-        public async Task<ActionResult<ObjectResponse>> ApproveOrRejectNotification([FromBody] ApproveDto approveDto)
+         
+        [HttpGet("GetNotificationTypeById/{id}")]
+        public async Task<ActionResult<ObjectResponse>> GetNotificationTypeById(string id)
         {
             //Audit Item
 
@@ -284,26 +193,20 @@ namespace InBranchNotification.Controllers
             var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
             var audit = new Audit();
             audit.inb_aduser_id = userName;
-            audit.activity = approveDto.approved == true ? "Approved" : "Rejected";
-            audit.activity_module = "NotificationController";
-            audit.activity_submodule = "ApproveOrRejectNotification";
-            var branchQuery = new NotificationQuery(approveDto.id);
-            var getUser = await _queryDispatcher.QueryAsync(branchQuery);
-            audit.clients = string.Join(",", getUser.recipents);
-
-            audit.action_type = "clients";
+            audit.activity = "Get Notification Type By Id";
+            audit.activity_module = "NotificationTypeController";
+            audit.activity_submodule = "GetNotificationTypeById";
+            audit.action_type = "system";
+            audit.clients = "system";
             var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
             //AD Login
             var branch = new Branch();
             var objectResponse = new ObjectResponse();
             try
             {
-                var _approve = new Approve();
-                _approve.id = approveDto.id;
-                _approve.approved = approveDto.approved;
-                _approve.approver = "User";
-                _approve.completed = true;
-                await _notificationTypeService.ApproveNotificationAsync(_approve);
+                var notificationTypeDto = new NotificationTypeDTO();
+                notificationTypeDto.id = id;
+                objectResponse.Data = await _notificationTypeService.GetNotificationTypeByIdAsync(notificationTypeDto);
                 objectResponse.Success = true;
             }
             catch (Exception ex)
@@ -316,17 +219,17 @@ namespace InBranchNotification.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("[#Notification005-5-C] Server Error occured while approving notofocation ||Caller:NotificationController/ApproveOrRejectNotification  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
+                    _logger.LogError("[#NotificationType003-3-C] Server Error occured while getting all Notification Type by Id||Caller:NotificationTypeController/GetNotificationTypeById  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
 
 
-                    objectResponse.Error = new[] { "[#Notification004-4-C]", ex.InnerException.Message };
+                    objectResponse.Error = new[] { "[#NotificationType003-3-C]", ex.InnerException.Message };
 
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("[#Branch005-5-C] Server Error occured  while approving notofocation||Caller:NotificationController/ApproveOrRejectNotification  || [NotificationTypeService][Handle] error:{error}", ex.Message);
+                _logger.LogError("[#NotificationType003-3-C] Server Error occured while getting a NotificationType||Caller:NotificationTypeController/GetNotificationTypeById  || [NotificationTypeService][Handle] error:{error}", ex.Message);
 
-                objectResponse.Error = new[] { "[#Notification005-5-C]", ex.Message };
+                objectResponse.Error = new[] { "[#NotificationType003-3-C", ex.Message };
 
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
@@ -336,6 +239,63 @@ namespace InBranchNotification.Controllers
 
         }
 
+
+        [HttpPut("UpdateNotificationType")]
+        public async Task<ActionResult<ObjectResponse>> UpdateNotificationById([FromBody] NotificationTypeDTO notificationTypeDTO)
+        {
+            //Audit Item
+
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+            var claimsItems = HttpContext.User.Claims;
+            var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
+            var audit = new Audit();
+            audit.inb_aduser_id = userName;
+            audit.activity = "Update Notification By Id";
+            audit.activity_module = "NotificationTypeController";
+            audit.activity_submodule = "UpdateNotificationType";
+            audit.action_type = "system";
+            audit.clients = "system";
+            var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
+            //AD Login
+            var branch = new Branch();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+                var notificationTypeDto = new NotificationTypeDTO();
+                notificationTypeDto.id = notificationTypeDTO.id;
+                notificationTypeDto.notification_type = notificationTypeDTO.notification_type;
+                await _notificationTypeService.UpdateNotificationTypeAsync(notificationTypeDto);
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("[#NotificationType004-4-C] Server Error occured while updating a  Notification Type ||Caller:NotificationTypeController/UpdateNotificationType  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#Notification004-4-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#NotificationType004-4-C] Server Error occured while updating  a Notification Type||Caller:NotificationTypeController/UpdateNotificationType  || [NotificationTypeService] error:{error}", ex.Message);
+
+                objectResponse.Error = new[] { "[#NotificationType004-4-C]", ex.Message };
+
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            return Ok(objectResponse);
+
+        }
 
     }
 }

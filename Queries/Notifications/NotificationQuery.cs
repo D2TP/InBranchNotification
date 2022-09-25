@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace InBranchNotification.Queries.Branches
 {
-    public class NotificationQuery : IQuery<Notification>
+    public class NotificationQuery : IQuery<SingleNotificationDto>
     {
         public NotificationQuery(string id)
         {

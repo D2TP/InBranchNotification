@@ -9,5 +9,8 @@
         public string activity_module { get; set; }
         public string activity_submodule { get; set; }
         public string inb_aduser_id { get; set; }
+        public string action_type { get; set; }
+        public string clients { get; set; }
+     
     }
 }
