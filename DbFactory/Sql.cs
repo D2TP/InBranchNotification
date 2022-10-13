@@ -1,3 +1,7 @@
+using InBranchNotification.DTOs;
+using System.Diagnostics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 namespace DbFactory
 {
     public class Sql
@@ -50,10 +54,46 @@ namespace DbFactory
         public const string UpdateNotificationTypes = "UPDATE inb_notification_type SET notification_type=#  WHERE id=#";
         public const string DeletNotificationTypes = "DELETE FROM inb_notification_type WHERE  id=#";
 
- 
+        //Service Request Types
+        public const string SelectServiceRequestTypes = "SELECT id,request_type  FROM inb_service_request_type";
+        public const string SelectOneServiceRequestType = "SELECT id,request_type  FROM inb_service_request_type where id=#";
+        public const string InsertServiceRequestTypes = "INSERT INTO  inb_service_request_type  (id,request_type )  VALUES (#,#)";
+        public const string UpdateServiceRequestTypes = "UPDATE inb_service_request_type SET request_type=#  WHERE id=#";
+        public const string DeletServiceRequestTypes = "DELETE FROM inb_service_request_type WHERE  id=#";
 
+        //Service Request Status
+        public const string SelectServiceRequestStatus = "SELECT id,status  FROM inb_service_request_status";
+        public const string SelectOneServiceRequestStatus = "SELECT id,status  FROM inb_service_request_status where id=#";
+        public const string InsertServiceRequestStatus = "INSERT INTO  inb_service_request_status  (id,status )  VALUES (#,#)";
+        public const string UpdateServiceRequestStatus = "UPDATE inb_service_request_status SET status=#  WHERE id=#";
+        public const string DeletServiceRequestStatuss = "DELETE FROM inb_service_request_status WHERE  id=#";
 
-        //Notification
+        //Service Request
+        public const string SelectServiceRequest = "SELECT   inb_service_request.id, inb_service_request.service_request_type_id, " +
+            "inb_service_request.service_request_status_id, inb_service_request.client, inb_service_request.cif_id," +
+            " inb_service_request.service_request_date, inb_service_request.approver, inb_service_request.reviewer, inb_service_request.review_date, inb_service_request.approval_date," +
+            "      inb_service_request_status.status, inb_service_request_type.request_type" +
+            " FROM     inb_service_request INNER JOIN  " +
+            "      inb_service_request_type ON inb_service_request.service_request_type_id = inb_service_request_type.id INNER JOIN  " +
+            "                inb_service_request_status ON inb_service_request.service_request_status_id = inb_service_request_status.id";
+        
+        public const string SelectOneServiceRequest = SelectServiceRequest+ "  where inb_service_request.id=#";
+        public const string InsertServiceRequest = "INSERT INTO  inb_service_request  (id ,service_request_type_id,service_request_status_id,client,cif_id,service_request_date  )  VALUES (#,#,#,#,#,#)";
+        public const string UpdateServiceRequests = "UPDATE inb_service_request SET service_request_type_id=#,service_request_status_id=#    WHERE id=#";
+        public const string ReviewServiceRequests = "UPDATE inb_service_request SET reviewer=#,review_date=#  ,service_request_status_id=#  WHERE id=#";
+        public const string ApproveServiceRequests = "UPDATE inb_service_request SET approver=#,approval_date=#  ,service_request_status_id=#  WHERE id=#";
+        public const string DeletServiceRequest = "DELETE FROM inb_service_request WHERE  id=#";
+
+        public const string StoredProcSearcServiceRequest = "EXECUTE inb_sp_search_service_request " +
+            "@id=#,@service_request_status_id=#,@service_request_type_id=#," +
+            "@client=#,@cif_id=#,@approver=#,@reviewer=#,@fromdate=#,@todate=# ";
+        public const string ApproveServiceRequest = "UPDATE inb_service_request SET service_request_status_id=# ,approver=#,approval_date=# WHERE id=#";
+        public const string ReviewServiceRequest = "UPDATE inb_service_request SET service_request_status_id=# ,reviewer=#,review_date=# WHERE id=#";
+        public const string SelectRequest = " select * from inb_service_request where inb_service_request.id=#";
+
+        public const string StoredProcSearcServiceHistoryRequest = "EXECUTE inb_sp_search_request_history " +
+    "@id=#,@actor=#,@status=#,@from_entry_date=#,@to_entry_date=#,@service_request_id=#,@comment=#,@activity=# ";
+
         public const string SelectNotifications = "SELECT id,title,type,notification_date,sender,body,completed   FROM inb_notification";
         public const string SelectOneNotification = "SELECT id,title,type,notification_date,sender,body,completed,approved,approver,recipents,recipent_count    FROM inb_notification where id=#";
         public const string InsertNotification = "INSERT INTO inb_notification (id,title,type,notification_date,sender,body,completed,recipents,recipent_count,approved) VALUES ( #,#,#,#,#,#,#,#,#,#)";
@@ -61,5 +101,9 @@ namespace DbFactory
         public const string ApproveNotification = "UPDATE inb_notification SET approved=# ,approver=#,completed=# WHERE id=#";
         public const string DeletBranch = "DELETE FROM inb_branch WHERE  id=#";
 
-            }
+        //Service Request History
+  
+        public const string InsertServiceRequestHistory = "INSERT INTO  inb_service_reques_history  (id ,actor,activity,activity_date,comment,service_request_id,status  )  VALUES (#,#,#,#,#,#,#)";
+
+    }
 }

@@ -70,12 +70,16 @@ namespace InBranchNotification
                     services.AddScoped<IDbController, DbController>();
                     services.AddScoped<IValidateService, ValidateService>();
                     services.AddScoped<INotificationTypeService, NotificationTypeService>();
+                    services.AddScoped<IServiceRequestService, ServiceRequestService>();
                     services.AddScoped<IAuthenticateRestClient, AuthenticateRestClient>();
+                    services.AddScoped<IServiceRequestHistory, ServiceRequestHistory>();
+                    services.AddScoped<IServiiceRequestTypeService, ServiiceRequestTypeService>();
+                    services.AddScoped<IServiceRequestStatusService, ServiceRequestStatusService>();
                     services.AddScoped<IErrorList, ErrorList>();
                     services.AddScoped<IBaseUrlService, BaseUrlService>();
                     services.AddAuthorization();
                     services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-                    services.AddAutoMapper(typeof(MappingProfiles));
+                    services.AddAutoMapper(typeof(Program));
 
                     // ValidateService : IValidateService IAuthenticateRestClient
                     services

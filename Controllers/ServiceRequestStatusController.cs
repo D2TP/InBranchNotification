@@ -29,18 +29,18 @@ namespace InBranchNotification.Controllers
 {
  //   [Authorize]
     [Route("api/[controller]")]
-    public class NotificationTypeController : Controller
+    public class ServiceRequestStatusController : Controller
     {
         private readonly IQueryDispatcher _queryDispatcher;
-        private readonly ILogger<NotificationTypeController> _logger;
+        private readonly ILogger<ServiceRequestStatusController> _logger;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _accessor;
         private readonly IBaseUrlService _baseUrlService;
-        private readonly INotificationTypeService _notificationTypeService;
+        private readonly IServiceRequestStatusService _serviceRequestStatusService;
     
       
-    public NotificationTypeController(INotificationTypeService notificationTypeService,IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<NotificationTypeController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
+    public ServiceRequestStatusController(IServiceRequestStatusService serviceRequestStatusService, IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<ServiceRequestStatusController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
         {
             _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
@@ -48,16 +48,16 @@ namespace InBranchNotification.Controllers
             _mapper = mapper;
             _accessor = accessor;
             _baseUrlService = baseUrlService;
-            _notificationTypeService = notificationTypeService;
+            _serviceRequestStatusService = serviceRequestStatusService;
         }
 
 
   
-        [HttpGet("GetAllNotificationTypes")]
+        [HttpGet("GetAllServiceRequestStatus")]
 
         // [Authorize(Roles = "Trustee")]
         // [Authorize(Roles = "Trustee")]
-        public async Task<ActionResult<ObjectResponse>> GetAllNotificationTypes( )
+        public async Task<ActionResult<ObjectResponse>> GetAllServiceRequestStatus( )
         {
             //Audit Item
 
@@ -75,13 +75,13 @@ namespace InBranchNotification.Controllers
 
             //AD users
 
-            var notificationTypesDTO = new List<NotificationTypeDTO>();
+            var serviceRequestStatusDTO = new List<ServiceRequestStatusDTO>();
             var objectResponse = new ObjectResponse();
             try
             {
-                
-                notificationTypesDTO = await _notificationTypeService.GetNotificationTypesAsync();
-                objectResponse.Data = notificationTypesDTO;
+                //GetServiceRequestStatusAsync
+                serviceRequestStatusDTO = await _serviceRequestStatusService.GetServiceRequestStatussAsync();
+                objectResponse.Data = serviceRequestStatusDTO;
                 objectResponse.Success = true;
             }
             catch (Exception ex)
@@ -95,7 +95,7 @@ namespace InBranchNotification.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError(" [#NotificationType001-1-C] Server Error occured while getting all Notification ||Caller:NotificationTypeController /GetAllNotificationTypes  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
+                    _logger.LogError(" [#ServiceRequestStatus001-1-C] Server Error occured while getting all Service Request Status ||Caller:ServiceRequestStatusController /GetAllServiceRequestStatus  || [ServiiceRequestStatusService][Handle] error:{error}", ex.InnerException.Message);
 
 
                     objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
@@ -103,7 +103,7 @@ namespace InBranchNotification.Controllers
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("[#NotificationType001-1-C] Server Error occured while getting all NotificationType||Caller:NotificationController /GetAllNotificationTypes   || [NotificationTypeService][Handle] error:{error}", ex.Message);
+                _logger.LogError("[#ServiceRequestStatus001-1-C] Server Error occured while getting all Service Request Status ||Caller:ServiceRequestStatusController /GetAllServiceRequestStatus   || [ServiiceRequestStatusService][Handle] error:{error}", ex.Message);
                 objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
@@ -118,8 +118,8 @@ namespace InBranchNotification.Controllers
 
 
  
-        [HttpPost("CreateNotificationTypeItem")]
-        public async Task<ActionResult> CreateNotificationType([FromBody] string notificationType)
+        [HttpPost("CreateServiceRequestStatusItem")]
+        public async Task<ActionResult> CreateServiceRequestStatus([FromBody] string serviceRequestStatus)
         {
             //Audit Item
 
@@ -138,10 +138,10 @@ namespace InBranchNotification.Controllers
             var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid )
             {
-                _logger.LogError("[#NotificationType002-2-C] Validation error {NotificationType} was not created ||Caller:NotificationTypeController/CreateNotificationType  || [NotificationTypeService][Handle]  ", notificationType +" User"+ notificationType);
+                _logger.LogError("[#ServiceRequestStatus002-2-C] Validation error {ServiceRequest} was not created ||Caller:ServiceRequestStatusController/CreateServiceRequestStatus  || [ServiiceRequestStatusService][Handle]  ", serviceRequestStatus + " User"+ serviceRequestStatus);
                 var modeerror = ModelState.Values.SelectMany(x => x.Errors)
                                          .Select(x => x.ErrorMessage).ToArray();
-                objectResponse.Error = new[] { "[#NotificationType002-2-C] Validation error {NotificationType} was not created ||Caller:NotificationTypeController/CreateNotificationType  || [NotificationTypeService][Handle]  ", notificationType + " User" + notificationType };
+                objectResponse.Error = new[] { "[#ServiceRequestStatus002-2-C] Validation error {ServiceRequestStatus} was not created ||Caller:ServiceRequestStatusController/CreateServiceRequestStatus  || [ServiiceRequestStatusService][Handle]  ", serviceRequestStatus + " User" + serviceRequestStatus };
                 objectResponse.Error = objectResponse.Error.ToList().Union(modeerror).ToArray();
                  
                 return BadRequest(objectResponse);
@@ -150,14 +150,14 @@ namespace InBranchNotification.Controllers
             
             try
             {
-                var notificationTypeDto = new NotificationTypeDTO();
-                notificationTypeDto.notification_type=notificationType;
-                await _notificationTypeService.AddNotificationTypeAsync(notificationTypeDto);
+                var ServiceRequestStatusDto = new ServiceRequestStatusDTO();
+                ServiceRequestStatusDto.status = serviceRequestStatus;
+                await _serviceRequestStatusService.AddServiceRequestStatusAsync(ServiceRequestStatusDto);
 
                 objectResponse.Success = true;
 
-                objectResponse.Data = new { id = notificationTypeDto.id };
-                return CreatedAtAction(nameof(GetNotificationTypeById), new { id = notificationTypeDto.id }, objectResponse);
+                objectResponse.Data = new { id = ServiceRequestStatusDto.id };
+                return CreatedAtAction(nameof(GetServiceRequestStatusById), new { id = ServiceRequestStatusDto.id }, objectResponse);
             }
             catch (Exception ex)
             {
@@ -171,20 +171,20 @@ namespace InBranchNotification.Controllers
 
                     };
 
-                    objectResponse.Error = new[] { "[#NotificationType002-2-C]", ex.InnerException.Message };
-                    _logger.LogError("[#NotificationType003-3-C] Server Error occured  Notification Type was not created for {NotificationType}||Caller:NotificationTypeController/CreateNotificationType  || [AddNotificationHandler][Handle] error:{error}", notificationType + " User" + notificationType, ex.InnerException.Message);
+                    objectResponse.Error = new[] { "[#ServiceRequestStatus003-3-C]", ex.InnerException.Message };
+                    _logger.LogError("[#ServiceRequestStatus003-3-C] Server Error occured Branch was not created for {ServiceRequestStatus}||Caller:ServiceRequestStatusController/CreateServiceRequestStatus  || [ServiiceRequestStatusService][Handle] error:{error}", serviceRequestStatus + " User" + serviceRequestStatus, ex.InnerException.Message);
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
 
-                _logger.LogError("[#NotificationType003-3-C] Server Error occured Notification Type was not created for {NotificationType}||Caller:NotificationTypeController/CreateNotificationType  || [AddNotificationHandler][Handle] error:{error}", notificationType + " User" + notificationType, ex.Message);
-                objectResponse.Error = new[] { "[#NotificationType003-3-C]", ex.Message };
+                _logger.LogError("[#ServiceRequestStatus003-3-C] Server Error occured Branch was not created for {ServiceRequestStatus}||Caller:ServiceRequestStatusController/CreateServiceRequestStatus  || [ServiiceRequestStatusService][Handle] error:{error}", serviceRequestStatus + " User" + serviceRequestStatus, ex.Message);
+                objectResponse.Error = new[] { "[#NotificationType002-2-C]", ex.Message };
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
 
             }
         }
          
-        [HttpGet("GetNotificationTypeById/{id}")]
-        public async Task<ActionResult<ObjectResponse>> GetNotificationTypeById(string id)
+        [HttpGet("GetServiceRequestStatusById/{id}")]
+        public async Task<ActionResult<ObjectResponse>> GetServiceRequestStatusById(string id)
         {
             //Audit Item
 
@@ -199,14 +199,14 @@ namespace InBranchNotification.Controllers
             audit.action_type = "system";
             audit.clients = "system";
             var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
-            //AD Login
-           
+   
+            var branch = new Branch();
             var objectResponse = new ObjectResponse();
             try
             {
-                var notificationTypeDto = new NotificationTypeDTO();
-                notificationTypeDto.id = id;
-                objectResponse.Data = await _notificationTypeService.GetNotificationTypeByIdAsync(notificationTypeDto);
+                var serviceRequestStatusDTO = new ServiceRequestStatusDTO();
+                serviceRequestStatusDTO.id = id;
+                objectResponse.Data = await _serviceRequestStatusService.GetServiceRequestStatusByIdAsync(serviceRequestStatusDTO);
                 objectResponse.Success = true;
             }
             catch (Exception ex)
@@ -219,17 +219,17 @@ namespace InBranchNotification.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("[#NotificationType004-4-C] Server Error occured while getting all Notification Type by Id||Caller:NotificationTypeController/GetNotificationTypeById  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
+                    _logger.LogError("[#ServiceRequestStatus004-4-C] Server Error occured while getting a Service Request Type by Id||Caller:ServiceRequestStatusController/GetServiceRequestStatusById  || [ServiiceRequestStatusService][Handle] error:{error}", ex.InnerException.Message);
 
 
-                    objectResponse.Error = new[] { "[#NotificationType004-4-C]", ex.InnerException.Message };
+                    objectResponse.Error = new[] { "[#NotificationType003-3-C]", ex.InnerException.Message };
 
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("[#NotificationType004-4-C] Server Error occured while getting a NotificationType||Caller:NotificationTypeController/GetNotificationTypeById  || [NotificationTypeService][Handle] error:{error}", ex.Message);
+                _logger.LogError("[#ServiceRequestStatus004-4-C] Server Error occured while getting a Service Request Type||Caller:ServiceRequestStatusController/GetServiceRequestStatusById  || [ServiiceRequestStatusService][Handle] error:{error}", ex.Message);
 
-                objectResponse.Error = new[] { "[#NotificationType004-4-C", ex.Message };
+                objectResponse.Error = new[] { "[#ServiceRequestStatus004-4-C", ex.Message };
 
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
@@ -240,8 +240,8 @@ namespace InBranchNotification.Controllers
         }
 
 
-        [HttpPut("UpdateNotificationType")]
-        public async Task<ActionResult<ObjectResponse>> UpdateNotificationById([FromBody] NotificationTypeDTO notificationTypeDTO)
+        [HttpPut("UpdateServiceRequestStatus")]
+        public async Task<ActionResult<ObjectResponse>> UpdateServiceRequestStatusById([FromBody] ServiceRequestStatusDTO serviceRequestStatusDTO)
         {
             //Audit Item
 
@@ -256,15 +256,15 @@ namespace InBranchNotification.Controllers
             audit.action_type = "system";
             audit.clients = "system";
             var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
-            //AD Login
+
             var branch = new Branch();
             var objectResponse = new ObjectResponse();
             try
             {
-                var notificationTypeDto = new NotificationTypeDTO();
-                notificationTypeDto.id = notificationTypeDTO.id;
-                notificationTypeDto.notification_type = notificationTypeDTO.notification_type;
-                await _notificationTypeService.UpdateNotificationTypeAsync(notificationTypeDto);
+                var serviceRequestStatus  = new ServiceRequestStatusDTO();
+                serviceRequestStatus.id = serviceRequestStatusDTO.id;
+                serviceRequestStatus.status = serviceRequestStatusDTO.status;
+                await _serviceRequestStatusService.UpdateServiceRequestStatusAsync(serviceRequestStatus);
                 objectResponse.Success = true;
             }
             catch (Exception ex)
@@ -277,17 +277,17 @@ namespace InBranchNotification.Controllers
                         ReasonPhrase = ex.InnerException.Message
 
                     };
-                    _logger.LogError("[#NotificationType005-5-C] Server Error occured while updating a  Notification Type ||Caller:NotificationTypeController/UpdateNotificationType  || [NotificationTypeService][Handle] error:{error}", ex.InnerException.Message);
+                    _logger.LogError("[#ServiceRequestStatus005-5-C] Server Error occured while updating a  Service Request Type ||Caller:ServiceRequestStatusController/UpdateServiceRequestStatusById  || [ServiiceRequestStatusService][Handle] error:{error}", ex.InnerException.Message);
 
 
-                    objectResponse.Error = new[] { "[#Notification005-5-C]", ex.InnerException.Message };
+                    objectResponse.Error = new[] { "[#Notification004-4-C]", ex.InnerException.Message };
 
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("[#NotificationType005-5-C] Server Error occured while updating  a Notification Type||Caller:NotificationTypeController/UpdateNotificationType  || [NotificationTypeService] error:{error}", ex.Message);
+                _logger.LogError("[#ServiceRequestStatus005-5-C] Server Error occured while updating  a Service Request  Type||Caller:ServiceRequestStatusController/UpdateServiceRequestStatusById  || [ServiiceRequestStatusService] error:{error}", ex.Message);
 
-                objectResponse.Error = new[] { "[#NotificationType005-5-C]", ex.Message };
+                objectResponse.Error = new[] { "[#ServiceRequestStatus005-5-C]", ex.Message };
 
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);

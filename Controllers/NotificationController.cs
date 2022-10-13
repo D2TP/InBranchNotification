@@ -54,9 +54,7 @@ namespace InBranchNotification.Controllers
 
 
         [HttpGet("SearchAllNotification/{PageNumber}/{PageSize}")]
-
-        // [Authorize(Roles = "Trustee")]
-        // [Authorize(Roles = "Trustee")]
+ 
         public async Task<ActionResult<ObjectResponse>> SearchAllNotification(int PageNumber, int PageSize, string id, string title, string type, DateTime? from_entry_date, DateTime? to_entry_date, string sender, string body, bool completed)
         {
             //Audit Item
