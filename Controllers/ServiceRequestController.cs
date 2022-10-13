@@ -58,17 +58,17 @@ namespace InBranchNotification.Controllers
         {
             //Audit Item
 
-            //var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
-            //var claimsItems = HttpContext.User.Claims;
-            //var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
-            //var audit = new Audit();
-            //audit.inb_aduser_id = userName;
-            //audit.activity = "Search All Notification";
-            //audit.activity_module = "NotificationController";
-            //audit.activity_submodule = "SearchAllNotification";
-            //audit.action_type = "system";
-            //audit.clients = "system";
-            //var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+            var claimsItems = HttpContext.User.Claims;
+            var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
+            var audit = new Audit();
+            audit.inb_aduser_id = userName;
+            audit.activity = "Search All Request";
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "SearchAllNotification";
+            audit.action_type = "system";
+            audit.clients = "system";
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
 
             //AD users
 
@@ -200,9 +200,9 @@ namespace InBranchNotification.Controllers
             var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
             var audit = new Audit();
             audit.inb_aduser_id = userName;
-            audit.activity = "Get Notification Type By Id";
-            audit.activity_module = "NotificationTypeController";
-            audit.activity_submodule = "GetNotificationTypeById";
+            audit.activity = "Get ServiceRequest By Id";
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "GetServiceRequestById";
             audit.action_type = "system";
             audit.clients = "system";
             var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
@@ -308,19 +308,19 @@ namespace InBranchNotification.Controllers
         {
             //Audit Item
 
-            //var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
-            //var claimsItems = HttpContext.User.Claims;
-            //var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
-             var audit = new Audit();
-            //audit.inb_aduser_id = userName;
-            //audit.activity = reviewServiceRequest.service_request_status_id;
-            //audit.activity_module = "ServiceRequestController";
-            //audit.activity_submodule = "ReviewRequest";
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+            var claimsItems = HttpContext.User.Claims;
+            var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
+            var audit = new Audit();
+            audit.inb_aduser_id = userName;
+            audit.activity = reviewServiceRequest.service_request_status_id;
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "ReviewRequest";
             var requestDetail = await _serviceRequestService.GetServiceRequestByIdNoJoinsAsync(reviewServiceRequest.id);
-            //audit.clients = requestDetail.cif_id;
+            audit.clients = requestDetail.cif_id;
 
-            //audit.action_type = "clients";
-            //var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
+            audit.action_type = "clients";
+            var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
             //AD Login
             var branch = new Branch();
             var objectResponse = new ObjectResponse();
@@ -366,17 +366,17 @@ namespace InBranchNotification.Controllers
         {
             //Audit Item
 
-            //var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
-            //var claimsItems = HttpContext.User.Claims;
-            //var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
-            //var audit = new Audit();
-            //audit.inb_aduser_id = userName;
-            //audit.activity = "Search All Notification";
-            //audit.activity_module = "NotificationController";
-            //audit.activity_submodule = "SearchAllNotification";
-            //audit.action_type = "system";
-            //audit.clients = "system";
-            //var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+            var claimsItems = HttpContext.User.Claims;
+            var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
+            var audit = new Audit();
+            audit.inb_aduser_id = userName;
+            audit.activity = "Search All Service Request History";
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "SearchAllNotification";
+            audit.action_type = "system";
+            audit.clients = "system";
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
 
             //AD users
 

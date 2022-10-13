@@ -66,9 +66,9 @@ namespace InBranchNotification.Controllers
             var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
             var audit = new Audit();
             audit.inb_aduser_id = userName;
-            audit.activity = "Search All Notification";
-            audit.activity_module = "NotificationController";
-            audit.activity_submodule = "SearchAllNotification";
+            audit.activity = "GetAll Notification Types";
+            audit.activity_module = "NotificationTypeController";
+            audit.activity_submodule = "GetAllNotificationTypes";
             audit.action_type = "system";
             audit.clients = "system";
             var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
@@ -103,7 +103,7 @@ namespace InBranchNotification.Controllers
                     objectResponse.Message = new[] { resp.ToString() };
                     return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
                 }
-                _logger.LogError("[#NotificationType001-1-C] Server Error occured while getting all NotificationType||Caller:NotificationController /GetAllNotificationTypes   || [NotificationTypeService][Handle] error:{error}", ex.Message);
+                _logger.LogError("[#NotificationType001-1-C] Server Error occured while getting all NotificationType||Caller:NotificationTypeController /GetAllNotificationTypes   || [NotificationTypeService][Handle] error:{error}", ex.Message);
                 objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
@@ -241,7 +241,7 @@ namespace InBranchNotification.Controllers
 
 
         [HttpPut("UpdateNotificationType")]
-        public async Task<ActionResult<ObjectResponse>> UpdateNotificationById([FromBody] NotificationTypeDTO notificationTypeDTO)
+        public async Task<ActionResult<ObjectResponse>> UpdateNotificationTypeById([FromBody] NotificationTypeDTO notificationTypeDTO)
         {
             //Audit Item
 
