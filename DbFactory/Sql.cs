@@ -103,7 +103,7 @@ namespace DbFactory
 
         //Service Request History
   
-        public const string InsertServiceRequestHistory = "INSERT INTO  inb_service_reques_history  (id ,actor,activity,activity_date,comment,service_request_id,status  )  VALUES (#,#,#,#,#,#,#)";
+        public const string InsertServiceRequestHistory = "INSERT INTO  inb_service_request_status  (id ,actor,activity,activity_date,comment,service_request_id,status  )  VALUES (#,#,#,#,#,#,#)";
 
     }
 }
