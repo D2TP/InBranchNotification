@@ -124,17 +124,16 @@ namespace InBranchNotification.Controllers
 
 
 
-
+        [AllowAnonymous]
         [HttpPost("CreateServiceRequestItem")]
         public async Task<ActionResult> CreateServiceRequest([FromBody] ServiceRequestDTO serviceRequestDTO)
         {
           //  Audit Item
 
             var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
-            var claimsItems = HttpContext.User.Claims;
-            var userName = claimsItems.First(claim => claim.Type == "UserName").Value;
+            
             var audit = new Audit();
-            audit.inb_aduser_id = userName;
+            audit.inb_aduser_id = serviceRequestDTO.cif_id;
             audit.activity = "Create Service Request";
             audit.activity_module = "ServiceRequestController";
             audit.activity_submodule = "CreateServiceRequest";

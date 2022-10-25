@@ -117,7 +117,7 @@ namespace InBranchNotification.Controllers
         }
 
 
- 
+        [AllowAnonymous]
         [HttpPost("CreateServiceRequestTypeItem")]
         public async Task<ActionResult> CreateServiceRequestType([FromBody] string serviceRequestType)
         {
