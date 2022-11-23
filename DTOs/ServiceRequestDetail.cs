@@ -14,7 +14,7 @@ namespace InBranchNotification.DTOs
         
         public string client { get; set; }
         public string cif_id { get; set; }
-        public DateTime service_request_date { get; set; }
+        public DateTime? service_request_date { get; set; }
 
 
 

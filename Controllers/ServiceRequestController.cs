@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace InBranchNotification.Controllers
 {
-    //   [Authorize]
+       [Authorize]
     [Route("api/[controller]")]
     public class ServiceRequestController : Controller
     {

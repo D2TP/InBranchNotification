@@ -100,9 +100,9 @@ namespace InBranchNotification.Services
                 var serviceRequestDetail = new ServiceRequestDetail();
                 serviceRequestDetail.client = item.Field<string>("client") != null ? Convert.ToString(item.Field<string>("client")) : null;
                 serviceRequestDetail.reviewer = item.Field<string>("reviewer") != null ? Convert.ToString(item.Field<string>("reviewer")) : null;
-                serviceRequestDetail.service_request_date = Convert.ToDateTime(item.Field<DateTime>("service_request_date"));
-                serviceRequestDetail.review_date = item.Field<DateTime?>("review_date") != null ? Convert.ToDateTime(item.Field<string>("review_date")) : null;
-                serviceRequestDetail.approval_date = item.Field<DateTime?>("approval_date") != null ? Convert.ToDateTime(item.Field<string>("approval_date")) : null;
+                serviceRequestDetail.service_request_date =  item.Field<DateTime?>("service_request_date") != null ? Convert.ToDateTime(item.Field<DateTime>("service_request_date")) : null;
+                serviceRequestDetail.review_date = item.Field<DateTime?>("review_date") != null ? Convert.ToDateTime(item.Field<DateTime>("review_date")) : null;
+                serviceRequestDetail.approval_date = item.Field<DateTime?>("approval_date") != null ? Convert.ToDateTime(item.Field<DateTime>("approval_date")) : null;
                 serviceRequestDetail.status = item.Field<string>("status") != null ? Convert.ToString(item.Field<string>("status")) : "";
                 serviceRequestDetail.cif_id = item.Field<string>("cif_id") != null ? Convert.ToString(item.Field<string>("cif_id")) : "";
                 serviceRequestDetail.id = item.Field<string>("id") != null ? Convert.ToString(item.Field<string>("id")) : "";
