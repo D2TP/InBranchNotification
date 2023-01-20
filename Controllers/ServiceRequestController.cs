@@ -429,5 +429,207 @@ namespace InBranchNotification.Controllers
 
         }
 
+
+
+        [AllowAnonymous]
+        [HttpGet("ClientSearchAllServiceRequest/{PageNumber}/{PageSize}")]
+        public async Task<ActionResult<ObjectResponse>> ClientSearchAllServiceRequest(ServiceRequestSearch serviceRequestSearch,string cif_id)
+        {
+            //Audit Item
+
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+          
+            var audit = new Audit();
+            audit.inb_aduser_id = cif_id;
+            audit.activity = "Search All Request";
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "SearchAllNotification";
+            audit.action_type = "client";
+            audit.clients = cif_id;
+
+            
+
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+
+            //AD users
+
+            var serviceRequestDetail = new PagedList<ServiceRequestDetail>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+
+                serviceRequestDetail = await _serviceRequestService.GetAllServiceRequestAsync(serviceRequestSearch);
+                objectResponse.Data = serviceRequestDetail;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError(" [#ServiceRequest001-1-C] Server Error occured while getting    Service Requests ||Caller:ServiceRequestController /SearchAllServiceRequest  || [ServiceRequestService][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#ServiceRequest001-1-C] Server Error occured while getting   Service Requests||Caller:ServiceRequestController /SearchAllServiceRequest   || [ServiceRequestService][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            var metadata = new
+            {
+                serviceRequestDetail.TotalCount,
+                serviceRequestDetail.PageSize,
+                serviceRequestDetail.CurrentPage,
+                serviceRequestDetail.TotalPages,
+                serviceRequestDetail.HasNext,
+                serviceRequestDetail.HasPrevious
+            };
+            objectResponse.Message = new[] { JsonConvert.SerializeObject(metadata) };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(objectResponse);
+
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("ClientGetServiceRequestById/{id}")]
+        public async Task<ActionResult<ObjectResponse>> ClientGetServiceRequestById(string id, string cif_id)
+        {
+            //Audit Item
+
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+        
+            var audit = new Audit();
+            audit.inb_aduser_id = cif_id;
+            audit.activity = "Get ServiceRequest By Id";
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "GetServiceRequestById";
+            audit.action_type = "client";
+            audit.clients = cif_id;
+
+            var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
+
+            var branch = new Branch();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+
+                objectResponse.Data = await _serviceRequestService.GetServiceRequestByIdAsync(id);
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError("[#ServiceRequest004-4-C] Server Error occured while getting appproving ||Caller:ServiceRequestController/GetServiceRequestById  || [ServiceRequestService][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#ServiceRequest004-4-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#ServiceRequest003-3-C] Server Error occured while approving service request||Caller:ServiceRequestController/GetServiceRequestById  || [ServiceRequestService][Handle] error:{error}", ex.Message);
+
+                objectResponse.Error = new[] { "[#ServiceRequest004-4-C", ex.Message };
+
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            return Ok(objectResponse);
+
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("ClientSearchAllServiceRequestHistory/{PageNumber}/{PageSize}")]
+        public async Task<ActionResult<ObjectResponse>> ClientSearchAllServiceRequestHistory(ServiceHistroySearchDto serviceHistroySearchDto, string cif_id)
+        {
+            //Audit Item
+
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+          
+            var audit = new Audit();
+            audit.inb_aduser_id = cif_id;
+            audit.activity = "Search All Service Request History";
+            audit.activity_module = "ServiceRequestController";
+            audit.activity_submodule = "SearchAllNotification";
+            audit.action_type = "client";
+            audit.clients = cif_id;
+
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+
+            //AD users
+
+            var serviceRequestHistoryDto = new PagedList<ServiceRequestHistoryDto>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+
+                serviceRequestHistoryDto = await _serviceRequestHistory.SearchAllServiceRequestHistoryAsync(serviceHistroySearchDto);
+                objectResponse.Data = serviceRequestHistoryDto;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError(" [#ServiceRequest007-7-C] Server Error occured while getting    Service Requests ||Caller:ServiceRequestController /SearchAllServiceRequest  || [ServiceRequestService][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#AdUser007-7-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#ServiceRequest007-7-C] Server Error occured while getting   Service Requests||Caller:ServiceRequestController /SearchAllServiceRequest   || [ServiceRequestService][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#Notification007-7-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+            var metadata = new
+            {
+                serviceRequestHistoryDto.TotalCount,
+                serviceRequestHistoryDto.PageSize,
+                serviceRequestHistoryDto.CurrentPage,
+                serviceRequestHistoryDto.TotalPages,
+                serviceRequestHistoryDto.HasNext,
+                serviceRequestHistoryDto.HasPrevious
+            };
+            objectResponse.Message = new[] { JsonConvert.SerializeObject(metadata) };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
+            return Ok(objectResponse);
+
+        }
+
     }
 }

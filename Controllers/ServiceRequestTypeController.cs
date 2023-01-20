@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace InBranchNotification.Controllers
 {
- //   [Authorize]
+    //   [Authorize]
     [Route("api/[controller]")]
     public class ServiceRequestTypeController : Controller
     {
@@ -38,9 +38,9 @@ namespace InBranchNotification.Controllers
         private readonly IHttpContextAccessor _accessor;
         private readonly IBaseUrlService _baseUrlService;
         private readonly IServiiceRequestTypeService _serviiceRequestTypeService;
-    
-      
-    public ServiceRequestTypeController(IServiiceRequestTypeService serviiceRequestTypeService, IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<ServiceRequestTypeController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
+
+
+        public ServiceRequestTypeController(IServiiceRequestTypeService serviiceRequestTypeService, IBaseUrlService baseUrlService, IHttpContextAccessor accessor, ILogger<ServiceRequestTypeController> logger, IQueryDispatcher queryDispatcher, ICommandDispatcher commandDispatcher, IMapper mapper)
         {
             _commandDispatcher = commandDispatcher;
             _queryDispatcher = queryDispatcher;
@@ -52,12 +52,13 @@ namespace InBranchNotification.Controllers
         }
 
 
-  
+
         [HttpGet("GetAllServiceRequestType")]
 
         // [Authorize(Roles = "Trustee")]
         // [Authorize(Roles = "Trustee")]
-        public async Task<ActionResult<ObjectResponse>> GetAllServiceRequestType( )
+
+        public async Task<ActionResult<ObjectResponse>> GetAllServiceRequestType()
         {
             //Audit Item
 
@@ -109,15 +110,15 @@ namespace InBranchNotification.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
 
-            
-         
+
+
 
             return Ok(objectResponse);
 
         }
 
 
-        [AllowAnonymous]
+
         [HttpPost("CreateServiceRequestTypeItem")]
         public async Task<ActionResult> CreateServiceRequestType([FromBody] string serviceRequestType)
         {
@@ -136,22 +137,22 @@ namespace InBranchNotification.Controllers
             var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
 
             var objectResponse = new ObjectResponse();
-            if (!ModelState.IsValid )
+            if (!ModelState.IsValid)
             {
-                _logger.LogError("[#ServiceRequestType002-2-C] Validation error {ServiceRequest} was not created ||Caller:ServiceRequestTypeController/CreateServiceRequestType  || [ServiiceRequestTypeService][Handle]  ", serviceRequestType +" User"+ serviceRequestType);
+                _logger.LogError("[#ServiceRequestType002-2-C] Validation error {ServiceRequest} was not created ||Caller:ServiceRequestTypeController/CreateServiceRequestType  || [ServiiceRequestTypeService][Handle]  ", serviceRequestType + " User" + serviceRequestType);
                 var modeerror = ModelState.Values.SelectMany(x => x.Errors)
                                          .Select(x => x.ErrorMessage).ToArray();
                 objectResponse.Error = new[] { "[#ServiceRequestType002-2-C] Validation error {ServiceRequestType} was not created ||Caller:ServiceRequestTypeController/CreateServiceRequestType  || [ServiiceRequestTypeService][Handle]  ", serviceRequestType + " User" + serviceRequestType };
                 objectResponse.Error = objectResponse.Error.ToList().Union(modeerror).ToArray();
-                 
+
                 return BadRequest(objectResponse);
             }
 
-            
+
             try
             {
                 var serviceRequestTypeDto = new ServiceRequestTypeDto();
-                serviceRequestTypeDto.request_type= serviceRequestType;
+                serviceRequestTypeDto.request_type = serviceRequestType;
                 await _serviiceRequestTypeService.AddServiceRequestTypeAsync(serviceRequestTypeDto);
 
                 objectResponse.Success = true;
@@ -182,7 +183,7 @@ namespace InBranchNotification.Controllers
 
             }
         }
-         
+
         [HttpGet("GetServiceRequestTypeById/{id}")]
         public async Task<ActionResult<ObjectResponse>> GetServiceRequestTypeById(string id)
         {
@@ -256,7 +257,7 @@ namespace InBranchNotification.Controllers
             audit.action_type = "system";
             audit.clients = "system";
             var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
-           
+
             var branch = new Branch();
             var objectResponse = new ObjectResponse();
             try
@@ -297,5 +298,69 @@ namespace InBranchNotification.Controllers
 
         }
 
+
+
+        // [Authorize(Roles = "Trustee")]
+        [HttpGet("ClientGetAllServiceRequestType")]
+
+        [AllowAnonymous]
+        public async Task<ActionResult<ObjectResponse>> ClientGetAllServiceRequestType(string cif_id)
+        {
+            //Audit Item
+
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+
+            var audit = new Audit();
+            audit.inb_aduser_id = cif_id;
+            audit.activity = "Get All Service Request Type";
+            audit.activity_module = "ServiceRequestTypeController";
+            audit.activity_submodule = "GetAllServiceRequestType";
+            audit.action_type = "client";
+            audit.clients = cif_id;
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+
+            //AD users
+
+            var serviceRequestTypeDto = new List<ServiceRequestTypeDto>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+
+                serviceRequestTypeDto = await _serviiceRequestTypeService.GetServiceRequestTypesAsync();
+                objectResponse.Data = serviceRequestTypeDto;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError(" [#ServiceRequestType001-1-C] Server Error occured while getting all Service Request Types ||Caller:ServiceRequestTypeController /GetAllServiceRequestType  || [ServiiceRequestTypeService][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#ServiceRequestType001-1-C] Server Error occured while getting all Service Request Types ||Caller:ServiceRequestTypeController /GetAllServiceRequestType   || [ServiiceRequestTypeService][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+
+
+
+            return Ok(objectResponse);
+
+
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace InBranchNotification.Services
 
             command.id = Guid.NewGuid().ToString();
             object[] param = { command.id, command.service_request_type_id, command.service_request_status_id, command.client, command.cif_id, DateTime.Now };
-            int entity;
+            int entity;   
             try
             {
                 entity = await _dbController.SQLExecuteAsync(Sql.InsertServiceRequest, param);

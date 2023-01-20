@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace InBranchNotification.Controllers
 {
- //   [Authorize]
+   [Authorize]
     [Route("api/[controller]")]
     public class ServiceRequestStatusController : Controller
     {
@@ -54,9 +54,7 @@ namespace InBranchNotification.Controllers
 
   
         [HttpGet("GetAllServiceRequestStatus")]
-
-        // [Authorize(Roles = "Trustee")]
-        // [Authorize(Roles = "Trustee")]
+ 
         public async Task<ActionResult<ObjectResponse>> GetAllServiceRequestStatus( )
         {
             //Audit Item
@@ -292,6 +290,67 @@ namespace InBranchNotification.Controllers
 
                 return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
             }
+
+            return Ok(objectResponse);
+
+        }
+
+        [AllowAnonymous]
+        [HttpGet("ClientGetAllServiceRequestStatus")]
+
+        public async Task<ActionResult<ObjectResponse>> ClientGetAllServiceRequestStatus(string cif_id)
+        {
+            //Audit Item
+
+            var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
+     ;
+            var audit = new Audit();
+            audit.inb_aduser_id = cif_id;
+            audit.activity = "Get All ServiceRequest Status";
+            audit.activity_module = "ServiceRequestStatusController";
+            audit.activity_submodule = "GetAllServiceRequestStatus";
+            audit.action_type = "client";
+            audit.clients = cif_id;
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+
+            //AD users
+
+            var serviceRequestStatusDTO = new List<ServiceRequestStatusDTO>();
+            var objectResponse = new ObjectResponse();
+            try
+            {
+                //GetServiceRequestStatusAsync
+                serviceRequestStatusDTO = await _serviceRequestStatusService.GetServiceRequestStatussAsync();
+                objectResponse.Data = serviceRequestStatusDTO;
+                objectResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                objectResponse.Success = false;
+                if (ex.InnerException != null)
+                {
+                    var resp = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(ex.InnerException.Message),
+                        ReasonPhrase = ex.InnerException.Message
+
+                    };
+                    _logger.LogError(" [#ServiceRequestStatus001-1-C] Server Error occured while getting all Service Request Status ||Caller:ServiceRequestStatusController /GetAllServiceRequestStatus  || [ServiiceRequestStatusService][Handle] error:{error}", ex.InnerException.Message);
+
+
+                    objectResponse.Error = new[] { "[#AdUser001-1-C]", ex.InnerException.Message };
+
+                    objectResponse.Message = new[] { resp.ToString() };
+                    return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+                }
+                _logger.LogError("[#ServiceRequestStatus001-1-C] Server Error occured while getting all Service Request Status ||Caller:ServiceRequestStatusController /GetAllServiceRequestStatus   || [ServiiceRequestStatusService][Handle] error:{error}", ex.Message);
+                objectResponse.Error = new[] { "[#Notification001-1-C]", ex.Message };
+
+                return StatusCode(StatusCodes.Status400BadRequest, objectResponse);
+            }
+
+
+
 
             return Ok(objectResponse);
 
