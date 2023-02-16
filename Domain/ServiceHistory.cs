@@ -12,5 +12,6 @@ namespace InBranchNotification.Domain
         public string comment { get; set; }
         public string service_request_id { get; set; }
         public string status { get; set; }
+        public string other_request_details { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace InBranchNotification.Services
         {
 
             command.id = Guid.NewGuid().ToString();
-            object[] param = { command.id, command.actor, command.activity, DateTime.Now, command.comment, command.service_request_id, command.status };
+            object[] param = { command.id, command.actor, command.activity, DateTime.Now, command.comment, command.service_request_id, command.status ,command.other_request_details};
             int entity;
             try
             {
@@ -62,6 +62,7 @@ namespace InBranchNotification.Services
                       query.from_entry_date!=null? query.from_entry_date : DBNull.Value,
                     query.to_entry_date!=null? query.to_entry_date : DBNull.Value ,
             query.service_request_id != null ? query.service_request_id : DBNull.Value,
+               query.other_request_details != null ? query.other_request_details : DBNull.Value,
             query.comment != null ? query.comment : DBNull.Value,
             query.activity != null ? query.activity : DBNull.Value,
             };
@@ -96,7 +97,7 @@ namespace InBranchNotification.Services
                 serviceRequestDetail.status = item.Field<string>("status") != null ? Convert.ToString(item.Field<string>("status")) : "";
                 serviceRequestDetail.service_status = item.Field<string>("service_status") != null ? Convert.ToString(item.Field<string>("service_status")) : "";
                 serviceRequestDetail.request_type = item.Field<string>("request_type") != null ? Convert.ToString(item.Field<string>("request_type")) : "";
-                 
+                 serviceRequestDetail.other_request_details = item.Field<string>("other_request_details") != null ? Convert.ToString(item.Field<string>("other_request_details")) : "";
                 steList.Add(serviceRequestDetail);
 
             }

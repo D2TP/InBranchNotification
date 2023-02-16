@@ -72,13 +72,13 @@ namespace DbFactory
         public const string SelectServiceRequest = "SELECT   inb_service_request.id, inb_service_request.service_request_type_id, " +
             "inb_service_request.service_request_status_id, inb_service_request.client, inb_service_request.cif_id," +
             " inb_service_request.service_request_date, inb_service_request.approver, inb_service_request.reviewer, inb_service_request.review_date, inb_service_request.approval_date," +
-            "      inb_service_request_status.status, inb_service_request_type.request_type" +
+            "      inb_service_request_status.status, inb_service_request_type.request_type,inb_service_request.other_request_details" +
             " FROM     inb_service_request INNER JOIN  " +
             "      inb_service_request_type ON inb_service_request.service_request_type_id = inb_service_request_type.id INNER JOIN  " +
             "                inb_service_request_status ON inb_service_request.service_request_status_id = inb_service_request_status.id";
         
         public const string SelectOneServiceRequest = SelectServiceRequest+ "  where inb_service_request.id=#";
-        public const string InsertServiceRequest = "INSERT INTO  inb_service_request  (id ,service_request_type_id,service_request_status_id,client,cif_id,service_request_date  )  VALUES (#,#,#,#,#,#)";
+        public const string InsertServiceRequest = "INSERT INTO  inb_service_request  (id ,service_request_type_id,service_request_status_id,client,cif_id,other_request_details,service_request_date  )  VALUES (#,#,#,#,#,#,#)";
         public const string UpdateServiceRequests = "UPDATE inb_service_request SET service_request_type_id=#,service_request_status_id=#    WHERE id=#";
         public const string ReviewServiceRequests = "UPDATE inb_service_request SET reviewer=#,review_date=#  ,service_request_status_id=#  WHERE id=#";
         public const string ApproveServiceRequests = "UPDATE inb_service_request SET approver=#,approval_date=#  ,service_request_status_id=#  WHERE id=#";
@@ -103,7 +103,7 @@ namespace DbFactory
 
         //Service Request History
   
-        public const string InsertServiceRequestHistory = "INSERT INTO  inb_service_request_history  (id ,actor,activity,activity_date,comment,service_request_id,status  )  VALUES (#,#,#,#,#,#,#)";
+        public const string InsertServiceRequestHistory = "INSERT INTO  inb_service_request_history  (id ,actor,activity,activity_date,comment,service_request_id,status,other_request_details  )  VALUES (#,#,#,#,#,#,#,#)";
 
     }
 }

@@ -41,7 +41,7 @@ namespace InBranchNotification.Services
         {
 
             command.id = Guid.NewGuid().ToString();
-            object[] param = { command.id, command.service_request_type_id, command.service_request_status_id, command.client, command.cif_id, DateTime.Now };
+            object[] param = { command.id, command.service_request_type_id, command.service_request_status_id, command.client, command.cif_id, command.other_request_details, DateTime.Now };
             int entity;   
             try
             {
@@ -55,6 +55,7 @@ namespace InBranchNotification.Services
                 history.comment = command.comment;
                 history.id= Guid.NewGuid().ToString();
                 history.activity_date = DateTime.Now;
+                history.other_request_details=command.other_request_details;
                 await  _serviceRequestHistory.AddServiceRequestHistoryAsync(history);
             }
             catch (Exception ex)
@@ -79,6 +80,7 @@ namespace InBranchNotification.Services
                     query.cif_id!=null? query.cif_id : DBNull.Value,
                     query.approver!=null? query.approver : DBNull.Value,
                      query.reviewer!=null? query.reviewer : DBNull.Value,
+                     query.other_request_details!=null? query.other_request_details : DBNull.Value,
                     query.fromdate!=null? query.fromdate : DBNull.Value,
                     query.todate!=null? query.todate : DBNull.Value };
 
@@ -87,14 +89,21 @@ namespace InBranchNotification.Services
             var getItems = await _dbController.SQLFetchAsync(Sql.StoredProcSearcServiceRequest, param);
 
             var entity = getItems.AsEnumerable().OrderBy(on => on.Field<string>("client")).ToList();
-
+           var steList = new List<ServiceRequestDetail>();
             if (entity.Count == 0)
             {
 
                 _logger.LogError("Error: Server returned no result |Caller:SearchAllServiceRequest/GetServiceRequestByIdAsync -Get|| [ServiceRequestService][Handle]");
-                throw new HandleGeneralException(400, "Server returned no result");
+             //   throw new HandleGeneralException(400, "Server returned no result");
+
+                var  emptylist =  PagedList<ServiceRequestDetail>.ToPagedList(steList.AsQueryable(),
+         query.PageNumber,
+         query.PageSize);
+
+
+                return emptylist;
             }
-            var steList = new List<ServiceRequestDetail>();
+ 
             foreach (var item in entity)
             {
                 var serviceRequestDetail = new ServiceRequestDetail();
@@ -107,6 +116,7 @@ namespace InBranchNotification.Services
                 serviceRequestDetail.cif_id = item.Field<string>("cif_id") != null ? Convert.ToString(item.Field<string>("cif_id")) : "";
                 serviceRequestDetail.id = item.Field<string>("id") != null ? Convert.ToString(item.Field<string>("id")) : "";
                 serviceRequestDetail.approver = item.Field<string>("approver") != null ? Convert.ToString(item.Field<string>("approver")) : "";
+                serviceRequestDetail.other_request_details = item.Field<string>("other_request_details") != null ? Convert.ToString(item.Field<string>("other_request_details")) : "";
                 serviceRequestDetail.request_type = item.Field<string>("request_type") != null ? Convert.ToString(item.Field<string>("request_type")) : "";
               
                 

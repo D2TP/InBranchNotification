@@ -11,7 +11,8 @@ namespace InBranchNotification.DTOs
         public string status { get; set; }
         public DateTime? from_entry_date { get; set; }
         public DateTime? to_entry_date { get; set; }
-        public string service_request_id { get; set; }  
+        public string service_request_id { get; set; }
+        public string other_request_details { get; set; }
         public string comment { get; set; }
         public string activity { get; set; }
     }

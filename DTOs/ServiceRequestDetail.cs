@@ -11,7 +11,7 @@ namespace InBranchNotification.DTOs
         public DateTime? approval_date { get; set; }
         public string status { get; set; }
         public string request_type { get; set; }
-        
+        public string other_request_details { get; set; }
         public string client { get; set; }
         public string cif_id { get; set; }
         public DateTime? service_request_date { get; set; }

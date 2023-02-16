@@ -132,14 +132,14 @@ namespace InBranchNotification.Controllers
 
             var userAgent = _accessor.HttpContext.Request.Headers["User-Agent"];
             
-            var audit = new Audit();
-            audit.inb_aduser_id = serviceRequestDTO.cif_id;
-            audit.activity = "Create Service Request";
-            audit.activity_module = "ServiceRequestController";
-            audit.activity_submodule = "CreateServiceRequest";
-            audit.action_type = "client";
-            audit.clients = serviceRequestDTO.cif_id;
-            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
+            //var audit = new Audit();
+            //audit.inb_aduser_id = serviceRequestDTO.cif_id;
+            //audit.activity = "Create Service Request";
+            //audit.activity_module = "ServiceRequestController";
+            //audit.activity_submodule = "CreateServiceRequest";
+            //audit.action_type = "client";
+            //audit.clients = serviceRequestDTO.cif_id;
+            //var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
 
             var objectResponse = new ObjectResponse();
             if (!ModelState.IsValid)
