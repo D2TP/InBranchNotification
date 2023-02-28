@@ -36,8 +36,13 @@ namespace InBranchNotification.Services
         {
 
             command.id = Guid.NewGuid().ToString();
+            if (command.other_request_details == null)
+            {
+                command.other_request_details = "Process";
+            }
             object[] param = { command.id, command.actor, command.activity, DateTime.Now, command.comment, command.service_request_id, command.status ,command.other_request_details};
             int entity;
+            
             try
             {
                 entity = await _dbController.SQLExecuteAsync(Sql.InsertServiceRequestHistory, param);

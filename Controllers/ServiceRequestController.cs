@@ -319,7 +319,7 @@ namespace InBranchNotification.Controllers
             audit.clients = requestDetail.cif_id;
 
             audit.action_type = "clients";
-            var addAuditItem = _baseUrlService.AddAuditItem(audit, userAgent);
+            var addAuditItem = await _baseUrlService.AddAuditItem(audit, userAgent);
             //AD Login
             var branch = new Branch();
             var objectResponse = new ObjectResponse();
