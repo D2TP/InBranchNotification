@@ -15,8 +15,8 @@ namespace DbFactory
         public const string SelectADUserAndRoleName = "SELECT r.category_id,   u.active as is_role_active , r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.id=#";
         public const string SelectADUserByUserName = "SELECT r.category_id,   u.active as is_role_active , r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.user_name=#";
         public const string SelectADUserList = "SELECT user_name, first_name ,last_name,email,active,entry_date,branch_id,modified_date,modified_by,created_by  FROM  inb_aduser ";
+        public const string SelectToken = "SELECT id, user_name, token, expires_on, created_on, revoked_on,active, refreshToken FROM inb_refresh_token where token = #";
 
-       
         public const string SelectADUserAndBranchName = "SELECT r.category_id, r.id as role_id, a.id, a.email,a.active,a.entry_date,a.user_name,a.first_name,a.last_name ,r.role_name ,b.branch_name  FROM inb_user_role AS u  INNER JOIN inb_aduser AS a  ON u.ad_user_id = a.id  INNER JOIN inb_role AS r ON r.id = u.role_id INNER JOIN inb_branch AS b ON a.branch_id = b.id where a.user_name=# and u.active=1 ";
         public const string SelectADUserCount = "SELECT count(*) as Total from  inb_aduser ";
         public const string SelectADUserActiveCount = "SELECT count(*) as  ActiveUser  from  inb_aduser where active=1 "; 
